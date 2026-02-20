@@ -1,0 +1,16 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: paguepix-front
+    ports:
+      - "${FRONTEND_PORT:-4200}:80"
+    environment:
+      - NODE_ENV=development
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
