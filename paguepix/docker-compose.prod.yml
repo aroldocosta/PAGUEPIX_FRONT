@@ -3,5 +3,5 @@ services:
     image: ${DOCKER_IMAGE}
     container_name: paguepix-front
     ports:
-      - "4210:80"
+      - "4210:4210"
     restart: always
