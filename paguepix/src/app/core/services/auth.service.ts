@@ -1,26 +1,40 @@
-import { Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { AuthenticationDTO, LoginDTO } from '../models/auth.model';
-import { environment } from '../../../environments/environment';
-import { tap } from 'rxjs/operators';
+import { Injectable, signal, computed } from '@angular/core';
+import { UserSession } from '../models/auth.models';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
-    private apiUrl = `${environment.apiUrl}/auth`;
+    private readonly STORAGE_KEY = 'paguepix_session';
 
-    currentUser = signal<LoginDTO | null>(null);
+    // Signal para estado da sessão
+    private sessionSignal = signal<UserSession | null>(this.loadSession());
 
-    constructor(private http: HttpClient) { }
+    // Seletores calculados
+    isAuthenticated = computed(() => !!this.sessionSignal());
+    token = computed(() => this.sessionSignal()?.token);
+    userId = computed(() => this.sessionSignal()?.userId);
+    role = computed(() => this.sessionSignal()?.role);
 
-    login(auth: AuthenticationDTO) {
-        return this.http.post<LoginDTO>(this.apiUrl, auth).pipe(
-            tap(user => this.currentUser.set(user))
-        );
+    setSession(session: UserSession) {
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(session));
+        this.sessionSignal.set(session);
     }
 
     logout() {
-        this.currentUser.set(null);
+        localStorage.removeItem(this.STORAGE_KEY);
+        this.sessionSignal.set(null);
+    }
+
+    private loadSession(): UserSession | null {
+        const saved = localStorage.getItem(this.STORAGE_KEY);
+        if (saved) {
+            try {
+                return JSON.parse(saved);
+            } catch {
+                return null;
+            }
+        }
+        return null;
     }
 }
