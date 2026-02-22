@@ -10,9 +10,11 @@ import { CommonModule } from '@angular/common';
 })
 export class PaymentsManagement {
   payments = signal([
-    { id: 'TXN-9012', partner: 'Loja Central', amount: 450.00, date: '2024-02-22 10:30', status: 'Success' },
-    { id: 'TXN-9013', partner: 'Mercado Silva', amount: 125.50, date: '2024-02-22 11:15', status: 'Pending' },
-    { id: 'TXN-9014', partner: 'Farmácia Viva', amount: 89.90, date: '2024-02-22 11:45', status: 'Success' },
-    { id: 'TXN-9015', partner: 'Auto Posto Norte', amount: 200.00, date: '2024-02-22 12:00', status: 'Failed' },
+    { id: '#PX-1025', partner: 'Loja Central', amount: 450.00, date: 'Feb 22, 10:30', status: 'Success', method: 'Pix' },
+    { id: '#PX-1026', partner: 'Mercado Silva', amount: 125.50, date: 'Feb 22, 11:15', status: 'Pending', method: 'Pix' },
+    { id: '#PX-1027', partner: 'Farmácia Viva', amount: 89.90, date: 'Feb 22, 11:45', status: 'Success', method: 'Pix' },
+    { id: '#PX-1028', partner: 'Auto Posto Norte', amount: 200.00, date: 'Feb 22, 12:00', status: 'Failed', method: 'Pix' },
+    { id: '#PX-1029', partner: 'Padaria Pão Quente', amount: 15.50, date: 'Feb 22, 12:30', status: 'Success', method: 'Pix' },
+    { id: '#PX-1030', partner: 'Restaurante Sabor', amount: 320.00, date: 'Feb 22, 13:00', status: 'Success', method: 'Pix' },
   ]);
 }

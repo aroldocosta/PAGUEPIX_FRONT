@@ -3,11 +3,27 @@
 @tailwind utilities;
 
 :root {
+  --pp-primary: #6366f1;
+  /* Indigo/Purple */
+  --pp-primary-vibrant: #6d28d9;
+  --pp-lavender: #e0e7ff;
+  --pp-lavender-light: #f5f3ff;
+  --pp-success: #22c55e;
+  --pp-pending: #f59e0b;
+  --pp-danger: #ef4444;
+  --pp-background: #f8fafc;
+  --pp-sidebar-bg: #ffffff;
+  --pp-text-main: #0f172a;
+  --pp-text-muted: #64748b;
+
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
 }
 
 body {
   margin: 0;
+  background-color: var(--pp-background);
+  color: var(--pp-text-main);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -18,7 +34,8 @@ html::-webkit-scrollbar {
   display: none;
 }
 
-body, html {
+body,
+html {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }

@@ -1,0 +1,35 @@
+:host {
+    display: block;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+/* Custom scrollbar for better aesthetics */
+main::-webkit-scrollbar {
+    width: 6px;
+}
+
+main::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+main::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+
+main::-webkit-scrollbar-thumb:hover {
+    background: #cbd5e1;
+}
+
+/* Chart bars transition */
+.bg-indigo-200,
+.bg-indigo-400,
+.bg-\[\#6366f1\] {
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+tr:hover td {
+    color: #0f172a !important;
+}
