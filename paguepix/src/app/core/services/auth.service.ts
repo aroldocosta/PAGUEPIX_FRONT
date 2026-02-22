@@ -1,10 +1,12 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { UserSession } from '../models/auth.models';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
+    private router = inject(Router);
     private readonly STORAGE_KEY = 'paguepix_session';
 
     // Signal para estado da sessão
@@ -21,9 +23,21 @@ export class AuthService {
         this.sessionSignal.set(session);
     }
 
+    navigateToDashboard() {
+        const userRole = this.role();
+        if (userRole === 'ADMIN') {
+            this.router.navigate(['/admin/dashboard']);
+        } else if (userRole === 'USER') {
+            this.router.navigate(['/user/dashboard']);
+        } else {
+            this.router.navigate(['/login']);
+        }
+    }
+
     logout() {
         localStorage.removeItem(this.STORAGE_KEY);
         this.sessionSignal.set(null);
+        this.router.navigate(['/login']);
     }
 
     private loadSession(): UserSession | null {

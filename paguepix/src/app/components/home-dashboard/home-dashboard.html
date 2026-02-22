@@ -2,72 +2,108 @@
   <!-- Sidebar -->
   <aside class="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col">
     <div class="p-6 flex items-center gap-3">
-      <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">P</div>
-      <span class="text-xl font-bold text-gray-800">PaguePix</span>
+      <div
+        class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold shadow-sm shadow-blue-200">
+        P</div>
+      <span class="text-xl font-bold tracking-tight text-gray-900">PaguePix</span>
     </div>
-    
+
     <nav class="flex-1 px-4 py-4 space-y-1">
-      <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700">
+      <a href="#"
+        class="flex items-center gap-3 px-3 py-2 text-sm font-semibold rounded-lg bg-blue-50 text-blue-700 transition-colors">
         <span class="material-icons-outlined text-xl">dashboard</span> Dashboard
       </a>
-      <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-        <span class="material-icons-outlined text-xl">payments</span> Payments
+      <a href="#"
+        class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors group">
+        <span class="material-icons-outlined text-xl group-hover:text-blue-600">payments</span> Pagamentos
       </a>
-      <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-        <span class="material-icons-outlined text-xl">outbox</span> Payouts
+      <a href="#"
+        class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors group">
+        <span class="material-icons-outlined text-xl group-hover:text-blue-600">outbox</span> Saques
       </a>
-      <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-        <span class="material-icons-outlined text-xl">group</span> Partners
+      <a href="#"
+        class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors group">
+        <span class="material-icons-outlined text-xl group-hover:text-blue-600">group</span> Parceiros
       </a>
-      <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-        <span class="material-icons-outlined text-xl">devices</span> Devices
+      <a href="#"
+        class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors group">
+        <span class="material-icons-outlined text-xl group-hover:text-blue-600">devices</span> Dispositivos
       </a>
-      <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-        <span class="material-icons-outlined text-xl">person_search</span> Users
+      <a href="#"
+        class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors group">
+        <span class="material-icons-outlined text-xl group-hover:text-blue-600">person_search</span> Usuários
       </a>
     </nav>
 
     <div class="p-4 border-t border-gray-200">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600">AU</div>
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600">
+          AU</div>
         <div class="flex-1 min-w-0">
           <p class="text-sm font-medium text-gray-900 truncate">{{ userName() }}</p>
           <p class="text-xs text-gray-500 truncate">Super Admin</p>
         </div>
       </div>
+      <button (click)="logout()"
+        class="flex items-center gap-2 w-full px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-md transition-colors">
+        <span class="material-icons-outlined text-lg">logout</span> Sair do Sistema
+      </button>
     </div>
   </aside>
 
   <!-- Main Content -->
-  <main class="flex-1 overflow-y-auto p-4 md:p-8">
-    <header class="flex items-center justify-between mb-8">
-      <h1 class="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-      <div class="flex items-center gap-4">
-         <button class="p-2 text-gray-400 hover:text-gray-500">
-           <span class="material-icons-outlined">notifications</span>
-         </button>
+  <main class="flex-1 overflow-y-auto p-4 md:p-10">
+    <header class="flex items-center justify-between mb-10">
+      <div>
+        <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Painel Administrativo</h1>
+        <p class="text-gray-500 mt-1">Bem-vindo(a) de volta, {{ userName() }}</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="p-2.5 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors relative">
+          <span class="material-icons-outlined">notifications</span>
+          <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+        </button>
+        <button class="p-2.5 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors">
+          <span class="material-icons-outlined">settings</span>
+        </button>
       </div>
     </header>
 
     <!-- Stats Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-        <h3 class="text-sm font-medium text-gray-500 mb-4">Available Balance</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+      <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 ring-1 ring-gray-900/5">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Saldo Disponível</h3>
+          <span class="p-2 bg-blue-50 text-blue-600 rounded-lg">
+            <span class="material-icons-outlined text-lg">account_balance_wallet</span>
+          </span>
+        </div>
         <div class="flex items-baseline mb-2">
-          <span class="text-3xl font-bold text-gray-900">{{ availableBalance() | currency:'BRL':'symbol':'1.2-2' }}</span>
+          <span class="text-3xl font-extrabold text-gray-900 tracking-tight">{{ availableBalance() |
+            currency:'BRL':'symbol':'1.2-2' }}</span>
         </div>
       </div>
-      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-         <h3 class="text-sm font-medium text-gray-500 mb-4">Total Transacted</h3>
-         <div class="flex items-baseline mb-2">
-           <span class="text-3xl font-bold text-gray-900">R$ 842.190,50</span>
-         </div>
+      <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 ring-1 ring-gray-900/5">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Total Transacionado</h3>
+          <span class="p-2 bg-green-50 text-green-600 rounded-lg">
+            <span class="material-icons-outlined text-lg">trending_up</span>
+          </span>
+        </div>
+        <div class="flex items-baseline mb-2">
+          <span class="text-3xl font-extrabold text-gray-900 tracking-tight">R$ 842.190,50</span>
+        </div>
       </div>
-      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-         <h3 class="text-sm font-medium text-gray-500 mb-4">Total Payouts</h3>
-         <div class="flex items-baseline mb-2">
-           <span class="text-3xl font-bold text-gray-900">R$ 716.760,50</span>
-         </div>
+      <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 ring-1 ring-gray-900/5">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Total em Saques</h3>
+          <span class="p-2 bg-purple-50 text-purple-600 rounded-lg">
+            <span class="material-icons-outlined text-lg">payments</span>
+          </span>
+        </div>
+        <div class="flex items-baseline mb-2">
+          <span class="text-3xl font-extrabold text-gray-900 tracking-tight">R$ 716.760,50</span>
+        </div>
       </div>
     </div>
 
@@ -82,14 +118,14 @@
 
       <!-- Payment Distribution / Status (Placeholder) -->
       <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-         <h3 class="text-lg font-bold text-gray-900 mb-6">Payment Distribution</h3>
-         <div class="flex items-center justify-between mb-4">
-            <span class="text-sm font-medium text-gray-600">System Status</span>
-            <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Online</span>
-         </div>
-         <div class="h-48 flex items-center justify-center bg-gray-50 rounded-lg border border-dashed border-gray-300">
-             <span class="text-gray-400">Distribution Chart Context</span>
-         </div>
+        <h3 class="text-lg font-bold text-gray-900 mb-6">Payment Distribution</h3>
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-sm font-medium text-gray-600">System Status</span>
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Online</span>
+        </div>
+        <div class="h-48 flex items-center justify-center bg-gray-50 rounded-lg border border-dashed border-gray-300">
+          <span class="text-gray-400">Distribution Chart Context</span>
+        </div>
       </div>
     </div>
   </main>

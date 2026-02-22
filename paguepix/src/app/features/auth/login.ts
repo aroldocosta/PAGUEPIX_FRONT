@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -13,13 +13,19 @@ import { LoginResponse } from '../../core/models/auth.models';
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
-export class Login {
+export class Login implements OnInit {
   private http = inject(HttpClient);
   private authService = inject(AuthService);
   private router = inject(Router);
 
   email = signal('');
   password = signal('');
+
+  ngOnInit() {
+    if (this.authService.isAuthenticated()) {
+      this.authService.navigateToDashboard();
+    }
+  }
 
   onLogin() {
     const loginData = {
@@ -39,11 +45,7 @@ export class Login {
             role: response.role
           });
 
-          if (response.role === 'ADMIN') {
-            this.router.navigate(['/admin/dashboard']);
-          } else {
-            this.router.navigate(['/user/dashboard']);
-          }
+          this.authService.navigateToDashboard();
         },
         error: (error) => {
           console.error('Erro na autenticação:', error);

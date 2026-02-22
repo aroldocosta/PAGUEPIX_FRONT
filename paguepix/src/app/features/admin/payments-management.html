@@ -2,48 +2,50 @@
     <!-- Sidebar -->
     <aside class="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col">
         <div class="p-6 flex items-center gap-3">
-            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">P</div>
-            <span class="text-xl font-bold text-gray-800">PaguePix</span>
+            <div
+                class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold shadow-sm shadow-blue-200">
+                P</div>
+            <span class="text-xl font-bold tracking-tight text-gray-900">PaguePix</span>
         </div>
 
         <nav class="flex-1 px-4 py-4 space-y-1">
             <a href="/admin/dashboard"
-                class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-                <span class="material-icons-outlined text-xl">dashboard</span> Dashboard
+                class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors group">
+                <span class="material-icons-outlined text-xl group-hover:text-blue-600">dashboard</span> Dashboard
             </a>
             <a href="/admin/payments"
-                class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700">
-                <span class="material-icons-outlined text-xl">payments</span> Payments
+                class="flex items-center gap-3 px-3 py-2 text-sm font-semibold rounded-lg bg-blue-50 text-blue-700 transition-colors">
+                <span class="material-icons-outlined text-xl">payments</span> Pagamentos
             </a>
             <a href="/admin/payouts"
-                class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-                <span class="material-icons-outlined text-xl">outbox</span> Payouts
+                class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors group">
+                <span class="material-icons-outlined text-xl group-hover:text-blue-600">outbox</span> Saques
             </a>
             <a href="/admin/partners"
-                class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-                <span class="material-icons-outlined text-xl">group</span> Partners
+                class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors group">
+                <span class="material-icons-outlined text-xl group-hover:text-blue-600">group</span> Parceiros
             </a>
         </nav>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 overflow-y-auto p-4 md:p-8">
-        <header class="flex items-center justify-between mb-8">
+    <main class="flex-1 overflow-y-auto p-4 md:p-10">
+        <header class="flex items-center justify-between mb-10">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900">Payments Management</h1>
-                <p class="text-sm text-gray-500 mt-1">Monitor and manage all incoming Pix payments.</p>
+                <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Gestão de Pagamentos</h1>
+                <p class="text-gray-500 mt-1">Monitore e gerencie todos os recebimentos via Pix.</p>
             </div>
             <div class="flex items-center gap-4">
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
                         <span class="material-icons-outlined text-sm">search</span>
                     </span>
-                    <input type="text" placeholder="Search transactions..."
-                        class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm w-64">
+                    <input type="text" placeholder="Buscar transações..."
+                        class="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm w-64 shadow-sm">
                 </div>
                 <button
-                    class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 flex items-center gap-2">
-                    <span class="material-icons-outlined text-sm">file_download</span> Export
+                    class="bg-blue-600 text-white px-6 py-2 rounded-xl text-sm font-bold hover:bg-blue-700 shadow-md shadow-blue-200 transition-all flex items-center gap-2">
+                    <span class="material-icons-outlined text-sm">file_download</span> Exportar
                 </button>
             </div>
         </header>

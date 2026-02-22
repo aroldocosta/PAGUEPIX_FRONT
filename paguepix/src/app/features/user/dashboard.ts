@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -9,6 +10,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './dashboard.scss'
 })
 export class UserDashboard {
+  private authService = inject(AuthService);
   balance = signal(12430.50);
   todaySales = signal(1500.00);
   recentTxns = signal([
@@ -19,5 +21,9 @@ export class UserDashboard {
 
   requestPayout() {
     console.log('Navigating to payout request...');
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }
