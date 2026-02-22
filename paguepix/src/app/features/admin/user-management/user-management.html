@@ -1,0 +1,86 @@
+<div class="flex h-screen bg-gray-50 font-sans">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col">
+        <div class="p-6 flex items-center gap-3">
+            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">P</div>
+            <span class="text-xl font-bold text-gray-800">PaguePix</span>
+        </div>
+
+        <nav class="flex-1 px-4 py-4 space-y-1">
+            <a href="/admin/dashboard"
+                class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900">
+                <span class="material-icons-outlined text-xl">dashboard</span> Dashboard
+            </a>
+            <a href="/admin/users"
+                class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700">
+                <span class="material-icons-outlined text-xl">person</span> Users
+            </a>
+            <a href="/admin/partners"
+                class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900">
+                <span class="material-icons-outlined text-xl">group</span> Partners
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto p-4 md:p-8">
+        <header class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">User Management</h1>
+                <p class="text-sm text-gray-500 mt-1">Manage system administrators and account access.</p>
+            </div>
+            <button
+                class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 flex items-center gap-2">
+                <span class="material-icons-outlined text-sm">person_add</span> Add User
+            </button>
+        </header>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-gray-50 border-b border-gray-100">
+                    <tr>
+                        <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">User</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Role</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Last Login
+                        </th>
+                        <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">
+                            Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    <tr *ngFor="let user of users()" class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">
+                                    {{ user.name.substring(0, 2).toUpperCase() }}
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-gray-900">{{ user.name }}</div>
+                                    <div class="text-xs text-gray-500">{{ user.email }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600">{{ user.role }}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-2.5 py-1 rounded-full text-xs font-medium"
+                                [ngClass]="user.active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'">
+                                {{ user.active ? 'Active' : 'Inactive' }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-500">{{ user.lastLogin }}</td>
+                        <td class="px-6 py-4 text-right">
+                            <button class="text-gray-400 hover:text-blue-600 mr-3">
+                                <span class="material-icons-outlined text-lg">edit</span>
+                            </button>
+                            <button class="text-gray-400 hover:text-red-600">
+                                <span class="material-icons-outlined text-lg">delete</span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
