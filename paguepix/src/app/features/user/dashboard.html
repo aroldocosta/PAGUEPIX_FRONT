@@ -219,9 +219,10 @@
                         </div>
                         <div class="relative">
                             <select
-                                class="appearance-none bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold rounded-2xl pl-4 pr-10 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all">
-                                <option>Últimos 7 Dias</option>
-                                <option>Últimos 30 Dias</option>
+                                class="appearance-none bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold rounded-2xl pl-4 pr-10 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
+                                (change)="selectPeriod(+$any($event.target).value)">
+                                <option value="7" [selected]="selectedDays() === 7">Últimos 7 Dias</option>
+                                <option value="30" [selected]="selectedDays() === 30">Últimos 30 Dias</option>
                             </select>
                             <span
                                 class="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-600 pointer-events-none">expand_more</span>

@@ -1,7 +1,8 @@
-import { Component, signal, computed, inject } from '@angular/core';
+import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
+import { DashboardService, DashboardData } from '../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-home-dashboard',
@@ -10,32 +11,82 @@ import { ThemeService } from '../../core/services/theme.service';
   templateUrl: './home-dashboard.html',
   styleUrl: './home-dashboard.scss',
 })
-export class HomeDashboard {
+export class HomeDashboard implements OnInit {
   private authService = inject(AuthService);
+  private dashboardService = inject(DashboardService);
   protected themeService = inject(ThemeService);
+
   userName = computed(() => this.authService.name());
-  availableBalance = signal(124500.00);
-  totalTransacted = signal(842105.20);
-  pendingPayouts = signal(5120.00);
 
-  chartData = signal([
-    { day: 'MON', value: 30 },
-    { day: 'TUE', value: 45 },
-    { day: 'WED', value: 38 },
-    { day: 'THU', value: 65 },
-    { day: 'FRI', value: 52 },
-    { day: 'SAT', value: 85 },
-    { day: 'SUN', value: 40 },
-  ]);
+  // Cards
+  availableBalance = signal(0);
+  totalTransacted = signal(0);
+  pendingPayouts = signal(0);
 
-  recentTransactions = signal([
-    { id: '#PX-94120', customer: 'João Silva', initials: 'JS', avatarBg: 'bg-gray-100', date: 'Hoje, 10:45', amount: 250.00, status: 'CONFIRMED' },
-    { id: '#PX-94119', customer: 'Maria Oliveira', initials: 'MO', avatarBg: 'bg-purple-100', date: 'Hoje, 10:32', amount: 1200.50, status: 'PENDING' },
-    { id: '#PX-94118', customer: 'Ricardo Lima', initials: 'RL', avatarBg: 'bg-indigo-100', date: 'Hoje, 09:15', amount: 45.90, status: 'CONFIRMED' },
-    { id: '#PX-94117', customer: 'Ana Beatriz', initials: 'AB', avatarBg: 'bg-rose-100', date: 'Hoje, 08:50', amount: 300.00, status: 'FAILED' },
-  ]);
+  // Chart
+  chartData = signal<{ day: string; value: number }[]>([]);
 
-  logout() {
+  // Table
+  recentTransactions = signal<{
+    id: string; customer: string; initials: string;
+    avatarBg: string; date: string; amount: number; status: string;
+  }[]>([]);
+
+  selectedDays = signal(7);
+  loading = signal(false);
+
+  private readonly AVATAR_COLORS = [
+    'bg-gray-100', 'bg-purple-100', 'bg-indigo-100', 'bg-rose-100', 'bg-green-100'
+  ];
+
+  ngOnInit(): void {
+    this.loadDashboard();
+  }
+
+  selectPeriod(days: number): void {
+    this.selectedDays.set(days);
+    this.loadDashboard();
+  }
+
+  private loadDashboard(): void {
+    this.loading.set(true);
+    this.dashboardService.getStats(this.selectedDays()).subscribe({
+      next: (data: DashboardData) => {
+        this.availableBalance.set(data.availableBalance);
+        this.totalTransacted.set(data.totalTransacted);
+        this.pendingPayouts.set(data.pendingPayouts);
+
+        // Normalizar chart: percentual relativo ao maior valor do período
+        const maxAmount = Math.max(...data.salesOverview.map(s => s.amount), 1);
+        this.chartData.set(
+          data.salesOverview.map(s => ({
+            day: s.date,
+            value: Math.round((s.amount / maxAmount) * 85)
+          }))
+        );
+
+        this.recentTransactions.set(
+          data.recentTransactions.map((tx, i) => ({
+            id: tx.id,
+            customer: tx.customer,
+            initials: this.initials(tx.customer),
+            avatarBg: this.AVATAR_COLORS[i % this.AVATAR_COLORS.length],
+            date: tx.date,
+            amount: tx.amount,
+            status: tx.status
+          }))
+        );
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false)
+    });
+  }
+
+  private initials(name: string): string {
+    return name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+  }
+
+  logout(): void {
     this.authService.logout();
   }
 }

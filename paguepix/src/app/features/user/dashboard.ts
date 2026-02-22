@@ -1,7 +1,8 @@
-import { Component, signal, computed, inject } from '@angular/core';
+import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
+import { DashboardService, DashboardData } from '../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -10,31 +11,84 @@ import { ThemeService } from '../../core/services/theme.service';
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss'
 })
-export class UserDashboard {
+export class UserDashboard implements OnInit {
   private authService = inject(AuthService);
+  private dashboardService = inject(DashboardService);
   protected themeService = inject(ThemeService);
+
   userName = computed(() => this.authService.name());
-  balance = signal(12430.50);
-  todaySales = signal(1500.00);
-  averageTicket = signal(125.00);
 
-  chartData = signal([
-    { day: 'MON', value: 20 },
-    { day: 'TUE', value: 35 },
-    { day: 'WED', value: 25 },
-    { day: 'THU', value: 50 },
-    { day: 'FRI', value: 40 },
-    { day: 'SAT', value: 60 },
-    { day: 'SUN', value: 30 },
-  ]);
+  // Cards
+  balance = signal(0);
+  todaySales = signal(0);
+  averageTicket = signal(0);
 
-  recentTxns = signal([
-    { id: '#PX-UX120', customer: 'João Silva', initials: 'JS', avatarBg: 'bg-gray-100', date: 'Today, 11:20', amount: 450.00, status: 'CONFIRMED' },
-    { id: '#PX-UX119', customer: 'Maria Oliveira', initials: 'MO', avatarBg: 'bg-purple-100', date: 'Today, 09:45', amount: 125.50, status: 'PENDING' },
-    { id: '#PX-UX118', customer: 'Ricardo Lima', initials: 'RL', avatarBg: 'bg-indigo-100', date: 'Yesterday, 18:30', amount: 890.00, status: 'CONFIRMED' },
-  ]);
+  // Chart
+  chartData = signal<{ day: string; value: number }[]>([]);
 
-  logout() {
+  // Table
+  recentTxns = signal<{
+    id: string; customer: string; initials: string;
+    avatarBg: string; date: string; amount: number; status: string;
+  }[]>([]);
+
+  selectedDays = signal(7);
+  loading = signal(false);
+
+  private readonly AVATAR_COLORS = [
+    'bg-gray-100', 'bg-purple-100', 'bg-indigo-100', 'bg-rose-100', 'bg-green-100'
+  ];
+
+  ngOnInit(): void {
+    this.loadDashboard();
+  }
+
+  selectPeriod(days: number): void {
+    this.selectedDays.set(days);
+    this.loadDashboard();
+  }
+
+  private loadDashboard(): void {
+    this.loading.set(true);
+    this.dashboardService.getStats(this.selectedDays()).subscribe({
+      next: (data: DashboardData) => {
+        this.balance.set(data.availableBalance);
+        this.todaySales.set(data.totalTransacted);
+
+        // Ticket médio: totalTransacted / número de transações recentes (ou 0)
+        const txCount = data.recentTransactions.length || 1;
+        this.averageTicket.set(data.totalTransacted / txCount);
+
+        const maxAmount = Math.max(...data.salesOverview.map(s => s.amount), 1);
+        this.chartData.set(
+          data.salesOverview.map(s => ({
+            day: s.date,
+            value: Math.round((s.amount / maxAmount) * 85)
+          }))
+        );
+
+        this.recentTxns.set(
+          data.recentTransactions.map((tx, i) => ({
+            id: tx.id,
+            customer: tx.customer,
+            initials: this.initials(tx.customer),
+            avatarBg: this.AVATAR_COLORS[i % this.AVATAR_COLORS.length],
+            date: tx.date,
+            amount: tx.amount,
+            status: tx.status
+          }))
+        );
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false)
+    });
+  }
+
+  private initials(name: string): string {
+    return name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+  }
+
+  logout(): void {
     this.authService.logout();
   }
 }
