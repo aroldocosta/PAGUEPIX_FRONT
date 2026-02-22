@@ -1,96 +1,107 @@
-<div class="flex h-screen bg-slate-50 font-sans text-slate-900 overflow-hidden">
+<div
+    class="flex h-screen bg-slate-50 dark:bg-slate-950 font-sans text-slate-900 dark:text-slate-100 overflow-hidden transition-colors duration-300">
 
     <!-- Sidebar -->
-    <aside class="w-72 bg-white border-r border-slate-200 hidden lg:flex flex-col">
+    <aside
+        class="w-72 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 hidden lg:flex flex-col transition-colors duration-300">
         <div class="p-8 pb-10 flex items-center gap-3">
             <div
-                class="w-10 h-10 bg-[#6366f1] rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-100">
+                class="w-10 h-10 bg-[#6366f1] rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-100 dark:shadow-none">
                 <span class="material-icons-outlined">payments</span>
             </div>
             <div class="flex flex-col">
-                <span class="text-xl font-bold tracking-tight text-slate-900">PaguePix</span>
-                <span class="text-[10px] uppercase tracking-widest font-bold text-slate-400 -mt-1">Partner
-                    Dashboard</span>
+                <span class="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">PaguePix</span>
+                <span
+                    class="text-[10px] uppercase tracking-widest font-bold text-slate-400 dark:text-slate-500 -mt-1">Painel
+                    do Parceiro</span>
             </div>
         </div>
 
         <nav class="flex-1 px-6 space-y-2">
             <a href="#"
-                class="flex items-center gap-4 px-4 py-3 text-sm font-bold rounded-xl bg-[#6366f1] text-white shadow-md shadow-indigo-100 transition-all">
-                <span class="material-icons-outlined text-xl">dashboard</span> Dashboard
+                class="flex items-center gap-4 px-4 py-3 text-sm font-bold rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-[#6366f1] dark:text-[#818cf8] border-l-4 border-[#6366f1] dark:border-[#818cf8] transition-all">
+                <span class="material-icons-outlined text-xl">dashboard</span> Painel
             </a>
             <a href="#"
-                class="flex items-center gap-4 px-4 py-3 text-sm font-bold rounded-xl text-slate-500 hover:bg-slate-50 hover:text-[#6366f1] transition-all group">
-                <span class="material-icons-outlined text-xl text-slate-400 group-hover:text-[#6366f1]">history</span>
-                Sales History
-            </a>
-            <a href="#"
-                class="flex items-center gap-4 px-4 py-3 text-sm font-bold rounded-xl text-slate-500 hover:bg-slate-50 hover:text-[#6366f1] transition-all group">
+                class="flex items-center gap-4 px-4 py-3 text-sm font-bold rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-[#6366f1] dark:hover:text-[#818cf8] transition-all group">
                 <span
-                    class="material-icons-outlined text-xl text-slate-400 group-hover:text-[#6366f1]">account_balance</span>
-                Transfers
+                    class="material-icons-outlined text-xl text-slate-400 dark:text-slate-600 group-hover:text-[#6366f1] dark:group-hover:text-[#818cf8]">history</span>
+                Histórico de Vendas
+            </a>
+            <a href="#"
+                class="flex items-center gap-4 px-4 py-3 text-sm font-bold rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-[#6366f1] dark:hover:text-[#818cf8] transition-all group">
+                <span
+                    class="material-icons-outlined text-xl text-slate-400 dark:text-slate-600 group-hover:text-[#6366f1] dark:group-hover:text-[#818cf8]">account_balance</span>
+                Transferências
             </a>
 
             <div class="pt-8 pb-4">
-                <span class="px-4 text-[10px] uppercase tracking-widest font-bold text-slate-400">Settings</span>
+                <span
+                    class="px-4 text-[10px] uppercase tracking-widest font-bold text-slate-400 dark:text-slate-500">Configurações</span>
             </div>
 
             <a href="#"
-                class="flex items-center gap-4 px-4 py-3 text-sm font-bold rounded-xl text-slate-500 hover:bg-slate-50 hover:text-[#6366f1] transition-all group">
-                <span class="material-icons-outlined text-xl text-slate-400 group-hover:text-[#6366f1]">settings</span>
-                Account Settings
+                class="flex items-center gap-4 px-4 py-3 text-sm font-bold rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-[#6366f1] dark:hover:text-[#818cf8] transition-all group">
+                <span
+                    class="material-icons-outlined text-xl text-slate-400 dark:text-slate-600 group-hover:text-[#6366f1] dark:group-hover:text-[#818cf8]">settings</span>
+                Configurações da Conta
             </a>
         </nav>
 
-        <div class="p-6 border-t border-slate-100">
+        <div class="p-6 border-t border-slate-100 dark:border-slate-800">
             <button (click)="logout()"
-                class="flex items-center gap-4 w-full px-4 py-3 text-sm font-bold text-rose-500 hover:bg-rose-50 rounded-xl transition-all">
-                <span class="material-icons-outlined text-xl">logout</span> Logout
+                class="flex items-center gap-4 w-full px-4 py-3 text-sm font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl transition-all">
+                <span class="material-icons-outlined text-xl">logout</span> Sair
             </button>
         </div>
     </aside>
 
     <!-- Main Area -->
-    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    <div class="flex-1 flex flex-col min-0 overflow-hidden">
 
         <!-- Top Bar -->
-        <header class="h-24 bg-white border-b border-slate-100 flex items-center justify-between px-10 flex-shrink-0">
+        <header
+            class="h-24 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between px-10 flex-shrink-0 transition-colors duration-300">
             <div class="relative w-[480px] group">
                 <span
-                    class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 group-focus-within:text-[#6366f1] transition-colors">
+                    class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 dark:text-slate-600 group-focus-within:text-[#6366f1] transition-colors">
                     <span class="material-icons-outlined text-lg">search</span>
                 </span>
-                <input type="text" placeholder="Search sales, transfers or receipts..."
-                    class="w-full pl-12 pr-4 py-3 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all text-sm outline-none">
+                <input type="text" placeholder="Buscar vendas, transferências ou recibos..."
+                    class="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border-transparent rounded-2xl focus:bg-white dark:focus:bg-slate-700 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all text-sm outline-none dark:text-slate-100">
             </div>
 
             <div class="flex items-center gap-8">
-                <div class="flex items-center bg-slate-50 p-1 rounded-2xl border border-slate-100">
-                    <button (click)="isDarkMode.set(false)" [class.bg-white]="!isDarkMode()"
-                        [class.shadow-sm]="!isDarkMode()" class="p-2 rounded-xl transition-all">
+                <div
+                    class="flex items-center bg-slate-50 dark:bg-slate-800 p-1 rounded-2xl border border-slate-100 dark:border-slate-700 transition-colors">
+                    <button (click)="themeService.setTheme('light')" [class.bg-white]="!themeService.isDarkMode()"
+                        [class.shadow-sm]="!themeService.isDarkMode()" class="p-2 rounded-xl transition-all">
                         <span class="material-icons-outlined text-lg text-slate-400"
-                            [class.text-amber-500]="!isDarkMode()">light_mode</span>
+                            [class.text-amber-500]="!themeService.isDarkMode()">light_mode</span>
                     </button>
-                    <button (click)="isDarkMode.set(true)" [class.bg-white]="isDarkMode()"
-                        [class.shadow-sm]="isDarkMode()" class="p-2 rounded-xl transition-all">
+                    <button (click)="themeService.setTheme('dark')" [class.bg-slate-700]="themeService.isDarkMode()"
+                        [class.shadow-sm]="themeService.isDarkMode()" class="p-2 rounded-xl transition-all">
                         <span class="material-icons-outlined text-lg text-slate-400"
-                            [class.text-indigo-500]="isDarkMode()">dark_mode</span>
+                            [class.text-indigo-400]="themeService.isDarkMode()">dark_mode</span>
                     </button>
                 </div>
 
-                <div class="flex items-center gap-4 pl-8 border-l border-slate-100">
+                <div class="flex items-center gap-4 pl-8 border-l border-slate-100 dark:border-slate-800">
                     <div class="text-right">
-                        <p class="text-sm font-bold text-slate-900 leading-none">{{ userName() }}</p>
-                        <p class="text-[11px] font-bold text-slate-400 mt-1 uppercase tracking-wider">Partner</p>
+                        <p class="text-sm font-bold text-slate-900 dark:text-slate-100 leading-none">{{ userName() }}
+                        </p>
+                        <p
+                            class="text-[11px] font-bold text-slate-400 dark:text-slate-500 mt-1 uppercase tracking-wider">
+                            Parceiro</p>
                     </div>
                     <div class="relative">
                         <div
-                            class="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center overflow-hidden">
-                            <img src="https://ui-avatars.com/api/?name=Partner+User&background=e0e7ff&color=6366f1"
+                            class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-slate-800 border border-indigo-100 dark:border-slate-700 flex items-center justify-center overflow-hidden">
+                            <img [src]="'https://ui-avatars.com/api/?name=' + userName() + '&background=e0e7ff&color=6366f1'"
                                 alt="Avatar" class="w-full h-full object-cover">
                         </div>
                         <span
-                            class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-4 border-white rounded-full"></span>
+                            class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-4 border-white dark:border-slate-900 rounded-full"></span>
                     </div>
                 </div>
             </div>
@@ -102,18 +113,19 @@
             <!-- Greeting & Top Actions -->
             <section class="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                    <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">Welcome back, Partner 👋</h1>
-                    <p class="text-slate-500 mt-1 font-medium">Manage your Pix collection and track your sales
-                        performance.</p>
+                    <h1 class="text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">Seja bem
+                        vindo, {{ userName() }}</h1>
+                    <p class="text-slate-500 dark:text-slate-400 mt-1 font-medium">Gerencie e acompanhe seu desempenho
+                        de vendas.</p>
                 </div>
                 <div class="flex items-center gap-4">
                     <button
-                        class="px-6 py-3.5 bg-white border border-slate-200 text-slate-700 rounded-2xl text-sm font-bold hover:bg-slate-50 transition-all flex items-center gap-2 shadow-sm">
-                        <span class="material-icons-outlined text-lg">sync</span> Refresh Data
+                        class="px-6 py-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-2xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all flex items-center gap-2 shadow-sm">
+                        <span class="material-icons-outlined text-lg">sync</span> Atualizar Dados
                     </button>
                     <button
-                        class="px-8 py-3.5 bg-[#6366f1] text-white rounded-2xl text-sm font-bold hover:bg-indigo-600 transition-all flex items-center gap-2 shadow-lg shadow-indigo-100">
-                        <span class="material-icons-outlined text-lg">call_made</span> Request Payout
+                        class="px-8 py-3.5 bg-[#6366f1] text-white rounded-2xl text-sm font-bold hover:bg-indigo-600 transition-all flex items-center gap-2 shadow-lg shadow-indigo-100 dark:shadow-none">
+                        <span class="material-icons-outlined text-lg">call_made</span> Solicitar Saque
                     </button>
                 </div>
             </section>
@@ -122,70 +134,73 @@
             <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Available Balance -->
                 <div
-                    class="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm relative overflow-hidden group">
+                    class="bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-hidden group transition-colors">
                     <div
-                        class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110">
+                        class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 dark:bg-indigo-900/10 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110">
                     </div>
                     <div class="relative z-10">
                         <div class="flex items-center justify-between mb-8">
                             <div
-                                class="w-12 h-12 bg-indigo-50 text-[#6366f1] rounded-2xl flex items-center justify-center">
+                                class="w-12 h-12 bg-indigo-50 dark:bg-indigo-950/50 text-[#6366f1] dark:text-[#818cf8] rounded-2xl flex items-center justify-center">
                                 <span class="material-icons-outlined">account_balance_wallet</span>
                             </div>
                             <div
-                                class="flex items-center gap-1 bg-green-50 text-green-600 px-3 py-1.5 rounded-full text-xs font-bold">
+                                class="flex items-center gap-1 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 px-3 py-1.5 rounded-full text-xs font-bold">
                                 <span class="material-icons-outlined text-sm">trending_up</span> +5.2%
                             </div>
                         </div>
-                        <p class="text-slate-400 font-bold text-sm tracking-wide uppercase">Available Balance</p>
-                        <h3 class="text-4xl font-black text-slate-900 mt-2 tracking-tight">{{ balance() |
-                            currency:'BRL':'symbol':'1.2-2' }}</h3>
+                        <p class="text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">Saldo
+                            Disponível</p>
+                        <h3 class="text-4xl font-black text-slate-900 dark:text-slate-100 mt-2 tracking-tight">{{
+                            balance() | currency:'BRL':'symbol':'1.2-2' }}</h3>
                     </div>
                 </div>
 
                 <!-- Today's Sales -->
                 <div
-                    class="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm relative overflow-hidden group">
+                    class="bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-hidden group transition-colors">
                     <div
-                        class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110">
+                        class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 dark:bg-indigo-900/10 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110">
                     </div>
                     <div class="relative z-10">
                         <div class="flex items-center justify-between mb-8">
                             <div
-                                class="w-12 h-12 bg-indigo-50 text-[#6366f1] rounded-2xl flex items-center justify-center">
+                                class="w-12 h-12 bg-indigo-50 dark:bg-indigo-950/50 text-[#6366f1] dark:text-[#818cf8] rounded-2xl flex items-center justify-center">
                                 <span class="material-icons-outlined">shopping_cart</span>
                             </div>
                             <div
-                                class="flex items-center gap-1 bg-green-50 text-green-600 px-3 py-1.5 rounded-full text-xs font-bold">
+                                class="flex items-center gap-1 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 px-3 py-1.5 rounded-full text-xs font-bold">
                                 <span class="material-icons-outlined text-sm">trending_up</span> +12.8%
                             </div>
                         </div>
-                        <p class="text-slate-400 font-bold text-sm tracking-wide uppercase">Today's Sales</p>
-                        <h3 class="text-4xl font-black text-slate-900 mt-2 tracking-tight">{{ todaySales() |
-                            currency:'BRL':'symbol':'1.2-2' }}</h3>
+                        <p class="text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">Vendas
+                            de Hoje</p>
+                        <h3 class="text-4xl font-black text-slate-900 dark:text-slate-100 mt-2 tracking-tight">{{
+                            todaySales() | currency:'BRL':'symbol':'1.2-2' }}</h3>
                     </div>
                 </div>
 
                 <!-- Average Ticket -->
                 <div
-                    class="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm relative overflow-hidden group">
+                    class="bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-hidden group transition-colors">
                     <div
-                        class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110">
+                        class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 dark:bg-indigo-900/10 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110">
                     </div>
                     <div class="relative z-10">
                         <div class="flex items-center justify-between mb-8">
                             <div
-                                class="w-12 h-12 bg-indigo-50 text-[#6366f1] rounded-2xl flex items-center justify-center">
+                                class="w-12 h-12 bg-indigo-50 dark:bg-indigo-950/50 text-[#6366f1] dark:text-[#818cf8] rounded-2xl flex items-center justify-center">
                                 <span class="material-icons-outlined">confirmation_number</span>
                             </div>
                             <div
-                                class="flex items-center gap-1 bg-amber-50 text-amber-600 px-3 py-1.5 rounded-full text-xs font-bold">
+                                class="flex items-center gap-1 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 px-3 py-1.5 rounded-full text-xs font-bold">
                                 <span class="material-icons-outlined text-sm">trending_flat</span> 0.0%
                             </div>
                         </div>
-                        <p class="text-slate-400 font-bold text-sm tracking-wide uppercase">Average Ticket</p>
-                        <h3 class="text-4xl font-black text-slate-900 mt-2 tracking-tight">{{ averageTicket() |
-                            currency:'BRL':'symbol':'1.2-2' }}</h3>
+                        <p class="text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">Ticket
+                            Médio</p>
+                        <h3 class="text-4xl font-black text-slate-900 dark:text-slate-100 mt-2 tracking-tight">{{
+                            averageTicket() | currency:'BRL':'symbol':'1.2-2' }}</h3>
                     </div>
                 </div>
             </section>
@@ -194,20 +209,22 @@
             <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- Sales Performance Chart -->
                 <div
-                    class="lg:col-span-2 bg-white p-10 rounded-[40px] border border-slate-100 shadow-sm relative overflow-hidden">
+                    class="lg:col-span-2 bg-white dark:bg-slate-900 p-10 rounded-[40px] border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-hidden transition-colors">
                     <div class="flex items-center justify-between mb-12 relative z-10">
                         <div>
-                            <h3 class="text-xl font-black text-slate-900 tracking-tight">Sales Performance</h3>
-                            <p class="text-slate-400 text-sm font-bold mt-1">Transaction volume in the last 7 days</p>
+                            <h3 class="text-xl font-black text-slate-900 dark:text-slate-100 tracking-tight">Desempenho
+                                de Vendas</h3>
+                            <p class="text-slate-400 dark:text-slate-500 text-sm font-bold mt-1">Volume de transações
+                                nos últimos 7 dias</p>
                         </div>
                         <div class="relative">
                             <select
-                                class="appearance-none bg-slate-50 border border-slate-100 text-slate-600 text-xs font-bold rounded-2xl pl-4 pr-10 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all">
-                                <option>Last 7 Days</option>
-                                <option>Last 30 Days</option>
+                                class="appearance-none bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold rounded-2xl pl-4 pr-10 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all">
+                                <option>Últimos 7 Dias</option>
+                                <option>Últimos 30 Dias</option>
                             </select>
                             <span
-                                class="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+                                class="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-600 pointer-events-none">expand_more</span>
                         </div>
                     </div>
 
@@ -220,119 +237,138 @@
                                 [class.bg-indigo-200]="item.day === 'MON' || item.day === 'TUE' || item.day === 'WED'">
                                 <!-- Tooltip -->
                                 <div
-                                    class="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                                    class="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-slate-700 text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                                     R$ {{ item.value * 200 | number:'1.0-0' }}
                                 </div>
                             </div>
-                            <span class="text-[10px] font-black text-slate-400 tracking-widest">{{ item.day }}</span>
+                            <span class="text-[10px] font-black text-slate-400 dark:text-slate-600 tracking-widest">{{
+                                item.day }}</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Quick Actions & Platforms -->
                 <div class="space-y-8">
-                    <div class="bg-white p-10 rounded-[40px] border border-slate-100 shadow-sm">
-                        <h3 class="text-xl font-black text-slate-900 tracking-tight mb-8">Partner Actions</h3>
+                    <div
+                        class="bg-white dark:bg-slate-900 p-10 rounded-[40px] border border-slate-100 dark:border-slate-800 shadow-sm transition-colors">
+                        <h3 class="text-xl font-black text-slate-900 dark:text-slate-100 tracking-tight mb-8">Ações do
+                            Parceiro</h3>
                         <div class="space-y-4">
                             <button
-                                class="w-full flex items-center gap-4 p-5 rounded-2xl border border-slate-50 hover:bg-slate-50 hover:border-slate-100 transition-all group">
+                                class="w-full flex items-center gap-4 p-5 rounded-2xl border border-slate-50 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:border-slate-100 dark:hover:border-slate-700 transition-all group">
                                 <div
-                                    class="w-12 h-12 bg-indigo-50 text-[#6366f1] rounded-2xl flex items-center justify-center transition-transform group-hover:scale-105">
+                                    class="w-12 h-12 bg-indigo-50 dark:bg-indigo-950/50 text-[#6366f1] dark:text-[#818cf8] rounded-2xl flex items-center justify-center transition-transform group-hover:scale-105">
                                     <span class="material-icons-outlined">qr_code</span>
                                 </div>
                                 <div class="text-left flex-1">
-                                    <p class="text-sm font-black text-slate-900">New Static Pix</p>
-                                    <p class="text-[11px] font-bold text-slate-400 mt-0.5">Generate QR Code</p>
+                                    <p class="text-sm font-black text-slate-900 dark:text-slate-100">Novo Pix Estático
+                                    </p>
+                                    <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 mt-0.5">Gerar
+                                        código QR</p>
                                 </div>
                                 <span
-                                    class="material-icons-outlined text-lg text-slate-300 group-hover:text-[#6366f1] group-hover:translate-x-1 transition-all">chevron_right</span>
+                                    class="material-icons-outlined text-lg text-slate-300 dark:text-slate-700 group-hover:text-[#6366f1] dark:group-hover:text-[#818cf8] group-hover:translate-x-1 transition-all">chevron_right</span>
                             </button>
 
                             <button
-                                class="w-full flex items-center gap-4 p-5 rounded-2xl border border-slate-50 hover:bg-slate-50 hover:border-slate-100 transition-all group">
+                                class="w-full flex items-center gap-4 p-5 rounded-2xl border border-slate-50 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:border-slate-100 dark:hover:border-slate-700 transition-all group">
                                 <div
-                                    class="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-105">
+                                    class="w-12 h-12 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-105">
                                     <span class="material-icons-outlined">account_balance</span>
                                 </div>
                                 <div class="text-left flex-1">
-                                    <p class="text-sm font-black text-slate-900">Manage Bank Accounts</p>
-                                    <p class="text-[11px] font-bold text-slate-400 mt-0.5">Withdrawal methods</p>
+                                    <p class="text-sm font-black text-slate-900 dark:text-slate-100">Gerenciar Contas
+                                    </p>
+                                    <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 mt-0.5">Métodos
+                                        de saque</p>
                                 </div>
                                 <span
-                                    class="material-icons-outlined text-lg text-slate-300 group-hover:text-green-600 group-hover:translate-x-1 transition-all">chevron_right</span>
+                                    class="material-icons-outlined text-lg text-slate-300 dark:text-slate-700 group-hover:text-green-600 dark:group-hover:text-green-400 group-hover:translate-x-1 transition-all">chevron_right</span>
                             </button>
                         </div>
                     </div>
 
                     <!-- Network Status -->
-                    <div class="bg-indigo-50/50 p-6 rounded-3xl border border-indigo-100">
-                        <p class="text-[10px] uppercase tracking-widest font-black text-indigo-500 mb-2">Network Status
-                        </p>
+                    <div
+                        class="bg-indigo-50/50 dark:bg-indigo-900/10 p-6 rounded-3xl border border-indigo-100 dark:border-indigo-900/20 transition-colors">
+                        <p
+                            class="text-[10px] uppercase tracking-widest font-black text-indigo-500 dark:text-indigo-400 mb-2">
+                            Status da Rede</p>
                         <div class="flex items-center gap-3">
                             <span
                                 class="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse shadow-sm shadow-green-200"></span>
-                            <span class="text-sm font-bold text-slate-700">Payment processing ONLINE</span>
+                            <span class="text-sm font-bold text-slate-700 dark:text-slate-300">Processamento de
+                                pagamentos ONLINE</span>
                         </div>
                     </div>
                 </div>
             </section>
 
             <!-- Recent Transactions for Partner -->
-            <section class="bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden pb-6">
+            <section
+                class="bg-white dark:bg-slate-900 rounded-[40px] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden pb-6 transition-colors">
                 <div class="p-10 flex items-center justify-between">
                     <div>
-                        <h3 class="text-xl font-black text-slate-900 tracking-tight">Your Recent Sales</h3>
-                        <p class="text-slate-400 text-sm font-bold mt-1">Latest successful transactions</p>
+                        <h3 class="text-xl font-black text-slate-900 dark:text-slate-100 tracking-tight">Suas Vendas
+                            Recentes</h3>
+                        <p class="text-slate-400 dark:text-slate-500 text-sm font-bold mt-1">Últimas transações com
+                            sucesso</p>
                     </div>
                     <a href="#"
-                        class="text-sm font-black text-[#6366f1] hover:text-indigo-700 transition-colors uppercase tracking-wider">Full
-                        history</a>
+                        class="text-sm font-black text-[#6366f1] dark:text-[#818cf8] hover:text-indigo-700 dark:hover:text-indigo-400 transition-colors uppercase tracking-wider">Histórico
+                        completo</a>
                 </div>
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
-                        <thead class="bg-slate-50 border-y border-slate-100">
+                        <thead class="bg-slate-50 dark:bg-slate-800 border-y border-slate-100 dark:border-slate-700">
                             <tr>
-                                <th class="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                    Sale ID</th>
-                                <th class="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                    Customer</th>
-                                <th class="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                    Status</th>
-                                <th class="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                    Date & Time</th>
                                 <th
-                                    class="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">
-                                    Net Value</th>
+                                    class="px-10 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                                    ID da Venda</th>
+                                <th
+                                    class="px-10 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                                    Cliente</th>
+                                <th
+                                    class="px-10 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                                    Status</th>
+                                <th
+                                    class="px-10 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                                    Data e Hora</th>
+                                <th
+                                    class="px-10 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-right">
+                                    Valor Líquido</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100">
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                             <tr *ngFor="let tx of recentTxns()"
-                                class="hover:bg-slate-50/50 transition-all cursor-pointer group">
+                                class="hover:bg-slate-50/50 dark:hover:bg-slate-800 transition-all cursor-pointer group">
                                 <td
-                                    class="px-10 py-6 text-sm font-bold text-slate-400 transition-colors group-hover:text-slate-600">
+                                    class="px-10 py-6 text-sm font-bold text-slate-400 dark:text-slate-500 transition-colors group-hover:text-slate-600 dark:group-hover:text-slate-300">
                                     {{ tx.id }}</td>
                                 <td class="px-10 py-6">
                                     <div class="flex items-center gap-4">
                                         <div [class]="tx.avatarBg"
-                                            class="w-10 h-10 rounded-xl flex items-center justify-center text-[11px] font-black text-slate-900 ring-2 ring-white">
+                                            class="w-10 h-10 rounded-xl flex items-center justify-center text-[11px] font-black text-slate-900 ring-2 ring-white dark:ring-slate-800">
                                             {{ tx.initials }}
                                         </div>
-                                        <span class="text-sm font-black text-slate-900">{{ tx.customer }}</span>
+                                        <span class="text-sm font-black text-slate-900 dark:text-slate-100">{{
+                                            tx.customer }}</span>
                                     </div>
                                 </td>
                                 <td class="px-10 py-6">
                                     <span [ngClass]="{
-                    'bg-green-100 text-green-700': tx.status === 'CONFIRMED',
-                    'bg-amber-100 text-amber-700': tx.status === 'PENDING',
-                    'bg-rose-100 text-rose-700': tx.status === 'FAILED'
+                    'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400': tx.status === 'CONFIRMED',
+                    'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400': tx.status === 'PENDING',
+                    'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400': tx.status === 'FAILED'
                   }" class="px-3 py-1 rounded-lg text-[10px] font-black tracking-widest uppercase">
                                         {{ tx.status }}
                                     </span>
                                 </td>
-                                <td class="px-10 py-6 text-sm font-bold text-slate-500">{{ tx.date }}</td>
-                                <td class="px-10 py-6 text-sm font-black text-slate-900 text-right">{{ tx.amount |
-                                    currency:'BRL' }}</td>
+                                <td class="px-10 py-6 text-sm font-bold text-slate-500 dark:text-slate-400">{{ tx.date
+                                    }}</td>
+                                <td class="px-10 py-6 text-sm font-black text-slate-900 dark:text-slate-100 text-right">
+                                    {{ tx.amount | currency:'BRL' }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -341,19 +377,24 @@
 
             <!-- Footer -->
             <footer
-                class="pt-10 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6 pb-4">
-                <p class="text-xs font-bold text-slate-400">© 2024 PaguePix Payments. Partner Portal.</p>
+                class="pt-10 border-t border-slate-100 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6 pb-4">
+                <p class="text-xs font-bold text-slate-400 dark:text-slate-500">© 2024 PaguePix Payments. Portal do
+                    Parceiro.</p>
                 <div class="flex items-center gap-6">
-                    <a href="#" class="text-xs font-bold text-slate-400 hover:text-[#6366f1] transition-colors">Privacy
-                        Policy</a>
-                    <a href="#" class="text-xs font-bold text-slate-400 hover:text-[#6366f1] transition-colors">Terms of
-                        Service</a>
-                    <a href="#" class="text-xs font-bold text-slate-400 hover:text-[#6366f1] transition-colors">API
-                        Documentation</a>
+                    <a href="#"
+                        class="text-xs font-bold text-slate-400 dark:text-slate-500 hover:text-[#6366f1] dark:hover:text-[#818cf8] transition-colors">Política
+                        de Privacidade</a>
+                    <a href="#"
+                        class="text-xs font-bold text-slate-400 dark:text-slate-500 hover:text-[#6366f1] dark:hover:text-[#818cf8] transition-colors">Termos
+                        de Serviço</a>
+                    <a href="#"
+                        class="text-xs font-bold text-slate-400 dark:text-slate-500 hover:text-[#6366f1] dark:hover:text-[#818cf8] transition-colors">Documentação
+                        da API</a>
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-                    <span class="text-[11px] font-bold text-slate-400 tracking-wider">Service Version 2.4.0</span>
+                    <span class="text-[11px] font-bold text-slate-400 dark:text-slate-500 tracking-wider">Versão do
+                        Serviço 2.4.0</span>
                 </div>
             </footer>
 

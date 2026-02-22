@@ -1,6 +1,7 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
+import { ThemeService } from '../../core/services/theme.service';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -11,8 +12,8 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class UserDashboard {
   private authService = inject(AuthService);
-  isDarkMode = signal(false);
-  userName = signal('Partner User');
+  protected themeService = inject(ThemeService);
+  userName = computed(() => this.authService.name());
   balance = signal(12430.50);
   todaySales = signal(1500.00);
   averageTicket = signal(125.00);
@@ -32,14 +33,6 @@ export class UserDashboard {
     { id: '#PX-UX119', customer: 'Maria Oliveira', initials: 'MO', avatarBg: 'bg-purple-100', date: 'Today, 09:45', amount: 125.50, status: 'PENDING' },
     { id: '#PX-UX118', customer: 'Ricardo Lima', initials: 'RL', avatarBg: 'bg-indigo-100', date: 'Yesterday, 18:30', amount: 890.00, status: 'CONFIRMED' },
   ]);
-
-  requestPayout() {
-    console.log('Navigating to payout request...');
-  }
-
-  toggleTheme() {
-    this.isDarkMode.update(v => !v);
-  }
 
   logout() {
     this.authService.logout();

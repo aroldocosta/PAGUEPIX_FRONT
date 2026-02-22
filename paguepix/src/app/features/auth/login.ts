@@ -42,7 +42,8 @@ export class Login implements OnInit {
           this.authService.setSession({
             userId: response.userId,
             token: response.token,
-            role: response.role
+            role: response.role,
+            name: response.name
           });
 
           this.authService.navigateToDashboard();

@@ -17,6 +17,7 @@ export class AuthService {
     token = computed(() => this.sessionSignal()?.token);
     userId = computed(() => this.sessionSignal()?.userId);
     role = computed(() => this.sessionSignal()?.role);
+    name = computed(() => this.sessionSignal()?.name ?? '');
 
     setSession(session: UserSession) {
         localStorage.setItem(this.STORAGE_KEY, JSON.stringify(session));
