@@ -25,6 +25,10 @@ export class SidebarComponent {
 
     adminMenuItems: MenuItem[] = [
         { label: 'Home', icon: 'home', route: '/admin/dashboard' },
+        { label: 'Dispositivos', icon: 'devices', route: '/admin/devices' },
+        { label: 'Placas', icon: 'memory', route: '/admin/boards' },
+        { label: 'Scripts', icon: 'code', route: '/admin/scripts' },
+        { label: 'Parceiros', icon: 'handshake', route: '/admin/partners' },
         { label: 'Pagamentos', icon: 'payments', route: '/admin/payments' },
         { label: 'Usuários', icon: 'group', route: '/admin/users' },
     ];
