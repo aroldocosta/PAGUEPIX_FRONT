@@ -1,0 +1,108 @@
+<div class="flex h-screen bg-gray-50 font-sans">
+    <!-- Sidebar -->
+    <app-sidebar></app-sidebar>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <app-topbar searchPlaceholder="Buscar dispositivos..."></app-topbar>
+
+        <main class="flex-1 overflow-y-auto p-4 md:p-10">
+            <header class="flex items-center justify-between mb-10">
+                <div>
+                    <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Gestão de Dispositivos</h1>
+                    <p class="text-gray-500 mt-1">Monitore e gerencie terminais POS e dispositivos habilitados para Pix.
+                    </p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button
+                        class="bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-blue-700 shadow-md shadow-blue-200 transition-all flex items-center gap-2">
+                        <span class="material-icons-outlined text-sm">add_to_queue</span> Provisionar Dispositivo
+                    </button>
+                </div>
+            </header>
+
+            <!-- Devices Table -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 ring-1 ring-gray-900/5 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-gray-50/50 border-b border-gray-100">
+                            <tr>
+                                <th class="px-8 py-5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    Dispositivo
+                                </th>
+                                <th class="px-8 py-5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    Nº de Série</th>
+                                <th class="px-8 py-5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    Parceiro
+                                </th>
+                                <th class="px-8 py-5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    Status
+                                </th>
+                                <th class="px-8 py-5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    Sincronização</th>
+                                <th
+                                    class="px-8 py-5 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">
+                                    Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr *ngFor="let device of devices()" class="hover:bg-gray-50/80 transition-colors group">
+                                <td class="px-8 py-5">
+                                    <div class="flex items-center gap-4">
+                                        <div
+                                            class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50 text-indigo-600 flex items-center justify-center text-xs font-bold ring-1 ring-indigo-100">
+                                            <span class="material-icons-outlined text-lg">devices</span>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-bold text-gray-900">{{ device.name }}</div>
+                                            <div class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                                                Bateria: {{ device.battery }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-mono text-gray-600">
+                                    {{ device.serial }}
+                                </td>
+                                <td class="px-8 py-5">
+                                    <span class="text-sm font-medium text-gray-700">{{ device.partner }}</span>
+                                </td>
+                                <td class="px-8 py-5">
+                                    <span [ngClass]="{
+                                            'bg-green-50 text-green-700 ring-1 ring-green-600/10': device.status === 'Online',
+                                            'bg-rose-50 text-rose-700 ring-1 ring-rose-600/10': device.status === 'Issue',
+                                            'bg-gray-50 text-gray-500 ring-1 ring-gray-600/10': device.status === 'Offline'
+                                        }"
+                                        class="px-2.5 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full" [ngClass]="{
+                                                'bg-green-600': device.status === 'Online',
+                                                'bg-rose-600': device.status === 'Issue',
+                                                'bg-gray-400': device.status === 'Offline'
+                                            }"></span>
+                                        {{ device.status }}
+                                    </span>
+                                </td>
+                                <td class="px-8 py-5 text-sm text-gray-500">{{ device.lastSync }}</td>
+                                <td class="px-8 py-5 text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <button
+                                            class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
+                                            <span class="material-icons-outlined text-lg">settings</span>
+                                        </button>
+                                        <button
+                                            class="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all">
+                                            <span class="material-icons-outlined text-lg">restart_alt</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="mt-10">
+                <app-footer></app-footer>
+            </div>
+        </main>
+    </div>
+</div>
