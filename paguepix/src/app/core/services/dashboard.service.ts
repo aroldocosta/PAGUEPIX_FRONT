@@ -10,7 +10,7 @@ export interface DailySales {
 
 export interface RecentTransaction {
     id: string;
-    customer: string;
+    partner: string;
     status: string;
     date: string;
     amount: number;
@@ -19,7 +19,7 @@ export interface RecentTransaction {
 export interface DashboardData {
     availableBalance: number;
     totalTransacted: number;
-    pendingPayouts: number;
+    completedPayouts: number;
     salesOverview: DailySales[];
     recentTransactions: RecentTransaction[];
 }

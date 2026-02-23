@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { DashboardService, DashboardData } from '../../core/services/dashboard.service';
+import { SalesChartComponent, DailySales } from '../../components/sales-chart/sales-chart.component';
 
 @Component({
   selector: 'app-user-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SalesChartComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss'
 })
@@ -23,12 +24,12 @@ export class UserDashboard implements OnInit {
   todaySales = signal(0);
   averageTicket = signal(0);
 
-  // Chart
-  chartData = signal<{ day: string; value: number }[]>([]);
+  // Data from API
+  salesOverviewData = signal<DailySales[]>([]);
 
   // Table
   recentTxns = signal<{
-    id: string; customer: string; initials: string;
+    id: string; partner: string; initials: string;
     avatarBg: string; date: string; amount: number; status: string;
   }[]>([]);
 
@@ -59,19 +60,13 @@ export class UserDashboard implements OnInit {
         const txCount = data.recentTransactions.length || 1;
         this.averageTicket.set(data.totalTransacted / txCount);
 
-        const maxAmount = Math.max(...data.salesOverview.map(s => s.amount), 1);
-        this.chartData.set(
-          data.salesOverview.map(s => ({
-            day: s.date,
-            value: Math.round((s.amount / maxAmount) * 85)
-          }))
-        );
+        this.salesOverviewData.set(data.salesOverview);
 
         this.recentTxns.set(
           data.recentTransactions.map((tx, i) => ({
             id: tx.id,
-            customer: tx.customer,
-            initials: this.initials(tx.customer),
+            partner: tx.partner,
+            initials: this.initials(tx.partner),
             avatarBg: this.AVATAR_COLORS[i % this.AVATAR_COLORS.length],
             date: tx.date,
             amount: tx.amount,

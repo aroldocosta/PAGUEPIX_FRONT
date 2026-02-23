@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { DashboardService, DashboardData } from '../../core/services/dashboard.service';
+import { SalesChartComponent, DailySales } from '../sales-chart/sales-chart.component';
 
 @Component({
   selector: 'app-home-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SalesChartComponent],
   templateUrl: './home-dashboard.html',
   styleUrl: './home-dashboard.scss',
 })
@@ -21,14 +22,15 @@ export class HomeDashboard implements OnInit {
   // Cards
   availableBalance = signal(0);
   totalTransacted = signal(0);
-  pendingPayouts = signal(0);
+  completedPayouts = signal(0);
 
-  // Chart
-  chartData = signal<{ day: string; value: number }[]>([]);
+  // Data from API
+  salesOverviewData = signal<DailySales[]>([]);
+
 
   // Table
   recentTransactions = signal<{
-    id: string; customer: string; initials: string;
+    id: string; partner: string; initials: string;
     avatarBg: string; date: string; amount: number; status: string;
   }[]>([]);
 
@@ -54,22 +56,15 @@ export class HomeDashboard implements OnInit {
       next: (data: DashboardData) => {
         this.availableBalance.set(data.availableBalance);
         this.totalTransacted.set(data.totalTransacted);
-        this.pendingPayouts.set(data.pendingPayouts);
+        this.completedPayouts.set(data.completedPayouts);
 
-        // Normalizar chart: percentual relativo ao maior valor do período
-        const maxAmount = Math.max(...data.salesOverview.map(s => s.amount), 1);
-        this.chartData.set(
-          data.salesOverview.map(s => ({
-            day: s.date,
-            value: Math.round((s.amount / maxAmount) * 85)
-          }))
-        );
+        this.salesOverviewData.set(data.salesOverview);
 
         this.recentTransactions.set(
           data.recentTransactions.map((tx, i) => ({
             id: tx.id,
-            customer: tx.customer,
-            initials: this.initials(tx.customer),
+            partner: tx.partner,
+            initials: this.initials(tx.partner),
             avatarBg: this.AVATAR_COLORS[i % this.AVATAR_COLORS.length],
             date: tx.date,
             amount: tx.amount,
