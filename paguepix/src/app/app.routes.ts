@@ -4,6 +4,9 @@ import { Dashboard } from './features/admin/dashboard/dashboard';
 import { PaymentsManagement } from './features/admin/payments/payments';
 import { UserManagement } from './features/admin/users/users';
 import { DeviceManagement } from './features/admin/devices/devices';
+import { BoardManagement } from './features/admin/boards/boards';
+import { ScriptsManagement } from './features/admin/scripts/scripts';
+import { PartnerManagement } from './features/admin/partners/partners';
 import { UserDashboard } from './features/user/dashboard/dashboard';
 import { TransferRequest } from './features/user/transfer/transfer';
 import { PaymentsHistory } from './features/user/history/history';
@@ -17,6 +20,9 @@ export const routes: Routes = [
     { path: 'admin/payments', component: PaymentsManagement, canActivate: [authGuard] },
     { path: 'admin/users', component: UserManagement, canActivate: [authGuard] },
     { path: 'admin/devices', component: DeviceManagement, canActivate: [authGuard] },
+    { path: 'admin/boards', component: BoardManagement, canActivate: [authGuard] },
+    { path: 'admin/scripts', component: ScriptsManagement, canActivate: [authGuard] },
+    { path: 'admin/partners', component: PartnerManagement, canActivate: [authGuard] },
     { path: 'user/dashboard', component: UserDashboard, canActivate: [authGuard] },
     { path: 'user/transfer', component: TransferRequest, canActivate: [authGuard] },
     { path: 'user/history', component: PaymentsHistory, canActivate: [authGuard] },
