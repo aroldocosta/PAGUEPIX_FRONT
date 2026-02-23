@@ -4,11 +4,12 @@ import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { DashboardService, DashboardData } from '../../core/services/dashboard.service';
 import { SalesChartComponent, DailySales } from '../sales-chart/sales-chart.component';
+import { SidebarComponent } from '../sidebar/sidebar.component';
 
 @Component({
   selector: 'app-home-dashboard',
   standalone: true,
-  imports: [CommonModule, SalesChartComponent],
+  imports: [CommonModule, SalesChartComponent, SidebarComponent],
   templateUrl: './home-dashboard.html',
   styleUrl: './home-dashboard.scss',
 })
