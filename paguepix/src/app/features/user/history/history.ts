@@ -1,10 +1,13 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
+import { TopbarComponent } from '../../../shared/components/topbar/topbar.component';
+import { FooterComponent } from '../../../shared/components/footer/footer.component';
 
 @Component({
     selector: 'app-payments-history',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, SidebarComponent, TopbarComponent, FooterComponent],
     templateUrl: './history.html',
     styleUrl: './history.scss'
 })

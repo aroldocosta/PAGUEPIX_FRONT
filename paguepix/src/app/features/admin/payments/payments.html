@@ -1,4 +1,4 @@
-<div class="flex h-screen bg-gray-50 font-sans">
+<div class="flex h-screen bg-gray-50 dark:bg-slate-950 font-sans">
     <!-- Sidebar -->
     <app-sidebar></app-sidebar>
 
@@ -9,12 +9,14 @@
         <main class="flex-1 overflow-y-auto p-4 md:p-10">
             <header class="flex items-center justify-between mb-10">
                 <div>
-                    <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Gestão de Pagamentos</h1>
-                    <p class="text-gray-500 mt-1">Monitore e gerencie todos os recebimentos via Pix em tempo real.</p>
+                    <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Gestão de
+                        Pagamentos</h1>
+                    <p class="text-gray-500 dark:text-slate-400 mt-1">Monitore e gerencie todos os recebimentos via Pix
+                        em tempo real.</p>
                 </div>
                 <div class="flex items-center gap-4">
                     <button
-                        class="bg-white text-gray-700 border border-gray-200 px-5 py-2 rounded-xl text-sm font-bold hover:bg-gray-50 transition-all flex items-center gap-2 shadow-sm">
+                        class="bg-white dark:bg-slate-800 text-gray-700 dark:text-slate-300 border border-gray-200 dark:border-slate-700 px-5 py-2 rounded-xl text-sm font-bold hover:bg-gray-50 dark:hover:bg-slate-700 transition-all flex items-center gap-2 shadow-sm">
                         <span class="material-icons-outlined text-sm">filter_list</span> Filtros
                     </button>
                     <button
@@ -25,12 +27,16 @@
             </header>
 
             <!-- Transactions Table -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 ring-1 ring-gray-900/5 overflow-hidden">
+            <div
+                class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 ring-1 ring-gray-900/5 dark:ring-white/10 overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
-                        <thead class="bg-gray-50/50 border-b border-gray-100">
+                        <thead
+                            class="bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800">
                             <tr>
-                                <th class="px-8 py-5 text-xs font-semibold text-gray-500 uppercase tracking-wider">ID
+                                <th
+                                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                                    ID
                                     Transação</th>
                                 <th class="px-8 py-5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                                     Parceiro
@@ -46,26 +52,32 @@
                                     Status
                                 </th>
                                 <th
-                                    class="px-8 py-5 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">
+                                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider text-right">
                                     Ações</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-100">
-                            <tr *ngFor="let payment of payments()" class="hover:bg-gray-50/80 transition-colors group">
-                                <td class="px-8 py-5 text-sm font-medium text-gray-900">{{ payment.id }}</td>
-                                <td class="px-8 py-5 text-sm text-gray-600 font-medium">{{ payment.partner }}</td>
+                        <tbody class="divide-y divide-gray-100 dark:divide-slate-800">
+                            <tr *ngFor="let payment of payments()"
+                                class="hover:bg-gray-50/80 dark:hover:bg-slate-800/50 transition-colors group">
+                                <td class="px-8 py-5 text-sm font-medium text-gray-900 dark:text-slate-200">{{
+                                    payment.id }}</td>
+                                <td class="px-8 py-5 text-sm text-gray-600 dark:text-slate-400 font-medium">{{
+                                    payment.partner }}</td>
                                 <td class="px-8 py-5">
                                     <div class="flex items-center gap-2">
-                                        <span class="p-1 bg-blue-50 text-blue-600 rounded">
+                                        <span
+                                            class="p-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded">
                                             <span class="material-icons-outlined text-xs">qr_code</span>
                                         </span>
-                                        <span class="text-sm text-gray-600">{{ payment.method }}</span>
+                                        <span class="text-sm text-gray-600 dark:text-slate-400">{{ payment.method
+                                            }}</span>
                                     </div>
                                 </td>
-                                <td class="px-8 py-5 text-sm font-bold text-gray-900">{{ payment.amount | currency:'BRL'
+                                <td class="px-8 py-5 text-sm font-bold text-gray-900 dark:text-slate-200">{{
+                                    payment.amount | currency:'BRL'
                                     }}
                                 </td>
-                                <td class="px-8 py-5 text-sm text-gray-500">{{ payment.date }}</td>
+                                <td class="px-8 py-5 text-sm text-gray-500 dark:text-slate-400">{{ payment.date }}</td>
                                 <td class="px-8 py-5">
                                     <span [ngClass]="{
                         'bg-green-50 text-green-700 ring-1 ring-green-600/10': payment.status === 'Success',
@@ -82,7 +94,7 @@
                                 </td>
                                 <td class="px-8 py-5 text-right">
                                     <button
-                                        class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
+                                        class="p-2 text-gray-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all">
                                         <span class="material-icons-outlined text-lg">visibility</span>
                                     </button>
                                 </td>
