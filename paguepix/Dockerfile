@@ -24,10 +24,12 @@ RUN npm run build -- --configuration production
 # Estágio 2: O Container que vai segurar a porta 4210
 FROM nginx:alpine
 # 1. Copia os arquivos compilados para dentro do Nginx do container
-# Verifique se o caminho termina em /browser dependendo da sua versão do Angular
 COPY --from=build /app/dist/paguepix-front/browser /usr/share/nginx/html
 
-# 2. Expõe a porta interna (padrao 80) que o Docker Compose mapeará para 4210
+# 2. Copia a configuração customizada do Nginx para suportar rotas Angular
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# 3. Expõe a porta interna (padrao 80) que o Docker Compose mapeará para 4210
 EXPOSE 80
 
 # 3. OBRIGATÓRIO: Mantém o container vivo
