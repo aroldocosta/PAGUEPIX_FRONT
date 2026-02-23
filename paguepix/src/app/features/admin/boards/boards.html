@@ -26,7 +26,21 @@
             <div
                 class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 ring-1 ring-gray-900/5 dark:ring-white/10 overflow-hidden">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                    <!-- Loading State -->
+                    <div *ngIf="loading()" class="p-12 flex flex-col items-center justify-center space-y-4">
+                        <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin">
+                        </div>
+                        <p class="text-gray-500 dark:text-slate-400 font-medium">Carregando placas...</p>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div *ngIf="!loading() && boards().length === 0" class="p-12 text-center">
+                        <span
+                            class="material-icons-outlined text-4xl text-gray-300 dark:text-slate-700 mb-2">memory_off</span>
+                        <p class="text-gray-500 dark:text-slate-400">Nenhuma placa encontrada.</p>
+                    </div>
+
+                    <table *ngIf="!loading() && boards().length > 0" class="w-full text-left border-collapse">
                         <thead
                             class="bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800">
                             <tr>
@@ -36,18 +50,15 @@
                                 </th>
                                 <th
                                     class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                                    Nº de Série</th>
+                                    Tipo</th>
                                 <th
                                     class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                                    Firmware
+                                    Script Ativo
                                 </th>
                                 <th
                                     class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                                    Status
+                                    Parceiro
                                 </th>
-                                <th
-                                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                                    Uptime</th>
                                 <th
                                     class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider text-right">
                                     Ações</th>
@@ -65,35 +76,21 @@
                                         <div>
                                             <div class="text-sm font-bold text-gray-900 dark:text-slate-200">{{
                                                 board.model }}</div>
-                                            <div
-                                                class="text-[10px] text-gray-400 dark:text-slate-500 font-bold uppercase tracking-wider">
-                                                Armazenamento: {{ board.storage }}</div>
+                                            <div class="text-[10px] text-gray-400 dark:text-slate-500 font-mono">ID: #{{
+                                                board.id }}</div>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-8 py-5 text-sm font-mono text-gray-600 dark:text-slate-400">
-                                    {{ board.serial }}
+                                <td class="px-8 py-5 text-sm font-medium text-gray-600 dark:text-slate-400">
+                                    {{ board.type }}
                                 </td>
                                 <td class="px-8 py-5">
-                                    <span class="text-sm font-medium text-gray-700 dark:text-slate-300">{{
-                                        board.firmware }}</span>
+                                    <span class="text-sm font-medium text-blue-600 dark:text-blue-400">{{
+                                        board.script?.name || 'Nenhum' }}</span>
                                 </td>
-                                <td class="px-8 py-5">
-                                    <span [ngClass]="{
-                                            'bg-green-50 text-green-700 ring-1 ring-green-600/10': board.status === 'Active',
-                                            'bg-amber-50 text-amber-700 ring-1 ring-amber-600/10': board.status === 'Maintenance',
-                                            'bg-gray-50 text-gray-500 ring-1 ring-gray-600/10': board.status === 'Offline'
-                                        }"
-                                        class="px-2.5 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1">
-                                        <span class="w-1 h-1 rounded-full" [ngClass]="{
-                                                'bg-green-600': board.status === 'Active',
-                                                'bg-amber-600': board.status === 'Maintenance',
-                                                'bg-gray-400': board.status === 'Offline'
-                                            }"></span>
-                                        {{ board.status }}
-                                    </span>
+                                <td class="px-8 py-5 text-sm text-gray-500 dark:text-slate-400">
+                                    {{ board.partner?.name || 'Sistema' }}
                                 </td>
-                                <td class="px-8 py-5 text-sm text-gray-500 dark:text-slate-400">{{ board.uptime }}</td>
                                 <td class="px-8 py-5 text-right">
                                     <div class="flex items-center justify-end gap-2">
                                         <button
@@ -102,7 +99,7 @@
                                         </button>
                                         <button
                                             class="p-2 text-gray-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-all">
-                                            <span class="material-icons-outlined text-lg">update</span>
+                                            <span class="material-icons-outlined text-lg">edit</span>
                                         </button>
                                     </div>
                                 </td>

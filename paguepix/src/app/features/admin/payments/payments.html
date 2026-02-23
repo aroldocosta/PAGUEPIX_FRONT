@@ -30,25 +30,41 @@
             <div
                 class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 ring-1 ring-gray-900/5 dark:ring-white/10 overflow-hidden">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                    <!-- Loading State -->
+                    <div *ngIf="loading()" class="p-12 flex flex-col items-center justify-center space-y-4">
+                        <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin">
+                        </div>
+                        <p class="text-gray-500 dark:text-slate-400 font-medium">Carregando pagamentos...</p>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div *ngIf="!loading() && payments().length === 0" class="p-12 text-center">
+                        <span
+                            class="material-icons-outlined text-4xl text-gray-300 dark:text-slate-700 mb-2">history_toggle_off</span>
+                        <p class="text-gray-500 dark:text-slate-400">Nenhuma transação encontrada.</p>
+                    </div>
+
+                    <table *ngIf="!loading() && payments().length > 0" class="w-full text-left border-collapse">
                         <thead
                             class="bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800">
                             <tr>
                                 <th
                                     class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                                    ID
-                                    Transação</th>
-                                <th class="px-8 py-5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    ID Transação</th>
+                                <th
+                                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                                     Parceiro
                                 </th>
-                                <th class="px-8 py-5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                    Método
+                                <th
+                                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                                    Valor
                                 </th>
-                                <th class="px-8 py-5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Valor
+                                <th
+                                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                                    Data
                                 </th>
-                                <th class="px-8 py-5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Data
-                                </th>
-                                <th class="px-8 py-5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                <th
+                                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                                     Status
                                 </th>
                                 <th
@@ -59,37 +75,38 @@
                         <tbody class="divide-y divide-gray-100 dark:divide-slate-800">
                             <tr *ngFor="let payment of payments()"
                                 class="hover:bg-gray-50/80 dark:hover:bg-slate-800/50 transition-colors group">
-                                <td class="px-8 py-5 text-sm font-medium text-gray-900 dark:text-slate-200">{{
-                                    payment.id }}</td>
-                                <td class="px-8 py-5 text-sm text-gray-600 dark:text-slate-400 font-medium">{{
-                                    payment.partner }}</td>
-                                <td class="px-8 py-5">
-                                    <div class="flex items-center gap-2">
-                                        <span
-                                            class="p-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded">
-                                            <span class="material-icons-outlined text-xs">qr_code</span>
-                                        </span>
-                                        <span class="text-sm text-gray-600 dark:text-slate-400">{{ payment.method
+                                <td class="px-8 py-5 text-sm font-medium text-gray-900 dark:text-slate-200">
+                                    <div class="flex flex-col">
+                                        <span>#{{ payment.id }}</span>
+                                        <span class="text-[10px] text-gray-400 font-mono">{{ payment.externalId
                                             }}</span>
                                     </div>
                                 </td>
-                                <td class="px-8 py-5 text-sm font-bold text-gray-900 dark:text-slate-200">{{
-                                    payment.amount | currency:'BRL'
-                                    }}
+                                <td class="px-8 py-5 text-sm text-gray-600 dark:text-slate-400 font-medium">
+                                    {{ payment.partner?.name || 'N/A' }}
                                 </td>
-                                <td class="px-8 py-5 text-sm text-gray-500 dark:text-slate-400">{{ payment.date }}</td>
+                                <td class="px-8 py-5 text-sm font-bold text-gray-900 dark:text-slate-200">
+                                    {{ payment.value | currency:'BRL' }}
+                                </td>
+                                <td class="px-8 py-5 text-sm text-gray-500 dark:text-slate-400">
+                                    <div class="flex flex-col">
+                                        <span>{{ payment.date }}</span>
+                                        <span class="text-[10px]">{{ payment.time }}</span>
+                                    </div>
+                                </td>
                                 <td class="px-8 py-5">
                                     <span [ngClass]="{
-                        'bg-green-50 text-green-700 ring-1 ring-green-600/10': payment.status === 'Success',
-                        'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-600/10': payment.status === 'Pending',
-                        'bg-red-50 text-red-700 ring-1 ring-red-600/10': payment.status === 'Failed'
-                      }" class="px-2.5 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1">
+                                        'bg-green-50 text-green-700 ring-1 ring-green-600/10': payment.state === 'PAID',
+                                        'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-600/10': payment.state === 'PENDING',
+                                        'bg-red-50 text-red-700 ring-1 ring-red-600/10': payment.state === 'EXPIRED' || payment.state === 'CANCELED'
+                                    }"
+                                        class="px-2.5 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1">
                                         <span class="w-1 h-1 rounded-full" [ngClass]="{
-                            'bg-green-600': payment.status === 'Success',
-                            'bg-yellow-600': payment.status === 'Pending',
-                            'bg-red-600': payment.status === 'Failed'
-                        }"></span>
-                                        {{ payment.status }}
+                                            'bg-green-600': payment.state === 'PAID',
+                                            'bg-yellow-600': payment.state === 'PENDING',
+                                            'bg-red-600': payment.state === 'EXPIRED' || payment.state === 'CANCELED'
+                                        }"></span>
+                                        {{ payment.state }}
                                     </span>
                                 </td>
                                 <td class="px-8 py-5 text-right">

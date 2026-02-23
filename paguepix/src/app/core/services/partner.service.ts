@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Partner } from '../models/partner.model';
 import { environment } from '../../../environments/environment';
 
@@ -11,11 +11,32 @@ export class PartnerService {
 
     constructor(private http: HttpClient) { }
 
-    getAll() {
-        return this.http.get<Partner[]>(this.apiUrl);
+    getAll(page: number = 0, size: number = 10) {
+        const params = new HttpParams()
+            .set('page', page.toString())
+            .set('size', size.toString());
+        return this.http.get<any>(this.apiUrl, { params });
     }
 
     getById(id: number) {
         return this.http.get<Partner>(`${this.apiUrl}/${id}`);
+    }
+
+    save(partner: any) {
+        return this.http.post<Partner>(this.apiUrl, partner);
+    }
+
+    update(partner: any) {
+        return this.http.put<Partner>(this.apiUrl, partner);
+    }
+
+    delete(id: number) {
+        return this.http.delete<Partner>(`${this.apiUrl}/${id}`);
+    }
+
+    uploadLogo(id: number, file: File) {
+        const formData = new FormData();
+        formData.append('file', file);
+        return this.http.post<Partner>(`${this.apiUrl}/${id}/logo`, formData);
     }
 }
