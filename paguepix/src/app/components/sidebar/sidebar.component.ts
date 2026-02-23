@@ -24,13 +24,13 @@ export class SidebarComponent {
     userRole = this.authService.role;
 
     adminMenuItems: MenuItem[] = [
-        { label: 'Painel', icon: 'dashboard', route: '/admin/dashboard' },
+        { label: 'Home', icon: 'home', route: '/admin/dashboard' },
         { label: 'Pagamentos', icon: 'payments', route: '/admin/payments' },
         { label: 'Usuários', icon: 'group', route: '/admin/users' },
     ];
 
     userMenuItems: MenuItem[] = [
-        { label: 'Painel', icon: 'dashboard', route: '/user/dashboard' },
+        { label: 'Home', icon: 'home', route: '/user/dashboard' },
         { label: 'Transferências', icon: 'account_balance', route: '/user/transfer' },
         { label: 'Histórico', icon: 'history', route: '/user/history' },
     ];
