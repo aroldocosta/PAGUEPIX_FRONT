@@ -1,12 +1,12 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../core/services/auth.service';
-import { ThemeService } from '../../core/services/theme.service';
-import { DashboardService, DashboardData } from '../../core/services/dashboard.service';
-import { SalesChartComponent, DailySales } from '../../components/sales-chart/sales-chart.component';
-import { SidebarComponent } from '../../components/sidebar/sidebar.component';
-import { TopbarComponent } from '../../components/topbar/topbar.component';
-import { FooterComponent } from '../../components/footer/footer.component';
+import { AuthService } from '../../../core/services/auth.service';
+import { ThemeService } from '../../../core/services/theme.service';
+import { DashboardService, DashboardData } from '../../../core/services/dashboard.service';
+import { SalesChartComponent, DailySales } from '../../../shared/components/sales-chart/sales-chart.component';
+import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
+import { TopbarComponent } from '../../../shared/components/topbar/topbar.component';
+import { FooterComponent } from '../../../shared/components/footer/footer.component';
 
 @Component({
   selector: 'app-user-dashboard',

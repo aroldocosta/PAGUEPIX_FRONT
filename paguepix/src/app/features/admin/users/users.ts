@@ -1,15 +1,15 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SidebarComponent } from '../../../components/sidebar/sidebar.component';
-import { TopbarComponent } from '../../../components/topbar/topbar.component';
-import { FooterComponent } from '../../../components/footer/footer.component';
+import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
+import { TopbarComponent } from '../../../shared/components/topbar/topbar.component';
+import { FooterComponent } from '../../../shared/components/footer/footer.component';
 
 @Component({
     selector: 'app-user-management',
     standalone: true,
     imports: [CommonModule, SidebarComponent, TopbarComponent, FooterComponent],
-    templateUrl: './user-management.html',
-    styleUrl: './user-management.scss'
+    templateUrl: './users.html',
+    styleUrl: './users.scss'
 })
 export class UserManagement {
     users = signal([

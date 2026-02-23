@@ -1,21 +1,21 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../core/services/auth.service';
-import { ThemeService } from '../../core/services/theme.service';
-import { DashboardService, DashboardData } from '../../core/services/dashboard.service';
-import { SalesChartComponent, DailySales } from '../sales-chart/sales-chart.component';
-import { SidebarComponent } from '../sidebar/sidebar.component';
-import { TopbarComponent } from '../topbar/topbar.component';
-import { FooterComponent } from '../footer/footer.component';
+import { AuthService } from '../../../core/services/auth.service';
+import { ThemeService } from '../../../core/services/theme.service';
+import { DashboardService, DashboardData } from '../../../core/services/dashboard.service';
+import { SalesChartComponent, DailySales } from '../../../shared/components/sales-chart/sales-chart.component';
+import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
+import { TopbarComponent } from '../../../shared/components/topbar/topbar.component';
+import { FooterComponent } from '../../../shared/components/footer/footer.component';
 
 @Component({
-  selector: 'app-home-dashboard',
+  selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule, SalesChartComponent, SidebarComponent, TopbarComponent, FooterComponent],
-  templateUrl: './home-dashboard.html',
-  styleUrl: './home-dashboard.scss',
+  templateUrl: './dashboard.html',
+  styleUrl: './dashboard.scss',
 })
-export class HomeDashboard implements OnInit {
+export class Dashboard implements OnInit {
   private authService = inject(AuthService);
   private dashboardService = inject(DashboardService);
   protected themeService = inject(ThemeService);

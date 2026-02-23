@@ -5,8 +5,8 @@ import { CommonModule } from '@angular/common';
     selector: 'app-payments-history',
     standalone: true,
     imports: [CommonModule],
-    templateUrl: './payments-history.html',
-    styleUrl: './payments-history.scss'
+    templateUrl: './history.html',
+    styleUrl: './history.scss'
 })
 export class PaymentsHistory {
     history = signal([

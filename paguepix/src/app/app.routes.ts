@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
-import { Login } from './features/auth/login';
-import { Dashboard } from './features/admin/dashboard';
-import { PaymentsManagement } from './features/admin/payments-management';
-import { UserManagement } from './features/admin/user-management/user-management';
-import { UserDashboard } from './features/user/dashboard';
-import { TransferRequest } from './features/user/transfer-request';
-import { PaymentsHistory } from './features/user/payments-history/payments-history';
+import { Login } from './features/auth/login/login';
+import { Dashboard } from './features/admin/dashboard/dashboard';
+import { PaymentsManagement } from './features/admin/payments/payments';
+import { UserManagement } from './features/admin/users/users';
+import { UserDashboard } from './features/user/dashboard/dashboard';
+import { TransferRequest } from './features/user/transfer/transfer';
+import { PaymentsHistory } from './features/user/history/history';
 
 import { authGuard } from './core/guards/auth.guard';
 

@@ -2,10 +2,9 @@ import { Component, signal, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { environment } from '../../../environments/environment';
-import { AuthService } from '../../core/services/auth.service';
-import { LoginResponse } from '../../core/models/auth.models';
-
+import { environment } from '../../../../environments/environment';
+import { AuthService } from '../../../core/services/auth.service';
+import { LoginResponse } from '../../../core/models/auth.models';
 @Component({
   selector: 'app-login',
   standalone: true,

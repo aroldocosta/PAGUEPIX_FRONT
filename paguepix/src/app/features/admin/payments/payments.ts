@@ -1,15 +1,15 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SidebarComponent } from '../../components/sidebar/sidebar.component';
-import { TopbarComponent } from '../../components/topbar/topbar.component';
-import { FooterComponent } from '../../components/footer/footer.component';
+import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
+import { TopbarComponent } from '../../../shared/components/topbar/topbar.component';
+import { FooterComponent } from '../../../shared/components/footer/footer.component';
 
 @Component({
   selector: 'app-payments-management',
   standalone: true,
   imports: [CommonModule, SidebarComponent, TopbarComponent, FooterComponent],
-  templateUrl: './payments-management.html',
-  styleUrl: './payments-management.scss'
+  templateUrl: './payments.html',
+  styleUrl: './payments.scss'
 })
 export class PaymentsManagement {
   payments = signal([
