@@ -1,0 +1,44 @@
+<header
+    class="h-24 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between px-10 flex-shrink-0 transition-colors duration-300">
+    <div class="relative w-[480px] group">
+        <span
+            class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 dark:text-slate-600 group-focus-within:text-[#6366f1] transition-colors">
+            <span class="material-icons-outlined text-lg">search</span>
+        </span>
+        <input type="text" [placeholder]="searchPlaceholder()"
+            class="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border-transparent rounded-2xl focus:bg-white dark:focus:bg-slate-700 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all text-sm outline-none dark:text-slate-100">
+    </div>
+
+    <div class="flex items-center gap-8">
+        <div
+            class="flex items-center bg-slate-50 dark:bg-slate-800 p-1 rounded-2xl border border-slate-100 dark:border-slate-700 transition-colors">
+            <button (click)="themeService.setTheme('light')" [class.bg-white]="!themeService.isDarkMode()"
+                [class.shadow-sm]="!themeService.isDarkMode()" class="p-2 rounded-xl transition-all">
+                <span class="material-icons-outlined text-lg text-slate-400"
+                    [class.text-amber-500]="!themeService.isDarkMode()">light_mode</span>
+            </button>
+            <button (click)="themeService.setTheme('dark')" [class.bg-slate-700]="themeService.isDarkMode()"
+                [class.shadow-sm]="themeService.isDarkMode()" class="p-2 rounded-xl transition-all">
+                <span class="material-icons-outlined text-lg text-slate-400"
+                    [class.text-indigo-400]="themeService.isDarkMode()">dark_mode</span>
+            </button>
+        </div>
+
+        <div class="flex items-center gap-4 pl-8 border-l border-slate-100 dark:border-slate-800">
+            <div class="text-right">
+                <p class="text-sm font-bold text-slate-900 dark:text-slate-100 leading-none">{{ userName() }}</p>
+                <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 mt-1 uppercase tracking-wider">
+                    {{ userRole() }}</p>
+            </div>
+            <div class="relative">
+                <div
+                    class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-slate-800 border border-indigo-100 dark:border-slate-700 flex items-center justify-center overflow-hidden">
+                    <img [src]="'https://ui-avatars.com/api/?name=' + userName() + '&background=e0e7ff&color=6366f1'"
+                        alt="Avatar" class="w-full h-full object-cover">
+                </div>
+                <span
+                    class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-4 border-white dark:border-slate-900 rounded-full"></span>
+            </div>
+        </div>
+    </div>
+</header>

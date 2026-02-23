@@ -20,7 +20,7 @@ export class SidebarComponent {
     private authService = inject(AuthService);
     private router = inject(Router);
 
-    userName = this.authService.name;
+
     userRole = this.authService.role;
 
     adminMenuItems: MenuItem[] = [

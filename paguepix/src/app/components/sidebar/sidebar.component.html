@@ -40,19 +40,7 @@
     </nav>
 
     <div class="p-6 border-t border-slate-100 dark:border-slate-800">
-        <div
-            class="flex items-center gap-3 px-2 py-3 mb-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700">
-            <div
-                class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-slate-700 flex items-center justify-center overflow-hidden">
-                <img [src]="'https://ui-avatars.com/api/?name=' + userName() + '&background=e0e7ff&color=6366f1'"
-                    alt="Avatar" class="w-full h-full object-cover">
-            </div>
-            <div class="flex-1 min-w-0">
-                <p class="text-[13px] font-bold text-slate-900 dark:text-slate-100 truncate">{{ userName() }}</p>
-                <p class="text-[10px] text-slate-400 dark:text-slate-500 truncate uppercase tracking-wider font-bold">{{
-                    userRole() }}</p>
-            </div>
-        </div>
+
         <button (click)="logout()"
             class="flex items-center gap-4 w-full px-4 py-3 text-sm font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl transition-all">
             <span class="material-icons-outlined text-xl">logout</span> Sair
