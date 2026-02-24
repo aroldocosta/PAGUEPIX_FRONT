@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-[#f8fafc] font-sans text-[#1e293b] flex flex-col items-center">
+<div class="min-h-screen bg-[#f8fafc] font-sans text-[#1e293b] flex flex-col items-center pb-20 md:pb-10">
     <!-- Header -->
     <header class="w-full bg-white px-6 py-4 flex items-center justify-between sticky top-0 z-10 shadow-sm">
         <div class="flex items-center gap-2">
@@ -22,7 +22,8 @@
         <div class="flex flex-col gap-4 w-full mb-10">
             <div *ngFor="let option of durationOptions" (click)="selectDuration(option)" [ngClass]="{
                     'border-[#0d7ff2] ring-2 ring-[#0d7ff2]/10 bg-white selected-option': selectedDuration()?.minutes === option.minutes,
-                    'border-slate-100 bg-white hover:border-[#0d7ff2]/30 shadow-sm': selectedDuration()?.minutes !== option.minutes
+                    'border-slate-100 bg-white hover:border-[#0d7ff2]/30 shadow-sm': selectedDuration()?.minutes !== option.minutes,
+                    'opacity-60 grayscale-[0.5]': currentState() !== 'IDLE'
                  }"
                 class="p-3 rounded-2xl border transition-all cursor-pointer flex items-center justify-between group">
 
@@ -53,30 +54,57 @@
             </div>
         </div>
 
-        <!-- Payment Details (Always visible or shows up on select) -->
+        <!-- Multi-State Action Button Section -->
         <div
             class="w-full bg-white rounded-3xl shadow-lg shadow-slate-200/60 border border-slate-50 p-8 flex flex-col items-center mb-8">
 
+            <button (click)="handlePrimaryAction()" [disabled]="currentState() === 'PROCESSING' || !selectedDuration()"
+                [ngClass]="{
+                        'bg-[#f1f5f9] text-[#0f172a] hover:bg-slate-200': currentState() === 'IDLE' || currentState() === 'READY',
+                        'bg-slate-100 text-slate-400 cursor-wait': currentState() === 'PROCESSING',
+                        'bg-emerald-500 text-white': currentState() === 'SUCCESS'
+                    }"
+                class="w-full font-bold py-5 px-6 rounded-2xl transition-all flex items-center justify-center gap-3 mb-6 active:scale-[0.98]">
 
-            <button (click)="copyPixKey()"
-                class="w-full bg-[#f1f5f9] hover:bg-slate-200 text-[#0f172a] font-bold py-4 px-6 rounded-2xl transition-all flex items-center justify-center gap-3 mb-6 group">
-                <span class="material-icons-outlined text-xl">content_copy</span>
-                <span class="text-[15px]">Copiar Chave Pix</span>
+                <ng-container [ngSwitch]="currentState()">
+                    <!-- IDLE State -->
+                    <div *ngSwitchCase="'IDLE'" class="flex items-center gap-2">
+                        <span class="text-[16px]">Confirmar compra</span>
+                    </div>
+
+                    <!-- PROCESSING State -->
+                    <div *ngSwitchCase="'PROCESSING'" class="flex items-center gap-3">
+                        <div class="w-5 h-5 border-2 border-slate-300 border-t-white rounded-full animate-spin"></div>
+                        <span class="text-[16px]">Processando...</span>
+                    </div>
+
+                    <!-- READY State -->
+                    <div *ngSwitchCase="'READY'" class="flex items-center gap-3">
+                        <span class="material-icons-outlined text-xl">content_copy</span>
+                        <span class="text-[16px]">Copiar Chave Pix / Pagar</span>
+                    </div>
+
+                    <!-- SUCCESS State -->
+                    <div *ngSwitchCase="'SUCCESS'" class="flex items-center gap-2">
+                        <span class="material-icons-outlined text-xl">check_circle</span>
+                        <span class="text-[16px]">Sucesso!</span>
+                    </div>
+                </ng-container>
             </button>
 
-            <p class="text-[11px] text-slate-300 font-medium text-center">
-                Aguardando confirmação do pagamento...
+            <!-- Dynamic Bottom Message -->
+            <p class="text-[11px] font-medium text-center transition-all duration-300" [ngClass]="{
+                   'text-slate-400': currentState() === 'IDLE' || currentState() === 'READY',
+                   'text-[#0d7ff2]': currentState() === 'PROCESSING',
+                   'text-emerald-500': currentState() === 'SUCCESS'
+               }">
+                <ng-container [ngSwitch]="currentState()">
+                    <span *ngSwitchCase="'IDLE'">Clique aqui para finalizar a compra</span>
+                    <span *ngSwitchCase="'PROCESSING'">Aguarde processamento...</span>
+                    <span *ngSwitchCase="'READY'">Efetue o pagamento.</span>
+                    <span *ngSwitchCase="'SUCCESS'">Pagamento confirmado! Direcionando...</span>
+                </ng-container>
             </p>
-        </div>
-
-        <!-- Bottom Action -->
-        <div
-            class="w-full bg-white p-4 rounded-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.02)] fixed bottom-0 left-0 right-0 flex justify-center md:static md:bg-transparent md:p-0 md:shadow-none">
-            <button
-                class="w-full max-w-lg bg-[#0d7ff2] hover:bg-[#0a6ed5] text-white font-bold py-5 px-8 rounded-2xl transition-all flex items-center justify-center gap-3 shadow-xl shadow-blue-600/20 mb-6 active:scale-[0.98]">
-                <span class="text-[16px]">Confirmar e Pagar</span>
-                <span class="material-icons-outlined">arrow_forward</span>
-            </button>
         </div>
     </main>
 </div>

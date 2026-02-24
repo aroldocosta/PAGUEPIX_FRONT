@@ -9,6 +9,8 @@ interface DurationOption {
     icon: string;
 }
 
+export type PurchaseState = 'IDLE' | 'PROCESSING' | 'READY' | 'SUCCESS';
+
 @Component({
     selector: 'app-sales-time',
     standalone: true,
@@ -19,6 +21,7 @@ interface DurationOption {
 export class SalesTimeComponent {
     selectedDuration = signal<DurationOption | null>(null);
     pixKey = signal('00020126360014BR.GOV.BCB.PIX0114+55119999999995204000053039865802BR5913PaguePix Inc 6009SAO PAULO62070503***6304ABCD');
+    currentState = signal<PurchaseState>('IDLE');
 
     durationOptions: DurationOption[] = [
         { minutes: 1, label: '1 minuto', description: 'Banho ultra-rápido', price: 1.0, icon: 'timer' },
@@ -32,7 +35,25 @@ export class SalesTimeComponent {
     }
 
     selectDuration(option: DurationOption) {
-        this.selectedDuration.set(option);
+        if (this.currentState() === 'IDLE') {
+            this.selectedDuration.set(option);
+        }
+    }
+
+    handlePrimaryAction() {
+        const state = this.currentState();
+
+        if (state === 'IDLE') {
+            this.currentState.set('PROCESSING');
+            // Simulate API call to fetch Pix Key/Link
+            setTimeout(() => {
+                this.currentState.set('READY');
+            }, 2000);
+        } else if (state === 'READY') {
+            this.copyPixKey();
+        } else if (state === 'SUCCESS') {
+            console.log('Redirecting to success page...');
+        }
     }
 
     copyPixKey() {
