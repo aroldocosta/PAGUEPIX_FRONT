@@ -1,19 +1,18 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
-import { TopbarComponent } from '../../../shared/components/topbar/topbar.component';
-import { FooterComponent } from '../../../shared/components/footer/footer.component';
+import { ManagementLayoutComponent } from '../../../shared/components/management-layout/management-layout.component';
 import { DeviceService } from '../../../core/services/device.service';
 
 @Component({
     selector: 'app-device-management',
     standalone: true,
-    imports: [CommonModule, SidebarComponent, TopbarComponent, FooterComponent],
+    imports: [CommonModule, ManagementLayoutComponent],
     templateUrl: './devices.html',
     styleUrl: './devices.scss'
 })
 export class DeviceManagement implements OnInit {
     devices = signal<any[]>([]);
+    hasData = computed(() => this.devices().length > 0);
     loading = signal(true);
 
     constructor(private deviceService: DeviceService) { }

@@ -1,0 +1,66 @@
+<div class="flex h-screen bg-gray-50 dark:bg-slate-950 font-sans">
+    <!-- Sidebar -->
+    <app-sidebar></app-sidebar>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <app-topbar [searchPlaceholder]="searchPlaceholder"></app-topbar>
+
+        <main class="flex-1 overflow-y-auto p-4 md:p-10">
+            <header class="flex items-center justify-between mb-10">
+                <div>
+                    <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">{{ title }}</h1>
+                    <p class="text-gray-500 dark:text-slate-400 mt-1">{{ subtitle }}</p>
+                </div>
+                <div class="flex items-center gap-4" *ngIf="addButtonLabel">
+                    <button
+                        class="bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-blue-700 shadow-md shadow-blue-200 dark:shadow-none transition-all flex items-center gap-2">
+                        <span class="material-icons-outlined text-sm">{{ addButtonIcon }}</span> {{ addButtonLabel }}
+                    </button>
+                </div>
+            </header>
+
+            <!-- Table Container -->
+            <div
+                class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 ring-1 ring-gray-900/5 dark:ring-white/10 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <!-- Loading State -->
+                    <div *ngIf="loading()" class="p-12 flex flex-col items-center justify-center space-y-4">
+                        <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin">
+                        </div>
+                        <p class="text-gray-500 dark:text-slate-400 font-medium">Carregando...</p>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div *ngIf="!loading() && !hasData()" class="p-12 text-center">
+                        <span class="material-icons-outlined text-4xl text-gray-300 dark:text-slate-700 mb-2">{{
+                            emptyStateIcon }}</span>
+                        <p class="text-gray-500 dark:text-slate-400">{{ emptyStateMessage }}</p>
+                    </div>
+
+                    <!-- Custom Table Content -->
+                    <div *ngIf="!loading() && hasData()">
+                        <ng-container *ngTemplateOutlet="tableContent || defaultTable"></ng-container>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-10">
+                <app-footer></app-footer>
+            </div>
+        </main>
+    </div>
+</div>
+
+<ng-template #defaultTable>
+    <table class="w-full text-left border-collapse">
+        <thead class="bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800">
+            <tr>
+                <ng-container *ngTemplateOutlet="tableHeader"></ng-container>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 dark:divide-slate-800">
+            <ng-container *ngTemplateOutlet="tableRow"></ng-container>
+        </tbody>
+    </table>
+</ng-template>

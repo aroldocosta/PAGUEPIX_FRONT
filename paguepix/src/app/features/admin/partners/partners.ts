@@ -1,19 +1,19 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
-import { TopbarComponent } from '../../../shared/components/topbar/topbar.component';
-import { FooterComponent } from '../../../shared/components/footer/footer.component';
+import { ManagementLayoutComponent } from '../../../shared/components/management-layout/management-layout.component';
 import { PartnerService } from '../../../core/services/partner.service';
+import { Partner } from '../../../core/models/partner.model';
 
 @Component({
     selector: 'app-partner-management',
     standalone: true,
-    imports: [CommonModule, SidebarComponent, TopbarComponent, FooterComponent],
+    imports: [CommonModule, ManagementLayoutComponent],
     templateUrl: './partners.html',
     styleUrl: './partners.scss'
 })
 export class PartnerManagement implements OnInit {
-    partners = signal<any[]>([]);
+    partners = signal<Partner[]>([]);
+    hasData = computed(() => this.partners().length > 0);
     loading = signal(true);
 
     constructor(private partnerService: PartnerService) { }

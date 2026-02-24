@@ -1,19 +1,18 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
-import { TopbarComponent } from '../../../shared/components/topbar/topbar.component';
-import { FooterComponent } from '../../../shared/components/footer/footer.component';
+import { ManagementLayoutComponent } from '../../../shared/components/management-layout/management-layout.component';
 import { BoardService } from '../../../core/services/board.service';
 
 @Component({
     selector: 'app-board-management',
     standalone: true,
-    imports: [CommonModule, SidebarComponent, TopbarComponent, FooterComponent],
+    imports: [CommonModule, ManagementLayoutComponent],
     templateUrl: './boards.html',
     styleUrl: './boards.scss'
 })
 export class BoardManagement implements OnInit {
     boards = signal<any[]>([]);
+    hasData = computed(() => this.boards().length > 0);
     loading = signal(true);
 
     constructor(private boardService: BoardService) { }
