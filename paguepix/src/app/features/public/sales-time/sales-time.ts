@@ -9,7 +9,7 @@ interface DurationOption {
     icon: string;
 }
 
-export type PurchaseState = 'IDLE' | 'PROCESSING' | 'READY' | 'SUCCESS';
+export type PurchaseState = 'IDLE' | 'PROCESSING' | 'READY' | 'SUCCESS' | 'ERROR';
 export type PaymentType = 'PIX' | 'LINK';
 
 @Component({
@@ -25,6 +25,8 @@ export class SalesTimeComponent {
     paymentLink = signal('https://link.mercadopago.com.br/paguepix_exemplo');
     paymentType = signal<PaymentType>('PIX');
     currentState = signal<PurchaseState>('IDLE');
+    productName = signal('Banho Quente');
+    errorMessage = signal('');
 
     durationOptions: DurationOption[] = [
         { minutes: 1, label: '1 minuto', description: 'Banho ultra-rápido', price: 1.0, icon: 'timer' },
@@ -40,6 +42,7 @@ export class SalesTimeComponent {
     selectDuration(option: DurationOption) {
         if (this.currentState() === 'IDLE') {
             this.selectedDuration.set(option);
+            this.productName.set(option.label);
         }
     }
 
@@ -50,10 +53,15 @@ export class SalesTimeComponent {
             this.currentState.set('PROCESSING');
             // Simulate API call to fetch Pix Key or Payment Link
             setTimeout(() => {
-                // Randomly toggle between PIX and LINK for simulation
-                const simulatedType: PaymentType = Math.random() > 0.5 ? 'PIX' : 'LINK';
-                this.paymentType.set(simulatedType);
-                this.currentState.set('READY');
+                const rand = Math.random();
+                if (rand < 0.1) { // 10% chance of immediate error for simulation
+                    this.errorMessage.set('Falha na conexão com o provedor de pagamento.');
+                    this.currentState.set('ERROR');
+                } else {
+                    const simulatedType: PaymentType = rand > 0.5 ? 'PIX' : 'LINK';
+                    this.paymentType.set(simulatedType);
+                    this.currentState.set('READY');
+                }
             }, 2000);
         } else if (state === 'READY') {
             if (this.paymentType() === 'PIX') {
@@ -61,14 +69,34 @@ export class SalesTimeComponent {
             } else {
                 this.openPaymentLink();
             }
-        } else if (state === 'SUCCESS') {
-            console.log('Redirecting to success page...');
+
+            // Simulate payment verification after a delay
+            this.simulatePaymentConfirmation();
+        } else if (state === 'SUCCESS' || state === 'ERROR') {
+            this.reset();
         }
+    }
+
+    simulatePaymentConfirmation() {
+        setTimeout(() => {
+            const rand = Math.random();
+            if (rand > 0.3) {
+                this.currentState.set('SUCCESS');
+            } else {
+                this.errorMessage.set('O pagamento não foi detectado. Tente novamente.');
+                this.currentState.set('ERROR');
+            }
+        }, 3000);
+    }
+
+    reset() {
+        this.currentState.set('IDLE');
+        this.errorMessage.set('');
     }
 
     copyPixKey() {
         navigator.clipboard.writeText(this.pixKey()).then(() => {
-            alert('Chave Pix copiada!');
+            console.log('Chave Pix copiada!');
         });
     }
 
