@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 
 interface DurationOption {
     minutes: number;
@@ -22,11 +23,12 @@ export type PaymentType = 'PIX' | 'LINK';
 export class SalesTimeComponent {
     selectedDuration = signal<DurationOption | null>(null);
     pixKey = signal('00020126360014BR.GOV.BCB.PIX0114+55119999999995204000053039865802BR5913PaguePix Inc 6009SAO PAULO62070503***6304ABCD');
-    paymentLink = signal('https://link.mercadopago.com.br/paguepix_exemplo');
+    paymentLink = signal('/paguepix_exemplo');
     paymentType = signal<PaymentType>('PIX');
     currentState = signal<PurchaseState>('IDLE');
     productName = signal('Banho Quente');
     errorMessage = signal('');
+    showCopySuccess = signal(false);
 
     durationOptions: DurationOption[] = [
         { minutes: 1, label: '1 minuto', description: 'Banho ultra-rápido', price: 1.0, icon: 'timer' },
@@ -37,6 +39,16 @@ export class SalesTimeComponent {
 
     constructor() {
         this.selectedDuration.set(this.durationOptions[1]); // Default to 3 minutes (index 1)
+
+        // Handle result from simulation redirect
+        const route = inject(ActivatedRoute);
+        const result = route.snapshot.queryParamMap.get('result');
+        if (result === 'success') {
+            this.currentState.set('SUCCESS');
+        } else if (result === 'error') {
+            this.errorMessage.set('O pagamento não foi autorizado pelo Mercado Pago. Tente novamente.');
+            this.currentState.set('ERROR');
+        }
     }
 
     selectDuration(option: DurationOption) {
@@ -70,8 +82,10 @@ export class SalesTimeComponent {
                 this.openPaymentLink();
             }
 
-            // Simulate payment verification after a delay
-            this.simulatePaymentConfirmation();
+            // Simulate payment verification after a delay (only for PIX)
+            if (this.paymentType() === 'PIX') {
+                this.simulatePaymentConfirmation();
+            }
         } else if (state === 'SUCCESS' || state === 'ERROR') {
             this.reset();
         }
@@ -97,6 +111,9 @@ export class SalesTimeComponent {
     copyPixKey() {
         navigator.clipboard.writeText(this.pixKey()).then(() => {
             console.log('Chave Pix copiada!');
+            alert('Chave Pix copiada para a área de transferência!');
+            this.showCopySuccess.set(true);
+            setTimeout(() => this.showCopySuccess.set(false), 3000);
         });
     }
 

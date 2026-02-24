@@ -1,0 +1,44 @@
+<div class="min-h-screen bg-[#f5f5f5] font-sans flex flex-col items-center justify-center p-6 text-[#333]">
+    <div class="max-w-md w-full bg-white rounded-lg shadow-md p-8 flex flex-col items-center">
+        <!-- Mercado Pago Logo Simulation -->
+        <div class="flex items-center gap-2 mb-8">
+            <div class="w-10 h-10 bg-[#009ee3] rounded-full flex items-center justify-center">
+                <span class="material-icons-outlined text-white text-2xl">payments</span>
+            </div>
+            <span class="font-bold text-2xl text-[#009ee3]">mercado pago</span>
+        </div>
+
+        <div class="relative w-16 h-16 mb-6">
+            <div class="absolute inset-0 border-4 border-[#009ee3]/20 rounded-full"></div>
+            <div class="absolute inset-0 border-4 border-[#009ee3] border-t-transparent rounded-full animate-spin">
+            </div>
+        </div>
+
+        <h1 class="text-xl font-bold mb-2">Processando seu pagamento</h1>
+        <p class="text-slate-500 text-center mb-8">
+            Por favor, não feche esta janela. Estamos confirmando os dados com o seu banco.
+        </p>
+
+        <div class="w-full space-y-4">
+            <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full bg-[#009ee3] w-2/3 animate-[progress_3s_ease-in-out]"></div>
+            </div>
+            <p class="text-[12px] text-slate-400 text-center uppercase tracking-widest font-bold">
+                Segurança garantida pelo Mercado Pago
+            </p>
+        </div>
+    </div>
+
+    <!-- Styles for the progress bar animation -->
+    <style>
+        @keyframes progress {
+            0% {
+                width: 0%;
+            }
+
+            100% {
+                width: 100%;
+            }
+        }
+    </style>
+</div>

@@ -101,8 +101,15 @@
                             <span *ngSwitchCase="'IDLE'">Clique aqui para finalizar a compra</span>
                             <span *ngSwitchCase="'PROCESSING'">Aguarde processamento...</span>
                             <span *ngSwitchCase="'READY'">
-                                {{ paymentType() === 'PIX' ? 'Efetue o pagamento via Pix Copia e Cola.' : 'Você será
-                                redirecionado para o Mercado Pago.' }}
+                                <ng-container *ngIf="!showCopySuccess()">
+                                    {{ paymentType() === 'PIX' ? 'Efetue o pagamento via Pix Copia e Cola.' : 'Você será
+                                    redirecionado para o Mercado Pago.' }}
+                                </ng-container>
+                                <span *ngIf="showCopySuccess()"
+                                    class="text-emerald-500 font-bold flex items-center justify-center gap-1">
+                                    <span class="material-icons-outlined text-sm">check_circle</span>
+                                    Chave Pix Copiada!
+                                </span>
                             </span>
                         </ng-container>
                     </p>
