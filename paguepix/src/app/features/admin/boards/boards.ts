@@ -15,6 +15,7 @@ export class BoardManagement implements OnInit {
     hasData = computed(() => this.boards().length > 0);
     loading = signal(true);
 
+
     constructor(private boardService: BoardService) { }
 
     ngOnInit() {
