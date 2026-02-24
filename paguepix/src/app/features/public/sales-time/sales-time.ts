@@ -10,6 +10,7 @@ interface DurationOption {
 }
 
 export type PurchaseState = 'IDLE' | 'PROCESSING' | 'READY' | 'SUCCESS';
+export type PaymentType = 'PIX' | 'LINK';
 
 @Component({
     selector: 'app-sales-time',
@@ -21,6 +22,8 @@ export type PurchaseState = 'IDLE' | 'PROCESSING' | 'READY' | 'SUCCESS';
 export class SalesTimeComponent {
     selectedDuration = signal<DurationOption | null>(null);
     pixKey = signal('00020126360014BR.GOV.BCB.PIX0114+55119999999995204000053039865802BR5913PaguePix Inc 6009SAO PAULO62070503***6304ABCD');
+    paymentLink = signal('https://link.mercadopago.com.br/paguepix_exemplo');
+    paymentType = signal<PaymentType>('PIX');
     currentState = signal<PurchaseState>('IDLE');
 
     durationOptions: DurationOption[] = [
@@ -45,12 +48,19 @@ export class SalesTimeComponent {
 
         if (state === 'IDLE') {
             this.currentState.set('PROCESSING');
-            // Simulate API call to fetch Pix Key/Link
+            // Simulate API call to fetch Pix Key or Payment Link
             setTimeout(() => {
+                // Randomly toggle between PIX and LINK for simulation
+                const simulatedType: PaymentType = Math.random() > 0.5 ? 'PIX' : 'LINK';
+                this.paymentType.set(simulatedType);
                 this.currentState.set('READY');
             }, 2000);
         } else if (state === 'READY') {
-            this.copyPixKey();
+            if (this.paymentType() === 'PIX') {
+                this.copyPixKey();
+            } else {
+                this.openPaymentLink();
+            }
         } else if (state === 'SUCCESS') {
             console.log('Redirecting to success page...');
         }
@@ -60,5 +70,9 @@ export class SalesTimeComponent {
         navigator.clipboard.writeText(this.pixKey()).then(() => {
             alert('Chave Pix copiada!');
         });
+    }
+
+    openPaymentLink() {
+        window.open(this.paymentLink(), '_blank');
     }
 }

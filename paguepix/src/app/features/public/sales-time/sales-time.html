@@ -69,31 +69,37 @@
                 <ng-container [ngSwitch]="currentState()">
                     <!-- IDLE State -->
                     <div *ngSwitchCase="'IDLE'" class="flex items-center gap-2">
-                        <span class="text-[16px]">Confirmar compra</span>
+                        <span class="text-[1.2em]">Confirmar compra</span>
                     </div>
 
                     <!-- PROCESSING State -->
                     <div *ngSwitchCase="'PROCESSING'" class="flex items-center gap-3">
                         <div class="w-5 h-5 border-2 border-slate-300 border-t-white rounded-full animate-spin"></div>
-                        <span class="text-[16px]">Processando...</span>
+                        <span class="text-[1.2em]">Processando...</span>
                     </div>
 
                     <!-- READY State -->
                     <div *ngSwitchCase="'READY'" class="flex items-center gap-3">
-                        <span class="material-icons-outlined text-xl">content_copy</span>
-                        <span class="text-[16px]">Copiar Chave Pix / Pagar</span>
+                        <ng-container *ngIf="paymentType() === 'PIX'">
+                            <span class="material-icons-outlined text-xl">content_copy</span>
+                            <span class="text-[1.2em]">Copiar Chave Pix</span>
+                        </ng-container>
+                        <ng-container *ngIf="paymentType() === 'LINK'">
+                            <span class="material-icons-outlined text-xl">payments</span>
+                            <span class="text-[1.2em]">PAGAR</span>
+                        </ng-container>
                     </div>
 
                     <!-- SUCCESS State -->
                     <div *ngSwitchCase="'SUCCESS'" class="flex items-center gap-2">
                         <span class="material-icons-outlined text-xl">check_circle</span>
-                        <span class="text-[16px]">Sucesso!</span>
+                        <span class="text-[1.2em]">Sucesso!</span>
                     </div>
                 </ng-container>
             </button>
 
             <!-- Dynamic Bottom Message -->
-            <p class="text-[11px] font-medium text-center transition-all duration-300" [ngClass]="{
+            <p class="text-[1.0em] font-medium text-center transition-all duration-300" [ngClass]="{
                    'text-slate-400': currentState() === 'IDLE' || currentState() === 'READY',
                    'text-[#0d7ff2]': currentState() === 'PROCESSING',
                    'text-emerald-500': currentState() === 'SUCCESS'
@@ -101,7 +107,10 @@
                 <ng-container [ngSwitch]="currentState()">
                     <span *ngSwitchCase="'IDLE'">Clique aqui para finalizar a compra</span>
                     <span *ngSwitchCase="'PROCESSING'">Aguarde processamento...</span>
-                    <span *ngSwitchCase="'READY'">Efetue o pagamento.</span>
+                    <span *ngSwitchCase="'READY'">
+                        {{ paymentType() === 'PIX' ? 'Efetue o pagamento via Pix Copia e Cola.' : 'Você será
+                        redirecionado para o Mercado Pago.' }}
+                    </span>
                     <span *ngSwitchCase="'SUCCESS'">Pagamento confirmado! Direcionando...</span>
                 </ng-container>
             </p>
