@@ -18,7 +18,7 @@ import { authGuard } from './core/guards/auth.guard';
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'login', component: Login },
-    { path: 'sales', component: SalesTimeComponent },
+    { path: 'sales/:token', component: SalesTimeComponent },
     { path: 'paguepix_exemplo', component: MercadoPagoSimulationComponent },
     { path: 'admin/dashboard', component: Dashboard, canActivate: [authGuard] },
     { path: 'admin/payments', component: PaymentsManagement, canActivate: [authGuard] },

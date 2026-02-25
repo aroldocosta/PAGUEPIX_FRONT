@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Payment } from '../models/payment.model';
+import { Payment, ChargeResponse } from '../models/payment.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -32,6 +32,8 @@ export class PaymentService {
     }
 
     createCharge(request: any) {
-        return this.http.post<Payment>(`${this.apiUrl}/charge`, request);
+        // If the request is a string (encrypted payload), we might need to send it as an object
+        // depending on the backend expectation. For now, we'll pass it as is.
+        return this.http.post<ChargeResponse>(`${this.apiUrl}/charge`, request);
     }
 }

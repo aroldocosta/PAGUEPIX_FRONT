@@ -1,6 +1,10 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { PaymentService } from '../../../core/services/payment.service';
+import { CryptoService } from '../../../core/services/crypto.service';
+import { ChargeResponse, Payment } from '../../../core/models/payment.model';
+import { SealedPaymentRequest } from '../../../core/models/sealed-payment.model';
 
 interface DurationOption {
     minutes: number;
@@ -30,6 +34,12 @@ export class SalesTimeComponent {
     errorMessage = signal('');
     showCopySuccess = signal(false);
 
+    deviceId = signal<string | null>(null);
+    partnerId = signal<string | null>(null);
+
+    private paymentService = inject(PaymentService);
+    private cryptoService = inject(CryptoService);
+
     durationOptions: DurationOption[] = [
         { minutes: 1, label: '1 minuto', description: 'Banho ultra-rápido', price: 1.0, icon: 'timer' },
         { minutes: 3, label: '3 minutos', description: 'O mais popular', price: 3.0, icon: 'timer' },
@@ -42,12 +52,52 @@ export class SalesTimeComponent {
 
         // Handle result from simulation redirect
         const route = inject(ActivatedRoute);
-        const result = route.snapshot.queryParamMap.get('result');
+        const params = route.snapshot.queryParamMap;
+
+        const result = params.get('result');
         if (result === 'success') {
             this.currentState.set('SUCCESS');
         } else if (result === 'error') {
             this.errorMessage.set('O pagamento não foi autorizado pelo Mercado Pago. Tente novamente.');
             this.currentState.set('ERROR');
+        }
+
+        // Capture device and partner IDs from URL token (Suggestion 5 refined)
+        const pathParams = route.snapshot.paramMap;
+        const queryParams = route.snapshot.queryParamMap;
+
+        // Try path param first, then query param
+        const token = pathParams.get('token') || queryParams.get('token');
+
+        console.log("============================");
+        console.log("Token from URL:", token);
+        console.log("Token length:", token?.length);
+        console.log("============================");
+
+        if (token && token.length >= 36) {
+            // TSID Numeric representation is 18 digits each
+            this.deviceId.set(token.substring(0, 18));
+            this.partnerId.set(token.substring(18, 36));
+
+            console.log("Parsed from Token:");
+            console.log("Device ID:", this.deviceId());
+            console.log("Partner ID:", this.partnerId());
+            console.log("============================");
+        } else {
+            // Fallback for individual query params
+            const dId = queryParams.get('deviceId');
+            const pId = queryParams.get('partnerId');
+
+            if (dId || pId) {
+                this.deviceId.set(dId);
+                this.partnerId.set(pId);
+                console.log("Parsed from individual params:");
+                console.log("Device ID:", this.deviceId());
+                console.log("Partner ID:", this.partnerId());
+            } else {
+                console.log("No identification tokens found in URL");
+            }
+            console.log("============================");
         }
     }
 
@@ -63,6 +113,58 @@ export class SalesTimeComponent {
 
         if (state === 'IDLE') {
             this.currentState.set('PROCESSING');
+
+            // Call backend createCharge
+            const duration = this.selectedDuration();
+            const deviceId = this.deviceId();
+            const partnerId = this.partnerId();
+
+            // Suggestion 5: form "HASH_UNICO" (deviceToken)
+            const deviceToken = deviceId && partnerId ? `${deviceId}${partnerId}` : null;
+
+            alert(deviceToken);
+
+            // Secure Sealed Envelope Flow
+            const sealedRequest: SealedPaymentRequest = {
+                deviceToken: deviceToken || '',
+                duration: duration?.minutes || 0,
+                timestamp: new Date().toISOString()
+            };
+
+            // Using a real Public Key
+            const publicKeyPem = `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2n4/Bt6wtRWJId7AOVtx
+VHDrHxuwnFcP4H6K7I4tpbcEtejVvztwqwJ3zis6J0g7h7han0M24YZoUmpYE7ot
+X1TSSErJC6x0XkciVmnpJa3YUkhYBYsAHsQ8jGeZEiqCKbF2XaplppdpilSyuN2W
+RHgDgtilv+/9LuVDDp/jlFG+XMs30dPO8RdC9lXPwTfg/r1zqdsH6xNxH1yxgEXr
+YMpwSCCBuWr9sPZUI75FF6WSUE0mkQCWzn9awLKzhEbguTCuVIjr+nMFLTDH6sB5
+sy6q5O6rDBrDn2QuyXV03HOZ7BIFzvpiUmE5gKtyu11Nvv882hmIWRA4LzsT4rPc
+twIDAQAB
+-----END PUBLIC KEY-----`;
+
+            this.cryptoService.encrypt(sealedRequest, publicKeyPem).then(encryptedPayload => {
+                console.log('Encrypted Payload:', encryptedPayload);
+
+                // Construct the final request for the backend
+                // The backend will receive the encrypted string and decrypt it to get the details
+                const finalRequest = {
+                    payload: encryptedPayload
+                };
+
+                this.paymentService.createCharge(finalRequest).subscribe({
+                    next: (response: ChargeResponse) => {
+                        console.log('ChargeResponse received:', response);
+                    },
+                    error: (err) => {
+                        console.error('Error creating charge:', err);
+                    }
+                });
+            }).catch(err => {
+                console.error('Encryption failed:', err);
+                this.errorMessage.set('Falha ao processar segurança da transação.');
+                this.currentState.set('ERROR');
+            });
+
             // Simulate API call to fetch Pix Key or Payment Link
             setTimeout(() => {
                 const rand = Math.random();
@@ -111,7 +213,7 @@ export class SalesTimeComponent {
     copyPixKey() {
         navigator.clipboard.writeText(this.pixKey()).then(() => {
             console.log('Chave Pix copiada!');
-            alert('Chave Pix copiada para a área de transferência!');
+            // alert('Chave Pix copiada para a área de transferência!');
             this.showCopySuccess.set(true);
             setTimeout(() => this.showCopySuccess.set(false), 3000);
         });
