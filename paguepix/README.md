@@ -90,3 +90,27 @@ Make sure to run `npm install` before using the MCP server to ensure all depende
 For detailed instructions on how to link this project with Google Stitch (to sync UI designs), please refer to [docs/STITCH_SETUP.md](docs/STITCH_SETUP.md).
 
 
+
+## Documentação de Segurança: Sealed Envelope
+
+Foi implementada uma estratégia de **"Sealed Envelope"** (Envelope Selado) para garantir a integridade e segurança na criação de cobranças a partir de páginas públicas.
+
+### O Fluxo de Segurança
+1.  **Captura de Identidade**: O sistema extrai o `deviceId` e `partnerId` a partir de um token de 26 caracteres na URL (geralmente via QR Code).
+2.  **Montagem da Intenção**: Antes de enviar ao backend, o frontend agrupa os IDs, o tempo selecionado pelo usuário (`duration`) e um `timestamp` de criação.
+3.  **Criptografia RSA (Asimétrica)**: Utilizando a **Web Crypto API** nativa, esses dados são encriptados com uma **Chave Pública RSA**.
+4.  **Envelope Selado**: O resultado é uma string Base64 opaca que é enviada ao backend. Somente o backend (possuindo a Chave Privada) consegue ler o conteúdo.
+5.  **Validação de Expiração**: O backend valida se a requisição é recente (limite de 3 minutos) para evitar ataques de replay.
+
+### Benefícios
+- **Impedimento de Fraude**: O usuário não consegue alterar o valor ou o tempo da venda injetando dados no console.
+- **Privacidade**: IDs internos do banco de dados não trafegam de forma legível.
+- **Segurança de Dispositivo**: Um QR Code de uma máquina não pode ser usado para ativar outra máquina por meio de manipulação de URL.
+
+### Como Verificar
+1. Inicie o fluxo de compra na rota `/sales/:token`.
+2. Verifique no console do navegador o log `"Encrypted Payload:"`.
+3. Certifique-se de que a requisição para o backend contém apenas o campo `payload` encriptado.
+
+> [!IMPORTANT]
+> A implementação utiliza **RSA-OAEP** com hash **SHA-256**. A chave pública deve ser configurada no `SalesTimeComponent`.

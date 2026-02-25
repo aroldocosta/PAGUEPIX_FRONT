@@ -24,3 +24,26 @@ export interface Payment {
     netAmount?: number;
     totalPaidAmount?: number;
 }
+
+export interface ChargeResponse {
+    id: string;
+    value: string;
+    type: string;
+    description: string;
+    date: string;
+    time: string;
+    deviceCode: string;
+    externalId: string;
+    externalReference: string;
+    paymentLink: string;
+    qrCode: string | null;
+    state: string;
+    device: {
+        id: string;
+        code: string;
+    };
+    partner: {
+        id: string;
+        name: string;
+    };
+}
