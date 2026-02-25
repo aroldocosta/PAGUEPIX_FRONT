@@ -122,8 +122,6 @@ export class SalesTimeComponent {
             // Suggestion 5: form "HASH_UNICO" (deviceToken)
             const deviceToken = deviceId && partnerId ? `${deviceId}${partnerId}` : null;
 
-            alert(deviceToken);
-
             // Secure Sealed Envelope Flow
             const sealedRequest: SealedPaymentRequest = {
                 deviceToken: deviceToken || '',
@@ -154,9 +152,24 @@ twIDAQAB
                 this.paymentService.createCharge(finalRequest).subscribe({
                     next: (response: ChargeResponse) => {
                         console.log('ChargeResponse received:', response);
+
+                        // Business Logic: 
+                        // 1 - If qrCode is null, it's a payment link
+                        // 2 - If qrCode is present, it's a PIX payment
+                        if (response.qrCode) {
+                            this.paymentType.set('PIX');
+                            this.pixKey.set(response.qrCode);
+                        } else {
+                            this.paymentType.set('LINK');
+                            this.paymentLink.set(response.paymentLink);
+                        }
+
+                        this.currentState.set('READY');
                     },
                     error: (err) => {
                         console.error('Error creating charge:', err);
+                        this.errorMessage.set('Falha na comunicação com o servidor. Tente novamente.');
+                        this.currentState.set('ERROR');
                     }
                 });
             }).catch(err => {
@@ -164,19 +177,6 @@ twIDAQAB
                 this.errorMessage.set('Falha ao processar segurança da transação.');
                 this.currentState.set('ERROR');
             });
-
-            // Simulate API call to fetch Pix Key or Payment Link
-            setTimeout(() => {
-                const rand = Math.random();
-                if (rand < 0.1) { // 10% chance of immediate error for simulation
-                    this.errorMessage.set('Falha na conexão com o provedor de pagamento.');
-                    this.currentState.set('ERROR');
-                } else {
-                    const simulatedType: PaymentType = rand > 0.5 ? 'PIX' : 'LINK';
-                    this.paymentType.set(simulatedType);
-                    this.currentState.set('READY');
-                }
-            }, 2000);
         } else if (state === 'READY') {
             if (this.paymentType() === 'PIX') {
                 this.copyPixKey();
