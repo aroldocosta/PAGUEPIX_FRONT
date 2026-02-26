@@ -36,4 +36,8 @@ export class PaymentService {
         // depending on the backend expectation. For now, we'll pass it as is.
         return this.http.post<ChargeResponse>(`${this.apiUrl}/charge`, request);
     }
+
+    getPaymentStatus(request: { payload: string }) {
+        return this.http.post<any>(`${this.apiUrl}/status`, request);
+    }
 }
