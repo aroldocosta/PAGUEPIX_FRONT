@@ -209,7 +209,7 @@ twIDAQAB
             console.log(`Verificando status do pagamento... [${elapsedSeconds}s]`);
 
             // Check for timeout (2 minutes = 120 seconds)
-            if (elapsedSeconds >= 120) {
+            if (elapsedSeconds >= 300) {
                 this.stopPolling();
                 this.errorMessage.set('Ah, o tempo para este pagamento expirou! 🕒 Por favor, volte e gere um novo código Pix para continuar. Estamos aqui se precisar de ajuda!');
                 this.currentState.set('ERROR');
