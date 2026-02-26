@@ -154,7 +154,7 @@ twIDAQAB
                     payload: encryptedPayload
                 };
 
-                this.paymentService.createCharge(finalRequest).subscribe({
+                this.paymentService.createChargeRsa(finalRequest).subscribe({
                     next: (response: ChargeResponse) => {
                         console.log('ChargeResponse received:', response);
 
@@ -240,7 +240,7 @@ twIDAQAB
 -----END PUBLIC KEY-----`;
 
             this.cryptoService.encrypt(statusRequest, publicKeyPem).then(encryptedPayload => {
-                this.paymentService.getPaymentStatus({ payload: encryptedPayload }).subscribe({
+                this.paymentService.getPaymentStatusRsa({ payload: encryptedPayload }).subscribe({
                     next: (response) => {
                         console.log('Status do pagamento recebido:', response.state);
                         if (response.state === 'PAID' || response.state === 'SUCCESS') {

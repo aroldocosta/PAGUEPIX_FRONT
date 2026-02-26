@@ -31,13 +31,29 @@ export class PaymentService {
         return this.http.post<string>(`${this.apiUrl}/payout`, request);
     }
 
+    createChargeRsa(request: { payload: string }) {
+        return this.http.post<ChargeResponse>(`${this.apiUrl}/charge/rsa`, request);
+    }
+
+    createChargeJwt(request: any) {
+        return this.http.post<ChargeResponse>(`${this.apiUrl}/charge/jwt`, request);
+    }
+
+    getPaymentStatusRsa(request: { payload: string }) {
+        return this.http.post<any>(`${this.apiUrl}/status/rsa`, request);
+    }
+
+    getPaymentStatusJwt(request: { externalId: string }) {
+        return this.http.post<any>(`${this.apiUrl}/status/jwt`, request);
+    }
+
+    // Deprecated generic methods - keep for compatibility if needed elsewhere, 
+    // but update to redirect to RSA by default for now if it's the primary use case
     createCharge(request: any) {
-        // If the request is a string (encrypted payload), we might need to send it as an object
-        // depending on the backend expectation. For now, we'll pass it as is.
-        return this.http.post<ChargeResponse>(`${this.apiUrl}/charge`, request);
+        return this.createChargeRsa(request);
     }
 
     getPaymentStatus(request: { payload: string }) {
-        return this.http.post<any>(`${this.apiUrl}/status`, request);
+        return this.getPaymentStatusRsa(request);
     }
 }
