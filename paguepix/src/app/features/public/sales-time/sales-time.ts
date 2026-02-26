@@ -4,7 +4,8 @@ import { ActivatedRoute } from '@angular/router';
 import { PaymentService } from '../../../core/services/payment.service';
 import { CryptoService } from '../../../core/services/crypto.service';
 import { ChargeResponse, Payment } from '../../../core/models/payment.model';
-import { SealedPaymentRequest } from '../../../core/models/sealed-payment.model';
+import { SealedPaymentRequest, SealedStatusRequest } from '../../../core/models/sealed-payment.model';
+import { OnDestroy } from '@angular/core';
 
 interface DurationOption {
     minutes: number;
@@ -24,7 +25,7 @@ export type PaymentType = 'PIX' | 'LINK';
     templateUrl: './sales-time.html',
     styleUrl: './sales-time.scss'
 })
-export class SalesTimeComponent {
+export class SalesTimeComponent implements OnDestroy {
     selectedDuration = signal<DurationOption | null>(null);
     pixKey = signal('00020126360014BR.GOV.BCB.PIX0114+55119999999995204000053039865802BR5913PaguePix Inc 6009SAO PAULO62070503***6304ABCD');
     paymentLink = signal('/paguepix_exemplo');
@@ -36,6 +37,10 @@ export class SalesTimeComponent {
 
     deviceId = signal<string | null>(null);
     partnerId = signal<string | null>(null);
+    lastChargeResponse = signal<ChargeResponse | null>(null);
+
+    private pollingInterval: any = null;
+    private pollingStartTime: number = 0;
 
     private paymentService = inject(PaymentService);
     private cryptoService = inject(CryptoService);
@@ -153,6 +158,8 @@ twIDAQAB
                     next: (response: ChargeResponse) => {
                         console.log('ChargeResponse received:', response);
 
+                        this.lastChargeResponse.set(response);
+
                         // Business Logic: 
                         // 1 - If qrCode is null, it's a payment link
                         // 2 - If qrCode is present, it's a PIX payment
@@ -184,28 +191,92 @@ twIDAQAB
                 this.openPaymentLink();
             }
 
-            // Simulate payment verification after a delay (only for PIX)
-            if (this.paymentType() === 'PIX') {
-                this.simulatePaymentConfirmation();
-            }
+            // Start polling for payment status
+            this.startStatusPolling();
         } else if (state === 'SUCCESS' || state === 'ERROR') {
             this.reset();
         }
     }
 
-    simulatePaymentConfirmation() {
-        setTimeout(() => {
-            const rand = Math.random();
-            if (rand > 0.3) {
-                this.currentState.set('SUCCESS');
-            } else {
-                this.errorMessage.set('O pagamento não foi detectado. Tente novamente.');
+    startStatusPolling() {
+        if (this.pollingInterval) return;
+
+        this.pollingStartTime = Date.now();
+        console.log('Iniciando monitoramento do pagamento...');
+
+        this.pollingInterval = setInterval(() => {
+            const elapsedSeconds = Math.floor((Date.now() - this.pollingStartTime) / 1000);
+            console.log(`Verificando status do pagamento... [${elapsedSeconds}s]`);
+
+            // Check for timeout (2 minutes = 120 seconds)
+            if (elapsedSeconds >= 120) {
+                this.stopPolling();
+                this.errorMessage.set('Ah, o tempo para este pagamento expirou! 🕒 Por favor, volte e gere um novo código Pix para continuar. Estamos aqui se precisar de ajuda!');
                 this.currentState.set('ERROR');
+                return;
             }
-        }, 3000);
+
+            const charge = this.lastChargeResponse();
+            if (!charge) {
+                this.stopPolling();
+                return;
+            }
+
+            const statusRequest: SealedStatusRequest = {
+                deviceId: this.deviceId() || '',
+                partnerId: this.partnerId() || '',
+                externalId: charge.externalId,
+                timestamp: new Date().toISOString()
+            };
+
+            const publicKeyPem = `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2n4/Bt6wtRWJId7AOVtx
+VHDrHxuwnFcP4H6K7I4tpbcEtejVvztwqwJ3zis6J0g7h7han0M24YZoUmpYE7ot
+X1TSSErJC6x0XkciVmnpJa3YUkhYBYsAHsQ8jGeZEiqCKbF2XaplppdpilSyuN2W
+RHgDgtilv+/9LuVDDp/jlFG+XMs30dPO8RdC9lXPwTfg/r1zqdsH6xNxH1yxgEXr
+YMpwSCCBuWr9sPZUI75FF6WSUE0mkQCWzn9awLKzhEbguTCuVIjr+nMFLTDH6sB5
+sy6q5O6rDBrDn2QuyXV03HOZ7BIFzvpiUmE5gKtyu11Nvv882hmIWRA4LzsT4rPc
+twIDAQAB
+-----END PUBLIC KEY-----`;
+
+            this.cryptoService.encrypt(statusRequest, publicKeyPem).then(encryptedPayload => {
+                this.paymentService.getPaymentStatus({ payload: encryptedPayload }).subscribe({
+                    next: (response) => {
+                        console.log('Status do pagamento recebido:', response.state);
+                        if (response.state === 'PAID' || response.state === 'SUCCESS') {
+                            this.stopPolling();
+                            this.currentState.set('SUCCESS');
+                        } else if (response.state === 'ERROR' || response.state === 'REJECTED') {
+                            this.stopPolling();
+                            this.errorMessage.set('O pagamento não foi autorizado. Por favor, tente novamente ou use outra forma de pagamento.');
+                            this.currentState.set('ERROR');
+                        }
+                    },
+                    error: (err) => {
+                        console.error('Erro ao consultar status:', err);
+                    }
+                });
+            }).catch(err => {
+                console.error('Falha na criptografia do status:', err);
+                this.stopPolling();
+            });
+        }, 1000);
+    }
+
+    stopPolling() {
+        if (this.pollingInterval) {
+            clearInterval(this.pollingInterval);
+            this.pollingInterval = null;
+            console.log('Monitoramento de pagamento interrompido.');
+        }
+    }
+
+    ngOnDestroy() {
+        this.stopPolling();
     }
 
     reset() {
+        this.stopPolling();
         this.currentState.set('IDLE');
         this.errorMessage.set('');
     }
