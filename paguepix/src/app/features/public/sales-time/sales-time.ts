@@ -71,6 +71,26 @@ export class SalesTimeComponent implements OnDestroy {
             this.deviceId.set(token.substring(0, 18));
             this.partnerId.set(token.substring(18, 36));
 
+            // Check if returning from a payment
+            const paymentId = queryParams.get('payment_id');
+            const status = queryParams.get('status');
+            const preferenceId = queryParams.get('preference_id');
+
+            if (paymentId || preferenceId) {
+                // Initialize state to check status
+                this.currentState.set('READY');
+                this.lastChargeResponse.set({
+                    externalId: paymentId || preferenceId || '',
+                    paymentLink: '',
+                    qrCode: null,
+                    status: status || 'pending',
+                    externalReference: queryParams.get('external_reference') || ''
+                });
+
+                // Start polling automatically
+                setTimeout(() => this.startStatusPolling(), 500);
+            }
+
         } else {
             // Fallback for individual query params
             const dId = queryParams.get('deviceId');

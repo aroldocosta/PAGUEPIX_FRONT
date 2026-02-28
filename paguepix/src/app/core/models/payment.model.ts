@@ -26,23 +26,24 @@ export interface Payment {
 }
 
 export interface ChargeResponse {
-    id: string;
-    value: string;
-    type: string;
-    description: string;
-    date: string;
-    time: string;
-    deviceCode: string;
+    id?: string;
+    value?: string;
+    type?: string;
+    description?: string;
+    date?: string;
+    time?: string;
+    deviceCode?: string;
     externalId: string;
     externalReference: string;
     paymentLink: string;
     qrCode: string | null;
-    state: string;
-    device: {
+    state?: string;
+    status?: string;
+    device?: {
         id: string;
         code: string;
     };
-    partner: {
+    partner?: {
         id: string;
         name: string;
     };
