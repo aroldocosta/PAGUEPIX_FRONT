@@ -81,17 +81,23 @@ export class SalesTimeComponent implements OnDestroy {
 
             if (paymentId || preferenceId) {
                 // Initialize state to check status
-                this.currentState.set('READY');
-                this.lastChargeResponse.set({
-                    externalId: paymentId || preferenceId || '',
-                    paymentLink: '',
-                    qrCode: null,
-                    status: status || 'pending',
-                    externalReference: queryParams.get('external_reference') || ''
-                });
+                if (status === 'approved') {
+                    this.currentState.set('SUCCESS');
+                    this.stopPolling();
+                    this.closeMercadoPagoModal();
+                } else {
+                    this.currentState.set('READY');
+                    this.lastChargeResponse.set({
+                        externalId: paymentId || preferenceId || '',
+                        paymentLink: '',
+                        qrCode: null,
+                        status: status || 'pending',
+                        externalReference: queryParams.get('external_reference') || ''
+                    });
 
-                // Start polling automatically
-                setTimeout(() => this.startStatusPolling(), 500);
+                    // Start polling automatically
+                    setTimeout(() => this.startStatusPolling(), 500);
+                }
             }
 
         } else {
@@ -291,12 +297,18 @@ twIDAQAB
 
     // New method to force close Mercado Pago Modal/Overlay
     private closeMercadoPagoModal() {
+        console.log('closeMercadoPagoModal called - Cleaning up DOM');
         // The MP SDK v2 Checkout Pro modal creates these elements in the DOM
         const selectors = [
             '.mp-checkout-modal',
             '.mp-checkout-iframe-container',
             '#mp-checkout-container',
-            '.mercadopago-checkout-iframe'
+            '.mercadopago-checkout-iframe',
+            '.mp-mercadopago-checkout-wrapper',
+            '#mercadopago-checkout',
+            'iframe[src*="mercadopago"]',
+            'div[class*="mercadopago"]',
+            'div[id*="mercadopago"]'
         ];
 
         selectors.forEach(selector => {
