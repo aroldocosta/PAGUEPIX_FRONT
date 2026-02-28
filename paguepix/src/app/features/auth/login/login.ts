@@ -32,12 +32,10 @@ export class Login implements OnInit {
       password: this.password()
     };
 
-    console.log('Enviando requisição de login para API...');
 
     this.http.post<LoginResponse>(`${environment.apiUrl}/auth/login`, loginData)
       .subscribe({
         next: (response) => {
-          console.log('Login realizado com sucesso!');
           this.authService.setSession({
             userId: response.userId,
             token: response.token,
