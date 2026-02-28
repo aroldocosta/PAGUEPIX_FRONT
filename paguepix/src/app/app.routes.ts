@@ -11,7 +11,7 @@ import { UserDashboard } from './features/user/dashboard/dashboard';
 import { TransferRequest } from './features/user/transfer/transfer';
 import { PaymentsHistory } from './features/user/history/history';
 import { SalesTimeComponent } from './features/public/sales-time/sales-time';
-import { MercadoPagoSimulationComponent } from './features/public/mercadopago-simulation/mercadopago-simulation';
+
 
 import { authGuard } from './core/guards/auth.guard';
 
@@ -19,7 +19,7 @@ export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'login', component: Login },
     { path: 'sales/:token', component: SalesTimeComponent },
-    { path: 'paguepix_exemplo', component: MercadoPagoSimulationComponent },
+
     { path: 'admin/dashboard', component: Dashboard, canActivate: [authGuard] },
     { path: 'admin/payments', component: PaymentsManagement, canActivate: [authGuard] },
     { path: 'admin/users', component: UserManagement, canActivate: [authGuard] },

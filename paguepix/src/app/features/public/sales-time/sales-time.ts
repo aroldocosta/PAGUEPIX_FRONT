@@ -28,7 +28,7 @@ export type PaymentType = 'PIX' | 'LINK';
 export class SalesTimeComponent implements OnDestroy {
     selectedDuration = signal<DurationOption | null>(null);
     pixKey = signal('00020126360014BR.GOV.BCB.PIX0114+55119999999995204000053039865802BR5913PaguePix Inc 6009SAO PAULO62070503***6304ABCD');
-    paymentLink = signal('/paguepix_exemplo');
+    paymentLink = signal('');
     paymentType = signal<PaymentType>('PIX');
     currentState = signal<PurchaseState>('IDLE');
     productName = signal('Banho Quente');
@@ -55,19 +55,10 @@ export class SalesTimeComponent implements OnDestroy {
     constructor() {
         this.selectedDuration.set(this.durationOptions[1]); // Default to 3 minutes (index 1)
 
-        // Handle result from simulation redirect
-        const route = inject(ActivatedRoute);
-        const params = route.snapshot.queryParamMap;
 
-        const result = params.get('result');
-        if (result === 'success') {
-            this.currentState.set('SUCCESS');
-        } else if (result === 'error') {
-            this.errorMessage.set('O pagamento não foi autorizado pelo Mercado Pago. Tente novamente.');
-            this.currentState.set('ERROR');
-        }
 
         // Capture device and partner IDs from URL token (Suggestion 5 refined)
+        const route = inject(ActivatedRoute);
         const pathParams = route.snapshot.paramMap;
         const queryParams = route.snapshot.queryParamMap;
 
