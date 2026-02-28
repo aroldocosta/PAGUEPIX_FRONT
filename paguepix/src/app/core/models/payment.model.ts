@@ -47,3 +47,13 @@ export interface ChargeResponse {
         name: string;
     };
 }
+
+export interface ChargeStatus {
+    status: string;
+    details: string;
+    paid: boolean;
+    transactionId: string;
+    externalReference: string;
+    netAmount?: number;
+    totalPaidAmount?: number;
+}

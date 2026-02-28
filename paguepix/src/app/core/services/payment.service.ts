@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Payment, ChargeResponse } from '../models/payment.model';
+import { Payment, ChargeResponse, ChargeStatus } from '../models/payment.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -40,11 +40,11 @@ export class PaymentService {
     }
 
     getPaymentStatusRsa(request: { payload: string }) {
-        return this.http.post<any>(`${this.apiUrl}/status/rsa`, request);
+        return this.http.post<ChargeStatus>(`${this.apiUrl}/status/rsa`, request);
     }
 
     getPaymentStatusJwt(request: { externalId: string }) {
-        return this.http.post<any>(`${this.apiUrl}/status/jwt`, request);
+        return this.http.post<ChargeStatus>(`${this.apiUrl}/status/jwt`, request);
     }
 
     // Deprecated generic methods - keep for compatibility if needed elsewhere, 
