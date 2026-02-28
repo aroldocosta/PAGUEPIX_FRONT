@@ -17,7 +17,7 @@ interface DurationOption {
     icon: string;
 }
 
-export type PurchaseState = 'IDLE' | 'PROCESSING' | 'READY' | 'SUCCESS' | 'ERROR';
+export type PurchaseState = 'IDLE' | 'PROCESSING' | 'READY' | 'PENDING' | 'SUCCESS' | 'ERROR';
 export type PaymentType = 'PIX' | 'LINK';
 
 @Component({
@@ -85,6 +85,16 @@ export class SalesTimeComponent implements OnDestroy {
                     this.currentState.set('SUCCESS');
                     this.stopPolling();
                     this.closeMercadoPagoModal();
+                } else if (status === 'pending' || status === 'in_process') {
+                    this.currentState.set('PENDING');
+                    this.lastChargeResponse.set({
+                        externalId: paymentId || preferenceId || '',
+                        paymentLink: '',
+                        qrCode: null,
+                        status: status || 'pending',
+                        externalReference: queryParams.get('external_reference') || ''
+                    });
+                    setTimeout(() => this.startStatusPolling(), 500);
                 } else {
                     this.currentState.set('READY');
                     this.lastChargeResponse.set({
@@ -251,6 +261,13 @@ twIDAQAB
                             this.closeMercadoPagoModal();
                             this.currentState.set('SUCCESS');
                         }
+                        // If pending but has QR Code (user selected Pix in modal)
+                        else if (response.status === 'pending' && response.qrCode) {
+                            this.pixKey.set(response.qrCode);
+                            this.paymentType.set('PIX');
+                            this.currentState.set('PENDING');
+                            this.closeMercadoPagoModal();
+                        }
                         // Check for specific rejection/failure states in 'status'
                         else if (response.status === 'rejected' || response.status === 'cancelled') {
                             this.stopPolling();
@@ -289,8 +306,9 @@ twIDAQAB
 
     copyPixKey() {
         navigator.clipboard.writeText(this.pixKey()).then(() => {
-            // alert('Chave Pix copiada para a área de transferência!');
             this.showCopySuccess.set(true);
+            // Close the modal upon copying the Pix key requested by user
+            this.closeMercadoPagoModal();
             setTimeout(() => this.showCopySuccess.set(false), 3000);
         });
     }

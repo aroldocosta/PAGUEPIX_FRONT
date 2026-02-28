@@ -55,6 +55,7 @@ export interface ChargeStatus {
     paid: boolean;
     transactionId: string;
     externalReference: string;
+    qrCode?: string;
     netAmount?: number;
     totalPaidAmount?: number;
 }
