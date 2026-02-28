@@ -7,6 +7,8 @@ import { ChargeResponse, Payment } from '../../../core/models/payment.model';
 import { SealedPaymentRequest, SealedStatusRequest } from '../../../core/models/sealed-payment.model';
 import { OnDestroy } from '@angular/core';
 
+declare var MercadoPago: any;
+
 interface DurationOption {
     minutes: number;
     label: string;
@@ -41,6 +43,7 @@ export class SalesTimeComponent implements OnDestroy {
 
     private pollingInterval: any = null;
     private pollingStartTime: number = 0;
+    private mp: any;
 
     private paymentService = inject(PaymentService);
     private cryptoService = inject(CryptoService);
@@ -54,6 +57,9 @@ export class SalesTimeComponent implements OnDestroy {
 
     constructor() {
         this.selectedDuration.set(this.durationOptions[1]); // Default to 3 minutes (index 1)
+
+        // Initialize Mercado Pago
+        this.mp = new MercadoPago('APP_USR-04a454cf-9abf-4086-b9e2-3ef546f33a94');
 
 
 
@@ -239,11 +245,13 @@ twIDAQAB
                         // Check for success using 'paid' boolean flag from backend ChargeStatus
                         if (response.paid) {
                             this.stopPolling();
+                            this.closeMercadoPagoModal();
                             this.currentState.set('SUCCESS');
                         }
                         // Check for specific rejection/failure states in 'status'
                         else if (response.status === 'rejected' || response.status === 'cancelled') {
                             this.stopPolling();
+                            this.closeMercadoPagoModal();
                             this.errorMessage.set('O pagamento não foi autorizado. Por favor, tente novamente ou use outra forma de pagamento.');
                             this.currentState.set('ERROR');
                         }
@@ -284,7 +292,34 @@ twIDAQAB
         });
     }
 
+    // New method to force close Mercado Pago Modal/Overlay
+    private closeMercadoPagoModal() {
+        // The MP SDK v2 Checkout Pro modal creates these elements in the DOM
+        const selectors = [
+            '.mp-checkout-modal',
+            '.mp-checkout-iframe-container',
+            '#mp-checkout-container',
+            '.mercadopago-checkout-iframe'
+        ];
+
+        selectors.forEach(selector => {
+            document.querySelectorAll(selector).forEach(el => el.remove());
+        });
+
+        // Also ensure body scrolling is restored if the SDK blocked it
+        document.body.style.overflow = 'auto';
+    }
+
     openPaymentLink() {
-        window.open(this.paymentLink(), '_blank');
+        const charge = this.lastChargeResponse();
+        if (charge && charge.externalId) {
+            this.mp.checkout({
+                preferenceId: charge.externalId,
+                autoOpen: true
+            });
+        } else {
+            // Fallback if SDK fails or ID is missing
+            window.open(this.paymentLink(), '_blank');
+        }
     }
 }
