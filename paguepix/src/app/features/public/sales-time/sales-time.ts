@@ -254,6 +254,15 @@ twIDAQAB
             this.cryptoService.encrypt(statusRequest, publicKeyPem).then(encryptedPayload => {
                 this.paymentService.getPaymentStatusRsa({ payload: encryptedPayload }).subscribe({
                     next: (response) => {
+                        // Check if modal was closed manually by user (element removed from DOM)
+                        const modalExists = !!document.querySelector('.mp-mercadopago-checkout-wrapper') ||
+                            !!document.querySelector('#mercadopago-checkout');
+
+                        // If we were READY (modal open) and now it's gone, move to PENDING
+                        if (!modalExists && this.currentState() === 'READY') {
+                            console.log('Modal closed manually or by SDK - moving to PENDING');
+                            this.currentState.set('PENDING');
+                        }
 
                         // Check for success using 'paid' boolean flag from backend ChargeStatus
                         if (response.paid) {
@@ -261,12 +270,15 @@ twIDAQAB
                             this.closeMercadoPagoModal();
                             this.currentState.set('SUCCESS');
                         }
-                        // If pending but has QR Code (user selected Pix in modal)
-                        else if (response.status === 'pending' && response.qrCode) {
-                            this.pixKey.set(response.qrCode);
-                            this.paymentType.set('PIX');
-                            this.currentState.set('PENDING');
-                            this.closeMercadoPagoModal();
+                        // If pending but has QR Code (user selected Pix in modal OR it's a direct charge)
+                        else if (response.qrCode) {
+                            if (this.pixKey() !== response.qrCode) {
+                                console.log('Pix QR Code detected via polling - Closing modal and showing PENDING');
+                                this.pixKey.set(response.qrCode);
+                                this.paymentType.set('PIX');
+                                this.currentState.set('PENDING');
+                                this.closeMercadoPagoModal();
+                            }
                         }
                         // Check for specific rejection/failure states in 'status'
                         else if (response.status === 'rejected' || response.status === 'cancelled') {
