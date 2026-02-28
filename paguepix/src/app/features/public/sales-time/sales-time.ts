@@ -65,20 +65,12 @@ export class SalesTimeComponent implements OnDestroy {
         // Try path param first, then query param
         const token = pathParams.get('token') || queryParams.get('token');
 
-        console.log("============================");
-        console.log("Token from URL:", token);
-        console.log("Token length:", token?.length);
-        console.log("============================");
 
         if (token && token.length >= 36) {
             // TSID Numeric representation is 18 digits each
             this.deviceId.set(token.substring(0, 18));
             this.partnerId.set(token.substring(18, 36));
 
-            console.log("Parsed from Token:");
-            console.log("Device ID:", this.deviceId());
-            console.log("Partner ID:", this.partnerId());
-            console.log("============================");
         } else {
             // Fallback for individual query params
             const dId = queryParams.get('deviceId');
@@ -87,13 +79,7 @@ export class SalesTimeComponent implements OnDestroy {
             if (dId || pId) {
                 this.deviceId.set(dId);
                 this.partnerId.set(pId);
-                console.log("Parsed from individual params:");
-                console.log("Device ID:", this.deviceId());
-                console.log("Partner ID:", this.partnerId());
-            } else {
-                console.log("No identification tokens found in URL");
             }
-            console.log("============================");
         }
     }
 
@@ -137,7 +123,6 @@ twIDAQAB
 -----END PUBLIC KEY-----`;
 
             this.cryptoService.encrypt(sealedRequest, publicKeyPem).then(encryptedPayload => {
-                console.log('Encrypted Payload:', encryptedPayload);
 
                 // Construct the final request for the backend
                 // The backend will receive the encrypted string and decrypt it to get the details
@@ -147,7 +132,6 @@ twIDAQAB
 
                 this.paymentService.createChargeRsa(finalRequest).subscribe({
                     next: (response: ChargeResponse) => {
-                        console.log('ChargeResponse received:', response);
 
                         this.lastChargeResponse.set(response);
 
@@ -193,11 +177,9 @@ twIDAQAB
         if (this.pollingInterval) return;
 
         this.pollingStartTime = Date.now();
-        console.log('Iniciando monitoramento do pagamento...');
 
         this.pollingInterval = setInterval(() => {
             const elapsedSeconds = Math.floor((Date.now() - this.pollingStartTime) / 1000);
-            console.log(`Verificando status do pagamento... [${elapsedSeconds}s]`);
 
             // Check for timeout (2 minutes = 120 seconds)
             if (elapsedSeconds >= 300) {
@@ -233,7 +215,6 @@ twIDAQAB
             this.cryptoService.encrypt(statusRequest, publicKeyPem).then(encryptedPayload => {
                 this.paymentService.getPaymentStatusRsa({ payload: encryptedPayload }).subscribe({
                     next: (response) => {
-                        console.log('Status do pagamento recebido:', response.status);
 
                         // Check for success using 'paid' boolean flag from backend ChargeStatus
                         if (response.paid) {
@@ -262,7 +243,6 @@ twIDAQAB
         if (this.pollingInterval) {
             clearInterval(this.pollingInterval);
             this.pollingInterval = null;
-            console.log('Monitoramento de pagamento interrompido.');
         }
     }
 
@@ -278,7 +258,6 @@ twIDAQAB
 
     copyPixKey() {
         navigator.clipboard.writeText(this.pixKey()).then(() => {
-            console.log('Chave Pix copiada!');
             // alert('Chave Pix copiada para a área de transferência!');
             this.showCopySuccess.set(true);
             setTimeout(() => this.showCopySuccess.set(false), 3000);
