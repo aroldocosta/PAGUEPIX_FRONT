@@ -233,11 +233,15 @@ twIDAQAB
             this.cryptoService.encrypt(statusRequest, publicKeyPem).then(encryptedPayload => {
                 this.paymentService.getPaymentStatusRsa({ payload: encryptedPayload }).subscribe({
                     next: (response) => {
-                        console.log('Status do pagamento recebido:', response.state);
-                        if (response.state === 'PAID' || response.state === 'SUCCESS') {
+                        console.log('Status do pagamento recebido:', response.status);
+
+                        // Check for success using 'paid' boolean flag from backend ChargeStatus
+                        if (response.paid) {
                             this.stopPolling();
                             this.currentState.set('SUCCESS');
-                        } else if (response.state === 'ERROR' || response.state === 'REJECTED') {
+                        }
+                        // Check for specific rejection/failure states in 'status'
+                        else if (response.status === 'rejected' || response.status === 'cancelled') {
                             this.stopPolling();
                             this.errorMessage.set('O pagamento não foi autorizado. Por favor, tente novamente ou use outra forma de pagamento.');
                             this.currentState.set('ERROR');
