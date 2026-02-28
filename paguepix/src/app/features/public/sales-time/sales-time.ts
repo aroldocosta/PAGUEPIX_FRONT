@@ -58,9 +58,6 @@ export class SalesTimeComponent implements OnDestroy {
     constructor() {
         this.selectedDuration.set(this.durationOptions[1]); // Default to 3 minutes (index 1)
 
-        // Initialize Mercado Pago
-        this.mp = new MercadoPago('APP_USR-04a454cf-9abf-4086-b9e2-3ef546f33a94');
-
 
 
         // Capture device and partner IDs from URL token (Suggestion 5 refined)
@@ -310,16 +307,62 @@ twIDAQAB
         document.body.style.overflow = 'auto';
     }
 
+    private getMpInstance() {
+        if (this.mp) return this.mp;
+        try {
+            const mpGlobal = (window as any).MercadoPago;
+            if (typeof mpGlobal !== 'undefined') {
+                console.log('Initializing MercadoPago with Public Key');
+                this.mp = new mpGlobal('APP_USR-04a454cf-9abf-4086-b9e2-3ef546f33a94', {
+                    locale: 'pt-BR'
+                });
+                return this.mp;
+            } else {
+                console.warn('MercadoPago global object not found');
+            }
+        } catch (e) {
+            console.error('MercadoPago SDK initialization failed:', e);
+        }
+        return null;
+    }
+
     openPaymentLink() {
         const charge = this.lastChargeResponse();
-        if (charge && charge.externalId) {
-            this.mp.checkout({
-                preferenceId: charge.externalId,
-                autoOpen: true
-            });
+        const link = this.paymentLink();
+        const mpInstance = this.getMpInstance();
+
+        console.log('openPaymentLink called', { hasMp: !!mpInstance, externalId: charge?.externalId, link });
+
+        if (mpInstance && charge && charge.externalId) {
+            try {
+                console.log('Attempting to open MP Checkout Pro Modal...');
+                // Correct syntax for SDK v2 Checkout Pro
+                mpInstance.checkout({
+                    preference: {
+                        id: charge.externalId
+                    },
+                    autoOpen: true
+                });
+
+                console.log('MP instance.checkout called with autoOpen: true');
+                return; // Stop here if we think it worked
+            } catch (e) {
+                console.error('Error opening MP checkout modal:', e);
+            }
+        }
+
+        // Final Fallback: use current window to avoid popup blockers
+        if (link) {
+            console.log('Falling back to direct redirection', link);
+            window.location.href = link;
         } else {
-            // Fallback if SDK fails or ID is missing
-            window.open(this.paymentLink(), '_blank');
+            console.error('No payment link available for redirection');
+            // If we have an externalId but no link, try to guess or show error
+            if (charge?.externalId) {
+                const manualLink = `https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=${charge.externalId}`;
+                console.log('Attempting manual link fallback', manualLink);
+                window.location.href = manualLink;
+            }
         }
     }
 }
