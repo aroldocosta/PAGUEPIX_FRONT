@@ -30,13 +30,14 @@ export class SidebarComponent {
         { label: 'Scripts', icon: 'code', route: '/admin/scripts' },
         { label: 'Parceiros', icon: 'handshake', route: '/admin/partners' },
         { label: 'Pagamentos', icon: 'payments', route: '/admin/payments' },
+        { label: 'Saques', icon: 'account_balance', route: '/admin/payouts' },
         { label: 'Usuários', icon: 'group', route: '/admin/users' },
     ];
 
     userMenuItems: MenuItem[] = [
         { label: 'Home', icon: 'home', route: '/user/dashboard' },
-        { label: 'Transferências', icon: 'account_balance', route: '/user/transfer' },
-        { label: 'Histórico', icon: 'history', route: '/user/history' },
+        { label: 'Saques', icon: 'account_balance', route: '/user/payout' },
+        { label: 'Vendas', icon: 'history', route: '/user/sales' },
     ];
 
     menuItems = computed(() => {

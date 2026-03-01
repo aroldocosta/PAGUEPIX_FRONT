@@ -4,5 +4,6 @@ export interface Device {
     id: number;
     code: string;
     model: string;
+    type: string;
     partner?: Partner;
 }

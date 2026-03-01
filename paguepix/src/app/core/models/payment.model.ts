@@ -3,7 +3,7 @@ import { Partner } from './partner.model';
 
 export interface Payment {
     id: number;
-    value: number;
+    paidValue: number;
     type: string;
     description: string;
     time: string;
@@ -18,16 +18,16 @@ export interface Payment {
     qrCode?: string;
     paymentLink?: string;
     customerPhone?: string;
-    feeValue?: number;
+    feeRate?: number;
     transferredValue?: number;
     transactionId?: string;
     netAmount?: number;
-    totalPaidAmount?: number;
+    usageTime?: string;
 }
 
 export interface ChargeResponse {
     id?: string;
-    value?: string;
+    paidValue?: string;
     type?: string;
     description?: string;
     date?: string;
@@ -56,6 +56,5 @@ export interface ChargeStatus {
     transactionId: string;
     externalReference: string;
     qrCode?: string;
-    netAmount?: number;
     totalPaidAmount?: number;
 }
