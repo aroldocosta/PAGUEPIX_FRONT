@@ -4,13 +4,13 @@
 
     <!-- Main Content -->
     <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <app-topbar searchPlaceholder="Realizar transferência..."></app-topbar>
+        <app-topbar searchPlaceholder="Solicitar saque..."></app-topbar>
 
         <main class="flex-1 overflow-y-auto p-4 md:p-8">
             <header class="mb-8">
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Request Payout</h1>
-                <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">Transfer your available balance to your
-                    registered Pix key.</p>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Solicitar Saque</h1>
+                <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">Transfira seu saldo disponível para sua chave
+                    Pix cadastrada.</p>
             </header>
 
             <div class="max-w-2xl">
@@ -18,7 +18,7 @@
                 <div
                     class="bg-blue-600 rounded-2xl p-8 text-white mb-8 relative overflow-hidden shadow-lg shadow-blue-200 dark:shadow-none">
                     <div class="relative z-10">
-                        <p class="text-blue-100 text-sm font-medium mb-1">Available for Payout</p>
+                        <p class="text-blue-100 text-sm font-medium mb-1">Disponível para Saque</p>
                         <h2 class="text-4xl font-bold">{{ availableBalance() | currency:'BRL' }}</h2>
                     </div>
                     <!-- Abstract background shapes -->
@@ -49,8 +49,8 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 dark:text-slate-300 mb-2">Amount to
-                                Transfer (R$)</label>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-slate-300 mb-2">Valor para
+                                Saque (R$)</label>
                             <div class="relative">
                                 <span
                                     class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 dark:text-slate-500 font-bold">R$</span>
@@ -60,13 +60,13 @@
                             </div>
                             <p class="mt-2 text-xs text-gray-500 dark:text-slate-400 flex items-center gap-1">
                                 <span class="material-icons-outlined text-xs">info</span>
-                                Transfers are usually processed within 15 minutes.
+                                Saques são geralmente processados em até 15 minutos.
                             </p>
                         </div>
 
                         <button
                             class="w-full py-4 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 active:scale-[0.98] transition-all shadow-md shadow-blue-100 dark:shadow-none">
-                            Confirm Payout
+                            Confirmar Saque
                         </button>
 
                         <button

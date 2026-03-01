@@ -9,8 +9,10 @@ import { ScriptsManagement } from './features/admin/scripts/scripts';
 import { PartnerManagement } from './features/admin/partners/partners';
 import { UserDashboard } from './features/user/dashboard/dashboard';
 import { TransferRequest } from './features/user/transfer/transfer';
-import { PaymentsHistory } from './features/user/history/history';
+import { SalesComponent } from './features/user/sales/sales';
 import { SalesTimeComponent } from './features/public/sales-time/sales-time';
+import { PayoutsManagement } from './features/admin/payouts/payouts';
+import { PartnerPayouts } from './features/user/payout/payouts';
 
 
 import { authGuard } from './core/guards/auth.guard';
@@ -22,12 +24,13 @@ export const routes: Routes = [
 
     { path: 'admin/dashboard', component: Dashboard, canActivate: [authGuard] },
     { path: 'admin/payments', component: PaymentsManagement, canActivate: [authGuard] },
+    { path: 'admin/payouts', component: PayoutsManagement, canActivate: [authGuard] },
     { path: 'admin/users', component: UserManagement, canActivate: [authGuard] },
     { path: 'admin/devices', component: DeviceManagement, canActivate: [authGuard] },
     { path: 'admin/boards', component: BoardManagement, canActivate: [authGuard] },
     { path: 'admin/scripts', component: ScriptsManagement, canActivate: [authGuard] },
     { path: 'admin/partners', component: PartnerManagement, canActivate: [authGuard] },
     { path: 'user/dashboard', component: UserDashboard, canActivate: [authGuard] },
-    { path: 'user/transfer', component: TransferRequest, canActivate: [authGuard] },
-    { path: 'user/history', component: PaymentsHistory, canActivate: [authGuard] },
+    { path: 'user/payout', component: PartnerPayouts, canActivate: [authGuard] },
+    { path: 'user/sales', component: SalesComponent, canActivate: [authGuard] },
 ];

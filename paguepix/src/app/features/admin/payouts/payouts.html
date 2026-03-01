@@ -4,15 +4,15 @@
 
     <!-- Main Content -->
     <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <app-topbar searchPlaceholder="Buscar pagamentos..."></app-topbar>
+        <app-topbar searchPlaceholder="Buscar saques..."></app-topbar>
 
         <main class="flex-1 overflow-y-auto p-4 md:p-10">
             <header class="flex items-center justify-between mb-10">
                 <div>
                     <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Gestão de
-                        Pagamentos</h1>
-                    <p class="text-gray-500 dark:text-slate-400 mt-1">Monitore e gerencie todos os recebimentos via Pix
-                        em tempo real.</p>
+                        Saques</h1>
+                    <p class="text-gray-500 dark:text-slate-400 mt-1">Monitore e gerencie todos os pedidos de saque
+                        realizados pelos parceiros.</p>
                 </div>
                 <div class="flex items-center gap-4">
                     <button
@@ -26,7 +26,7 @@
                 </div>
             </header>
 
-            <!-- Transactions Table -->
+            <!-- Payouts Table -->
             <div
                 class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 ring-1 ring-gray-900/5 dark:ring-white/10 overflow-hidden">
                 <div class="overflow-x-auto">
@@ -34,34 +34,34 @@
                     <div *ngIf="loading()" class="p-12 flex flex-col items-center justify-center space-y-4">
                         <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin">
                         </div>
-                        <p class="text-gray-500 dark:text-slate-400 font-medium">Carregando pagamentos...</p>
+                        <p class="text-gray-500 dark:text-slate-400 font-medium">Carregando saques...</p>
                     </div>
 
                     <!-- Empty State -->
-                    <div *ngIf="!loading() && payments().length === 0" class="p-12 text-center">
+                    <div *ngIf="!loading() && payouts().length === 0" class="p-12 text-center">
                         <span
                             class="material-icons-outlined text-4xl text-gray-300 dark:text-slate-700 mb-2">history_toggle_off</span>
-                        <p class="text-gray-500 dark:text-slate-400">Nenhuma transação encontrada.</p>
+                        <p class="text-gray-500 dark:text-slate-400">Nenhum saque encontrado.</p>
                     </div>
 
-                    <table *ngIf="!loading() && payments().length > 0" class="w-full text-left border-collapse">
+                    <table *ngIf="!loading() && payouts().length > 0" class="w-full text-left border-collapse">
                         <thead
                             class="bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800">
                             <tr>
                                 <th
                                     class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                                    ID Transação</th>
+                                    ID Saque</th>
                                 <th
                                     class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                                     Parceiro
                                 </th>
                                 <th
                                     class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                                    Valor
+                                    Chave Pix
                                 </th>
                                 <th
                                     class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                                    Equipamento
+                                    Valor
                                 </th>
                                 <th
                                     class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
@@ -77,43 +77,39 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100 dark:divide-slate-800">
-                            <tr *ngFor="let payment of payments()"
+                            <tr *ngFor="let payout of payouts()"
                                 class="hover:bg-gray-50/80 dark:hover:bg-slate-800/50 transition-colors group">
                                 <td class="px-8 py-5 text-sm font-medium text-gray-900 dark:text-slate-200">
-                                    <div class="flex flex-col">
-                                        <span>#{{ payment.id }}</span>
-                                        <span class="text-[10px] text-gray-400 font-mono">{{ payment.externalId
-                                            }}</span>
-                                    </div>
+                                    <span>#{{ payout.id }}</span>
                                 </td>
                                 <td class="px-8 py-5 text-sm text-gray-600 dark:text-slate-400 font-medium">
-                                    {{ payment.partner?.name || 'N/A' }}
+                                    {{ payout.partnerId || 'N/A' }}
+                                </td>
+                                <td class="px-8 py-5 text-sm text-gray-600 dark:text-slate-400 font-medium">
+                                    -
                                 </td>
                                 <td class="px-8 py-5 text-sm font-bold text-gray-900 dark:text-slate-200">
-                                    {{ payment.value | currency:'BRL' }}
-                                </td>
-                                <td class="px-8 py-5 text-sm text-gray-600 dark:text-slate-400">
-                                    {{ payment.device?.type || 'N/A' }}
+                                    {{ payout.amount | currency:'BRL' }}
                                 </td>
                                 <td class="px-8 py-5 text-sm text-gray-500 dark:text-slate-400">
                                     <div class="flex flex-col">
-                                        <span>{{ payment.date }}</span>
-                                        <span class="text-[10px]">{{ payment.time }}</span>
+                                        <span>{{ payout.createdAt | date:'dd/MM/yyyy' }}</span>
+                                        <span class="text-[10px]">{{ payout.createdAt | date:'HH:mm' }}</span>
                                     </div>
                                 </td>
                                 <td class="px-8 py-5">
                                     <span [ngClass]="{
-                                        'bg-green-50 text-green-700 ring-1 ring-green-600/10': payment.state === 'PAID',
-                                        'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-600/10': payment.state === 'PENDING',
-                                        'bg-red-50 text-red-700 ring-1 ring-red-600/10': payment.state === 'EXPIRED' || payment.state === 'CANCELED'
+                                        'bg-green-50 text-green-700 ring-1 ring-green-600/10': payout.status === 'TRANSFERRED',
+                                        'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-600/10': payout.status === 'AVAILABLE' || payout.status === 'PENDING',
+                                        'bg-red-50 text-red-700 ring-1 ring-red-600/10': payout.status === 'FAILED'
                                     }"
                                         class="px-2.5 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1">
                                         <span class="w-1 h-1 rounded-full" [ngClass]="{
-                                            'bg-green-600': payment.state === 'PAID',
-                                            'bg-yellow-600': payment.state === 'PENDING',
-                                            'bg-red-600': payment.state === 'EXPIRED' || payment.state === 'CANCELED'
+                                            'bg-green-600': payout.status === 'TRANSFERRED',
+                                            'bg-yellow-600': payout.status === 'AVAILABLE' || payout.status === 'PENDING',
+                                            'bg-red-600': payout.status === 'FAILED'
                                         }"></span>
-                                        {{ payment.state }}
+                                        {{ payout.status }}
                                     </span>
                                 </td>
                                 <td class="px-8 py-5 text-right">
