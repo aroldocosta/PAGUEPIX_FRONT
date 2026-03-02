@@ -6,7 +6,6 @@ export interface SealedPaymentRequest {
 
 export interface SealedStatusRequest {
     deviceId: string;
-    partnerId: string;
     externalId: string;
     timestamp: string;
 }
