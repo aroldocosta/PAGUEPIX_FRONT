@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { PaymentService } from '../../../core/services/payment.service';
@@ -33,7 +33,10 @@ export class SalesTimeComponent implements OnDestroy {
     paymentLink = signal('');
     paymentType = signal<PaymentType>('PIX');
     currentState = signal<PurchaseState>('IDLE');
-    productName = signal('Banho Quente');
+    productName = computed(() => {
+        const duration = this.selectedDuration();
+        return duration ? `Tempo de Banho: ${duration.minutes}min` : 'Tempo de Banho';
+    });
     errorMessage = signal('');
     showCopySuccess = signal(false);
 
@@ -120,7 +123,6 @@ export class SalesTimeComponent implements OnDestroy {
     selectDuration(option: DurationOption) {
         if (this.currentState() === 'IDLE') {
             this.selectedDuration.set(option);
-            this.productName.set(option.label);
         }
     }
 
