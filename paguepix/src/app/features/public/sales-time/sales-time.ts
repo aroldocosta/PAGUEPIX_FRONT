@@ -122,7 +122,6 @@ export class SalesTimeComponent implements OnDestroy {
 
     selectDuration(option: DurationOption) {
         if (this.currentState() === 'IDLE') {
-            this.stopPolling();
             this.selectedDuration.set(option);
         }
     }
@@ -307,6 +306,7 @@ twIDAQAB
     }
 
     reset() {
+        this.stopPolling();
         this.currentState.set('IDLE');
         this.errorMessage.set('');
     }
@@ -382,6 +382,9 @@ twIDAQAB
                 });
 
                 console.log('MP instance.checkout called with autoOpen: true');
+
+                // Wait for the polling loop to simulate the backend response (SUCCESS/ERROR)
+
                 return; // Stop here if we think it worked
             } catch (e) {
                 console.error('Error opening MP checkout modal:', e);
