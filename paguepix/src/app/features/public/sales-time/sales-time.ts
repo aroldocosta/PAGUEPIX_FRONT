@@ -122,6 +122,7 @@ export class SalesTimeComponent implements OnDestroy {
 
     selectDuration(option: DurationOption) {
         if (this.currentState() === 'IDLE') {
+            this.stopPolling();
             this.selectedDuration.set(option);
         }
     }
@@ -306,7 +307,6 @@ twIDAQAB
     }
 
     reset() {
-        this.stopPolling();
         this.currentState.set('IDLE');
         this.errorMessage.set('');
     }
