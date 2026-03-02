@@ -38,7 +38,6 @@ export class SalesTimeComponent implements OnDestroy {
     showCopySuccess = signal(false);
 
     deviceId = signal<string | null>(null);
-    partnerId = signal<string | null>(null);
     lastChargeResponse = signal<ChargeResponse | null>(null);
 
     private pollingInterval: any = null;
@@ -69,10 +68,8 @@ export class SalesTimeComponent implements OnDestroy {
         const token = pathParams.get('token') || queryParams.get('token');
 
 
-        if (token && token.length >= 36) {
-            // TSID Numeric representation is 18 digits each
-            this.deviceId.set(token.substring(0, 18));
-            this.partnerId.set(token.substring(18, 36));
+        if (token && token.length >= 18) {
+            this.deviceId.set(token);
 
             // Check if returning from a payment
             const paymentId = queryParams.get('payment_id');
@@ -113,11 +110,9 @@ export class SalesTimeComponent implements OnDestroy {
         } else {
             // Fallback for individual query params
             const dId = queryParams.get('deviceId');
-            const pId = queryParams.get('partnerId');
 
-            if (dId || pId) {
+            if (dId) {
                 this.deviceId.set(dId);
-                this.partnerId.set(pId);
             }
         }
     }
@@ -138,10 +133,9 @@ export class SalesTimeComponent implements OnDestroy {
             // Call backend createCharge
             const duration = this.selectedDuration();
             const deviceId = this.deviceId();
-            const partnerId = this.partnerId();
 
             // Suggestion 5: form "HASH_UNICO" (deviceToken)
-            const deviceToken = deviceId && partnerId ? `${deviceId}${partnerId}` : null;
+            const deviceToken = deviceId;
 
             // Secure Sealed Envelope Flow
             const sealedRequest: SealedPaymentRequest = {
@@ -236,7 +230,6 @@ twIDAQAB
 
             const statusRequest: SealedStatusRequest = {
                 deviceId: this.deviceId() || '',
-                partnerId: this.partnerId() || '',
                 externalId: charge.externalId,
                 timestamp: new Date().toISOString()
             };
