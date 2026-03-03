@@ -18,6 +18,8 @@ export class SalesComponent implements OnInit {
 
     sales = signal<Sale[]>([]);
     loading = signal(false);
+    currentPage = signal(0);
+    totalPages = signal(1);
 
     ngOnInit() {
         this.loadSales();
@@ -26,9 +28,10 @@ export class SalesComponent implements OnInit {
     loadSales() {
         this.loading.set(true);
         // Assuming partnerId is handled by the auth interceptor or service context
-        this.paymentService.getAll().subscribe({
+        this.paymentService.getAll(undefined, this.currentPage(), 10).subscribe({
             next: (response) => {
                 this.sales.set(response.content || response);
+                this.totalPages.set(response.totalPages || 1);
                 this.loading.set(false);
             },
             error: (err) => {
@@ -36,5 +39,19 @@ export class SalesComponent implements OnInit {
                 this.loading.set(false);
             }
         });
+    }
+
+    nextPage() {
+        if (this.currentPage() < this.totalPages() - 1) {
+            this.currentPage.update(p => p + 1);
+            this.loadSales();
+        }
+    }
+
+    prevPage() {
+        if (this.currentPage() > 0) {
+            this.currentPage.update(p => p - 1);
+            this.loadSales();
+        }
     }
 }

@@ -16,6 +16,8 @@ import { Payout } from '../../../core/models/payout.model';
 export class PayoutsManagement implements OnInit {
     payouts = signal<Payout[]>([]);
     loading = signal(true);
+    currentPage = signal(0);
+    totalPages = signal(1);
 
     constructor(private payoutService: PayoutService) { }
 
@@ -25,9 +27,10 @@ export class PayoutsManagement implements OnInit {
 
     loadPayouts() {
         this.loading.set(true);
-        this.payoutService.getAll().subscribe({
+        this.payoutService.getAll(undefined, this.currentPage(), 10).subscribe({
             next: (response) => {
                 this.payouts.set(response.content || response);
+                this.totalPages.set(response.totalPages || 1);
                 this.loading.set(false);
             },
             error: (err) => {
@@ -35,5 +38,19 @@ export class PayoutsManagement implements OnInit {
                 this.loading.set(false);
             }
         });
+    }
+
+    nextPage() {
+        if (this.currentPage() < this.totalPages() - 1) {
+            this.currentPage.update(p => p + 1);
+            this.loadPayouts();
+        }
+    }
+
+    prevPage() {
+        if (this.currentPage() > 0) {
+            this.currentPage.update(p => p - 1);
+            this.loadPayouts();
+        }
     }
 }

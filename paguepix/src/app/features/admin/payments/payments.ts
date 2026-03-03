@@ -15,6 +15,8 @@ import { PaymentService } from '../../../core/services/payment.service';
 export class PaymentsManagement implements OnInit {
   payments = signal<any[]>([]);
   loading = signal(true);
+  currentPage = signal(0);
+  totalPages = signal(1);
 
   constructor(private paymentService: PaymentService) { }
 
@@ -24,9 +26,10 @@ export class PaymentsManagement implements OnInit {
 
   loadPayments() {
     this.loading.set(true);
-    this.paymentService.getAll().subscribe({
+    this.paymentService.getAll(undefined, this.currentPage(), 10).subscribe({
       next: (response) => {
         this.payments.set(response.content || response);
+        this.totalPages.set(response.totalPages || 1);
         this.loading.set(false);
       },
       error: (err) => {
@@ -34,5 +37,19 @@ export class PaymentsManagement implements OnInit {
         this.loading.set(false);
       }
     });
+  }
+
+  nextPage() {
+    if (this.currentPage() < this.totalPages() - 1) {
+      this.currentPage.update(p => p + 1);
+      this.loadPayments();
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage() > 0) {
+      this.currentPage.update(p => p - 1);
+      this.loadPayments();
+    }
   }
 }
