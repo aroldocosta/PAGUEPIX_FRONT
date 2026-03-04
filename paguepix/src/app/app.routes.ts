@@ -4,6 +4,7 @@ import { Dashboard } from './features/admin/dashboard/dashboard';
 import { PaymentsManagement } from './features/admin/payments/payments';
 import { UserManagement } from './features/admin/users/users';
 import { DeviceManagement } from './features/admin/devices/devices';
+import { DeviceEdit } from './features/admin/devices/edit/edit';
 import { BoardManagement } from './features/admin/boards/boards';
 import { ScriptsManagement } from './features/admin/scripts/scripts';
 import { PartnerManagement } from './features/admin/partners/partners';
@@ -27,6 +28,7 @@ export const routes: Routes = [
     { path: 'admin/payouts', component: PayoutsManagement, canActivate: [authGuard] },
     { path: 'admin/users', component: UserManagement, canActivate: [authGuard] },
     { path: 'admin/devices', component: DeviceManagement, canActivate: [authGuard] },
+    { path: 'admin/devices/edit/:id', component: DeviceEdit, canActivate: [authGuard] },
     { path: 'admin/boards', component: BoardManagement, canActivate: [authGuard] },
     { path: 'admin/scripts', component: ScriptsManagement, canActivate: [authGuard] },
     { path: 'admin/partners', component: PartnerManagement, canActivate: [authGuard] },

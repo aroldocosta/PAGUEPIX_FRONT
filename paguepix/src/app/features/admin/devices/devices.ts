@@ -1,12 +1,13 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { ManagementLayoutComponent } from '../../../shared/components/management-layout/management-layout.component';
 import { DeviceService } from '../../../core/services/device.service';
 
 @Component({
     selector: 'app-device-management',
     standalone: true,
-    imports: [CommonModule, ManagementLayoutComponent],
+    imports: [CommonModule, RouterModule, ManagementLayoutComponent],
     templateUrl: './devices.html',
     styleUrl: './devices.scss'
 })

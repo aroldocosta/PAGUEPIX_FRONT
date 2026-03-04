@@ -23,7 +23,7 @@ export class DeviceService {
         return this.http.get<any>(this.apiUrl, { params });
     }
 
-    findById(id: number): Observable<any> {
+    findById(id: string): Observable<any> {
         return this.http.get<any>(`${this.apiUrl}/${id}`);
     }
 
@@ -31,11 +31,11 @@ export class DeviceService {
         return this.http.post<any>(this.apiUrl, device);
     }
 
-    update(device: any): Observable<any> {
-        return this.http.put<any>(this.apiUrl, device);
+    update(id: string, device: any): Observable<any> {
+        return this.http.put<any>(`${this.apiUrl}/${id}`, device);
     }
 
-    delete(id: number): Observable<any> {
+    delete(id: string): Observable<any> {
         return this.http.delete<any>(`${this.apiUrl}/${id}`);
     }
 
