@@ -83,8 +83,8 @@
                         página de vendas deste terminal.</p>
 
                     <div class="flex justify-center mb-8 p-4 bg-white rounded-2xl shadow-inner border border-slate-50">
-                        <ngx-kjua [text]="qrUrl()" [image]="'logo.png'" [imageAsCode]="true" [mode]="'image'"
-                            [mSize]="22" [render]="'svg'" [size]="220" [back]="'#ffffff'" [rounded]="25"></ngx-kjua>
+                        <ngx-kjua [text]="qrUrl()" [render]="'svg'" [size]="220" [back]="'#ffffff'"
+                            [rounded]="25"></ngx-kjua>
                     </div>
 
                     <button (click)="printQr()"
