@@ -38,4 +38,8 @@ export class DeviceService {
     delete(id: number): Observable<any> {
         return this.http.delete<any>(`${this.apiUrl}/${id}`);
     }
+
+    getInfoByToken(token: string): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/info/${token}`);
+    }
 }

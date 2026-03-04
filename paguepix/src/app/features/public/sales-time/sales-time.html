@@ -12,8 +12,33 @@
         </div>
     </header>
 
+    <!-- Device Confirmation Bar -->
+    <div *ngIf="deviceInfo()"
+        class="w-full bg-blue-50 border-b border-blue-100 px-6 py-2.5 flex items-center justify-center gap-2 animate-fade-in">
+        <span class="material-icons-outlined text-[#0d7ff2] text-sm">location_on</span>
+        <span class="text-[11px] font-bold text-blue-800 uppercase tracking-wider">
+            {{ deviceInfo().model }} <span class="mx-1 opacity-30">|</span> {{ deviceInfo().partner?.name }}
+        </span>
+    </div>
+
     <main class="flex-1 max-w-lg w-full px-6 py-5 flex flex-col items-center justify-center">
         <ng-container [ngSwitch]="currentState()">
+
+            <!-- VALIDATING STATE -->
+            <div *ngSwitchCase="'VALIDATING'" class="w-full flex flex-col items-center justify-center py-20">
+                <div class="relative w-20 h-20 mb-8">
+                    <div class="absolute inset-0 border-4 border-slate-100 rounded-full"></div>
+                    <div
+                        class="absolute inset-0 border-4 border-[#0d7ff2] border-t-transparent rounded-full animate-spin">
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="material-icons-outlined text-[#0d7ff2] text-3xl">qr_code_scanner</span>
+                    </div>
+                </div>
+                <h2 class="text-xl font-bold text-[#0f172a] mb-2">Identificando dispositivo...</h2>
+                <p class="text-slate-400 text-center text-sm">Aguarde um momento enquanto validamos o acesso ao
+                    equipamento.</p>
+            </div>
 
             <!-- SELECTION & PAYMENT FLOW (IDLE, PROCESSING, READY) -->
             <div *ngSwitchDefault class="w-full flex flex-col items-center">
@@ -27,9 +52,9 @@
                     <div *ngFor="let option of durationOptions" (click)="selectDuration(option)" [ngClass]="{
                             'border-[#0d7ff2] ring-2 ring-[#0d7ff2]/10 bg-white selected-option': selectedDuration()?.minutes === option.minutes,
                             'border-slate-100 bg-white hover:border-[#0d7ff2]/30 shadow-sm': selectedDuration()?.minutes !== option.minutes,
-                            'opacity-60 grayscale-[0.5]': currentState() !== 'IDLE'
-                         }"
-                        class="p-3 rounded-2xl border transition-all cursor-pointer flex items-center justify-between group">
+                            'opacity-40 grayscale pointer-events-none': currentState() !== 'IDLE'
+                        }"
+                        class="p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between group">
 
                         <div class="flex items-center gap-4">
                             <div [ngClass]="{
@@ -146,7 +171,8 @@
                                 </button>
                             </div>
                             <p *ngIf="showCopySuccess()"
-                                class="text-[10px] text-emerald-500 font-bold mt-2 text-center">Chave copiada com
+                                class="text-[10px] text-emerald-500 font-bold mt-2 text-center">Chave
+                                copiada com
                                 sucesso!</p>
                         </div>
 

@@ -2,6 +2,7 @@ import { Component, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { PaymentService } from '../../../core/services/payment.service';
+import { DeviceService } from '../../../core/services/device.service';
 import { CryptoService } from '../../../core/services/crypto.service';
 import { ChargeResponse, Payment } from '../../../core/models/payment.model';
 import { SealedPaymentRequest, SealedStatusRequest } from '../../../core/models/sealed-payment.model';
@@ -17,7 +18,7 @@ interface DurationOption {
     icon: string;
 }
 
-export type PurchaseState = 'IDLE' | 'PROCESSING' | 'READY' | 'PENDING' | 'SUCCESS' | 'ERROR';
+export type PurchaseState = 'VALIDATING' | 'IDLE' | 'PROCESSING' | 'READY' | 'PENDING' | 'SUCCESS' | 'ERROR';
 export type PaymentType = 'PIX' | 'LINK';
 
 @Component({
@@ -41,6 +42,7 @@ export class SalesTimeComponent implements OnDestroy {
     showCopySuccess = signal(false);
 
     deviceId = signal<string | null>(null);
+    deviceInfo = signal<any | null>(null);
     lastChargeResponse = signal<ChargeResponse | null>(null);
 
     private pollingInterval: any = null;
@@ -48,6 +50,7 @@ export class SalesTimeComponent implements OnDestroy {
     private mp: any;
 
     private paymentService = inject(PaymentService);
+    private deviceService = inject(DeviceService);
     private cryptoService = inject(CryptoService);
 
     durationOptions: DurationOption[] = [
@@ -60,19 +63,15 @@ export class SalesTimeComponent implements OnDestroy {
     constructor() {
         this.selectedDuration.set(this.durationOptions[1]); // Default to 3 minutes (index 1)
 
-
-
-        // Capture device and partner IDs from URL token (Suggestion 5 refined)
         const route = inject(ActivatedRoute);
         const pathParams = route.snapshot.paramMap;
         const queryParams = route.snapshot.queryParamMap;
 
-        // Try path param first, then query param
         const token = pathParams.get('token') || queryParams.get('token');
-
 
         if (token && token.length >= 18) {
             this.deviceId.set(token);
+            this.validateDevice(token);
 
             // Check if returning from a payment
             const paymentId = queryParams.get('payment_id');
@@ -96,7 +95,6 @@ export class SalesTimeComponent implements OnDestroy {
                     });
                     setTimeout(() => this.startStatusPolling(), 500);
                 } else {
-                    this.currentState.set('READY');
                     this.lastChargeResponse.set({
                         externalId: paymentId || preferenceId || '',
                         paymentLink: '',
@@ -109,15 +107,34 @@ export class SalesTimeComponent implements OnDestroy {
                     setTimeout(() => this.startStatusPolling(), 500);
                 }
             }
-
         } else {
-            // Fallback for individual query params
             const dId = queryParams.get('deviceId');
-
             if (dId) {
                 this.deviceId.set(dId);
+                this.validateDevice(dId);
+            } else {
+                this.currentState.set('ERROR');
+                this.errorMessage.set('Identificador do dispositivo não fornecido.');
             }
         }
+    }
+
+    private validateDevice(token: string) {
+        this.currentState.set('VALIDATING');
+        this.deviceService.getInfoByToken(token).subscribe({
+            next: (info) => {
+                this.deviceInfo.set(info);
+                // If we were validating and everything is fine, go to IDLE
+                if (this.currentState() === 'VALIDATING') {
+                    this.currentState.set('IDLE');
+                }
+            },
+            error: (err) => {
+                console.error('Error validating device:', err);
+                this.errorMessage.set('Dispositivo não reconhecido ou inativo. Por favor, verifique o QR Code.');
+                this.currentState.set('ERROR');
+            }
+        });
     }
 
     selectDuration(option: DurationOption) {
