@@ -24,18 +24,18 @@ export class SidebarComponent {
     userRole = this.authService.role;
 
     adminMenuItems: MenuItem[] = [
-        { label: 'Home', icon: 'home', route: '/admin/dashboard' },
-        { label: 'Dispositivos', icon: 'devices', route: '/admin/devices' },
-        { label: 'Placas', icon: 'memory', route: '/admin/boards' },
-        { label: 'Scripts', icon: 'code', route: '/admin/scripts' },
+        { label: 'Dashboard', icon: 'home', route: '/admin/dashboard' },
         { label: 'Parceiros', icon: 'handshake', route: '/admin/partners' },
         { label: 'Pagamentos', icon: 'payments', route: '/admin/payments' },
-        { label: 'Saques', icon: 'account_balance', route: '/admin/payouts' },
         { label: 'Usuários', icon: 'group', route: '/admin/users' },
+        { label: 'Devices', icon: 'devices', route: '/admin/devices' },
+        { label: 'Placas', icon: 'memory', route: '/admin/boards' },
+        { label: 'Scripts', icon: 'code', route: '/admin/scripts' },
+        { label: 'Saques', icon: 'account_balance', route: '/admin/payouts' }
     ];
 
     userMenuItems: MenuItem[] = [
-        { label: 'Home', icon: 'home', route: '/user/dashboard' },
+        { label: 'Dashboard', icon: 'home', route: '/user/dashboard' },
         { label: 'Saques', icon: 'account_balance', route: '/user/payout' },
         { label: 'Vendas', icon: 'history', route: '/user/sales' },
     ];

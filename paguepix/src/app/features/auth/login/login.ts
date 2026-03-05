@@ -40,7 +40,8 @@ export class Login implements OnInit {
             userId: response.userId,
             token: response.token,
             role: response.role,
-            name: response.name
+            name: response.name,
+            partnerName: response.partnerName
           });
 
           this.authService.navigateToDashboard();

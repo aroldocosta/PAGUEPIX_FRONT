@@ -59,9 +59,8 @@ export class UserDashboard implements OnInit {
         this.balance.set(data.availableBalance);
         this.todaySales.set(data.totalTransacted);
 
-        // Ticket médio: totalTransacted / número de transações recentes (ou 0)
-        const txCount = data.recentTransactions.length || 1;
-        this.averageTicket.set(data.totalTransacted / txCount);
+        // Ticket médio agora vem do backend
+        this.averageTicket.set(data.averageTicket);
 
         this.salesOverviewData.set(data.salesOverview);
 

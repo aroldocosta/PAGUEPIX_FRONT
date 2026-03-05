@@ -17,8 +17,14 @@ export class TopbarComponent {
     searchPlaceholder = input<string>('Buscar...');
 
     userName = computed(() => this.authService.name());
-    userRole = computed(() => {
+    partnerName = computed(() => {
+        const partner = this.authService.partnerName();
         const role = this.authService.role();
+
+        if (partner && partner.trim() !== '') {
+            return partner;
+        }
+
         if (role === 'ADMIN') return 'Super Admin';
         if (role === 'USER') return 'Parceiro';
         return role || '';

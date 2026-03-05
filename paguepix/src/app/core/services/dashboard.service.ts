@@ -20,6 +20,7 @@ export interface DashboardData {
     availableBalance: number;
     totalTransacted: number;
     completedPayouts: number;
+    averageTicket: number;
     salesOverview: DailySales[];
     recentTransactions: RecentTransaction[];
 }

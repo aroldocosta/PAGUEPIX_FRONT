@@ -3,6 +3,7 @@ export interface LoginResponse {
     token: string;
     role: 'ADMIN' | 'USER';
     name: string;
+    partnerName?: string;
 }
 
 export interface UserSession {
@@ -10,4 +11,5 @@ export interface UserSession {
     token: string;
     role: 'ADMIN' | 'USER';
     name: string;
+    partnerName?: string;
 }
