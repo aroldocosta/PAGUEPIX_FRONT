@@ -13,12 +13,34 @@ export class AuthService {
     private sessionSignal = signal<UserSession | null>(this.loadSession());
 
     // Seletores calculados
-    isAuthenticated = computed(() => !!this.sessionSignal());
+    isAuthenticated = computed(() => {
+        const session = this.sessionSignal();
+        if (!session || !session.token) return false;
+        return !this.isTokenExpired(session.token);
+    });
     token = computed(() => this.sessionSignal()?.token);
     userId = computed(() => this.sessionSignal()?.userId);
     role = computed(() => this.sessionSignal()?.role);
     name = computed(() => this.sessionSignal()?.name ?? '');
     partnerName = computed(() => this.sessionSignal()?.partnerName ?? '');
+
+    isTokenExpired(token: string): boolean {
+        try {
+            const payloadBase64 = token.split('.')[1];
+            if (!payloadBase64) return true;
+
+            const payloadJson = atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'));
+            const payload = JSON.parse(payloadJson);
+
+            if (!payload.exp) return false; // Se não tem exp, assume-se válido
+
+            // exp é em segundos, Date.now() em milissegundos
+            const expirationTime = payload.exp * 1000;
+            return Date.now() > expirationTime;
+        } catch (e) {
+            return true; // Se der erro ao ler o token, considera expirado
+        }
+    }
 
     setSession(session: UserSession) {
         localStorage.setItem(this.STORAGE_KEY, JSON.stringify(session));
