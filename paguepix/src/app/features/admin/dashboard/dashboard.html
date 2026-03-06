@@ -25,7 +25,7 @@
 
       <!-- Stats Grid -->
       <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Available Balance -->
+        <!-- Available Balance / Custody -->
         <div
           class="bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-hidden group transition-colors">
           <div
@@ -42,14 +42,15 @@
                 <span class="material-icons-outlined text-sm">trending_up</span> +12.5%
               </div>
             </div>
-            <p class="text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">Saldo Disponível
+            <p class="text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">Em caixa</p>
+            <p class="text-xs text-slate-400 font-medium mb-2">Entradas pendentes de repasse ({{ selectedDays() }} dias)
             </p>
-            <h3 class="text-4xl font-black text-slate-900 dark:text-slate-100 mt-2 tracking-tight">{{ availableBalance()
+            <h3 class="text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tight">{{ availableBalance()
               | currency:'BRL':'symbol':'1.2-2' }}</h3>
           </div>
         </div>
 
-        <!-- Total Transacted -->
+        <!-- Platform Revenue -->
         <div
           class="bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-hidden group transition-colors">
           <div
@@ -59,17 +60,18 @@
             <div class="flex items-center justify-between mb-8">
               <div
                 class="w-12 h-12 bg-indigo-50 dark:bg-indigo-950/50 text-[#6366f1] dark:text-[#818cf8] rounded-2xl flex items-center justify-center">
-                <span class="material-icons-outlined">swap_horiz</span>
+                <span class="material-icons-outlined">savings</span>
               </div>
               <div
                 class="flex items-center gap-1 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 px-3 py-1.5 rounded-full text-xs font-bold">
                 <span class="material-icons-outlined text-sm">trending_up</span> +8.2%
               </div>
             </div>
-            <p class="text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">Saldo últimos {{
-              selectedDays() }} dias
+            <p class="text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">Receita
             </p>
-            <h3 class="text-4xl font-black text-slate-900 dark:text-slate-100 mt-2 tracking-tight">{{ totalTransacted()
+            <p class="text-xs text-slate-400 font-medium mb-2">Taxas arrecadadas nos últimos {{
+              selectedDays() }} dias</p>
+            <h3 class="text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tight">{{ totalTransacted()
               | currency:'BRL':'symbol':'1.2-2' }}</h3>
           </div>
         </div>
@@ -84,15 +86,17 @@
             <div class="flex items-center justify-between mb-8">
               <div
                 class="w-12 h-12 bg-indigo-50 dark:bg-indigo-950/50 text-[#6366f1] dark:text-[#818cf8] rounded-2xl flex items-center justify-center">
-                <span class="material-icons-outlined">check_circle</span>
+                <span class="material-icons-outlined">outbox</span>
               </div>
               <div
                 class="flex items-center gap-1 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 px-3 py-1.5 rounded-full text-xs font-bold">
                 <span class="material-icons-outlined text-sm">trending_up</span> Efetuados
               </div>
             </div>
-            <p class="text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">Saques Efetuados</p>
-            <h3 class="text-4xl font-black text-slate-900 dark:text-slate-100 mt-2 tracking-tight">{{ completedPayouts()
+            <p class="text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">Repasses efetuados
+            </p>
+            <p class="text-xs text-slate-400 font-medium mb-2">Volume pago nos últimos {{ selectedDays() }} dias</p>
+            <h3 class="text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tight">{{ completedPayouts()
               |
               currency:'BRL':'symbol':'1.2-2' }}</h3>
           </div>
