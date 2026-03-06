@@ -78,7 +78,17 @@ export class SalesChartComponent {
         return Math.max(...data.map(d => d.value), 1);
     });
 
+    maxChartValueLabel = computed(() => {
+        const data = this.chartData();
+        const maxRaw = Math.max(...data.map(d => d.rawAmount), 1);
+        // Round to nearest neat number (e.g. 1000, 5000) for a cleaner Y axis if you'd like, 
+        // or just return maxRaw to be exactly the peak.
+        // Let's just use maxRaw + some padding (e.g. 10%) so the bars don't hit the very top text.
+        return Math.ceil(maxRaw * 1.1);
+    });
+
     onPeriodChange(event: any): void {
         this.periodChange.emit(+event.target.value);
     }
 }
+
