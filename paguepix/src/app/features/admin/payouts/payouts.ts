@@ -1,15 +1,13 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
-import { TopbarComponent } from '../../../shared/components/topbar/topbar.component';
-import { FooterComponent } from '../../../shared/components/footer/footer.component';
+import { ManagementLayoutComponent } from '../../../shared/components/management-layout/management-layout.component';
 import { PayoutService } from '../../../core/services/payout.service';
 import { Payout } from '../../../core/models/payout.model';
 
 @Component({
     selector: 'app-payouts-management',
     standalone: true,
-    imports: [CommonModule, SidebarComponent, TopbarComponent, FooterComponent],
+    imports: [CommonModule, ManagementLayoutComponent],
     templateUrl: './payouts.html',
     styleUrl: './payouts.scss'
 })
@@ -18,6 +16,7 @@ export class PayoutsManagement implements OnInit {
     loading = signal(true);
     currentPage = signal(0);
     totalPages = signal(1);
+    hasData = computed(() => this.payouts().length > 0);
 
     constructor(private payoutService: PayoutService) { }
 

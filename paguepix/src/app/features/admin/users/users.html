@@ -1,123 +1,70 @@
-<div class="flex h-screen bg-gray-50 dark:bg-slate-950 font-sans">
-    <!-- Sidebar -->
-    <app-sidebar></app-sidebar>
+<app-management-layout title="Gestão de Usuários"
+    subtitle="Gerencie administradores, permissões e acessos ao sistema central." searchPlaceholder="Buscar usuários..."
+    addButtonLabel="Adicionar Usuário" addButtonIcon="person_add" [loading]="loading" [hasData]="hasData"
+    emptyStateIcon="person_off" emptyStateMessage="Nenhum usuário encontrado.">
 
-    <!-- Main Content -->
-    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <app-topbar searchPlaceholder="Buscar usuários..."></app-topbar>
+    <ng-template #tableHeader>
+        <th class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+            Usuário
+        </th>
+        <th class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+            Login</th>
+        <th class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+            Perfil
+        </th>
+        <th class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+            Parceiro
+        </th>
+        <th
+            class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider text-right">
+            Ações</th>
+    </ng-template>
 
-        <main class="flex-1 overflow-y-auto p-4 md:p-5">
-            <header class="flex items-center justify-between mb-5">
-                <div>
-                    <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Gestão de Usuários
-                    </h1>
-                    <p class="text-gray-500 dark:text-slate-400 mt-1">Gerencie administradores, permissões e acessos ao
-                        sistema central.</p>
-                </div>
+    <ng-template #tableRow>
+        <tr *ngFor="let user of users()" class="hover:bg-gray-50/80 dark:hover:bg-slate-800/50 transition-colors group">
+            <td class="px-8 py-0.5">
                 <div class="flex items-center gap-4">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-slate-800 dark:to-slate-700 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs font-bold ring-1 ring-indigo-100 dark:ring-slate-700">
+                        {{ (user.name || 'U').substring(0, 2).toUpperCase() }}
+                    </div>
+                    <div>
+                        <div class="text-sm font-bold text-gray-900 dark:text-slate-200">{{
+                            user.name }}</div>
+                        <div class="text-xs text-gray-500 dark:text-slate-400">ID: #{{ user.id }}
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td class="px-8 py-0.5 text-sm text-gray-600 dark:text-slate-400">
+                <span
+                    class="px-2 py-1 bg-gray-100 dark:bg-slate-800 rounded-md text-xs font-medium text-gray-600 dark:text-slate-300">{{
+                    user.login }}</span>
+            </td>
+            <td class="px-8 py-0.5">
+                <span class="text-sm font-bold text-gray-700 dark:text-slate-300"
+                    [ngClass]="user.role === 'ADMIN' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-400'">
+                    {{ user.role === 'ADMIN' ? 'SUPER ADMIN' : 'PARCEIRO' }}
+                </span>
+            </td>
+            <td class="px-8 py-0.5">
+                <span class="text-sm font-medium text-gray-600 dark:text-slate-400">
+                    {{ user.partner?.name || 'Sistema' }}
+                </span>
+            </td>
+            <td class="px-8 py-0.5 text-right">
+                <div class="flex items-center justify-end gap-2">
                     <button
-                        class="bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-blue-700 shadow-md shadow-blue-200 transition-all flex items-center gap-2">
-                        <span class="material-icons-outlined text-sm">person_add</span> Adicionar Usuário
+                        class="p-2 text-gray-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all">
+                        <span class="material-icons-outlined text-lg">edit</span>
+                    </button>
+                    <button
+                        class="p-2 text-gray-400 dark:text-slate-500 hover:text-red-600 dark:hover:text-rose-400 hover:bg-red-50 dark:hover:bg-rose-900/20 rounded-lg transition-all">
+                        <span class="material-icons-outlined text-lg">delete</span>
                     </button>
                 </div>
-            </header>
+            </td>
+        </tr>
+    </ng-template>
 
-            <!-- Users Table -->
-            <div
-                class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 ring-1 ring-gray-900/5 dark:ring-white/10 overflow-hidden">
-                <div class="overflow-x-auto">
-                    <!-- Loading State -->
-                    <div *ngIf="loading()" class="p-12 flex flex-col items-center justify-center space-y-4">
-                        <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin">
-                        </div>
-                        <p class="text-gray-500 dark:text-slate-400 font-medium">Carregando usuários...</p>
-                    </div>
-
-                    <!-- Empty State -->
-                    <div *ngIf="!loading() && users().length === 0" class="p-12 text-center">
-                        <span
-                            class="material-icons-outlined text-4xl text-gray-300 dark:text-slate-700 mb-2">person_off</span>
-                        <p class="text-gray-500 dark:text-slate-400">Nenhum usuário encontrado.</p>
-                    </div>
-
-                    <table *ngIf="!loading() && users().length > 0" class="w-full text-left border-collapse">
-                        <thead
-                            class="bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800">
-                            <tr>
-                                <th
-                                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                                    Usuário
-                                </th>
-                                <th
-                                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                                    Login</th>
-                                <th
-                                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                                    Perfil
-                                </th>
-                                <th
-                                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                                    Parceiro
-                                </th>
-                                <th
-                                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider text-right">
-                                    Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100 dark:divide-slate-800">
-                            <tr *ngFor="let user of users()"
-                                class="hover:bg-gray-50/80 dark:hover:bg-slate-800/50 transition-colors group">
-                                <td class="px-8 py-0.5">
-                                    <div class="flex items-center gap-4">
-                                        <div
-                                            class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-700 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-bold ring-1 ring-blue-100 dark:ring-slate-700">
-                                            {{ (user.name || 'U').substring(0, 2).toUpperCase() }}
-                                        </div>
-                                        <div>
-                                            <div class="text-sm font-bold text-gray-900 dark:text-slate-200">{{
-                                                user.name }}</div>
-                                            <div class="text-xs text-gray-500 dark:text-slate-400">ID: #{{ user.id }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-8 py-0.5 text-sm text-gray-600 dark:text-slate-400">
-                                    <span
-                                        class="px-2 py-1 bg-gray-100 dark:bg-slate-800 rounded-md text-xs font-medium text-gray-600 dark:text-slate-300">{{
-                                        user.login }}</span>
-                                </td>
-                                <td class="px-8 py-0.5">
-                                    <span class="text-sm font-bold text-gray-700 dark:text-slate-300"
-                                        [ngClass]="user.role === 'ADMIN' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-400'">
-                                        {{ user.role === 'ADMIN' ? 'SUPER ADMIN' : 'PARCEIRO' }}
-                                    </span>
-                                </td>
-                                <td class="px-8 py-0.5">
-                                    <span class="text-sm font-medium text-gray-600 dark:text-slate-400">
-                                        {{ user.partner?.name || 'Sistema' }}
-                                    </span>
-                                </td>
-                                <td class="px-8 py-0.5 text-right">
-                                    <div class="flex items-center justify-end gap-2">
-                                        <button
-                                            class="p-2 text-gray-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all">
-                                            <span class="material-icons-outlined text-lg">edit</span>
-                                        </button>
-                                        <button
-                                            class="p-2 text-gray-400 dark:text-slate-500 hover:text-red-600 dark:hover:text-rose-400 hover:bg-red-50 dark:hover:bg-rose-900/20 rounded-lg transition-all">
-                                            <span class="material-icons-outlined text-lg">delete</span>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="mt-10">
-                <app-footer></app-footer>
-            </div>
-        </main>
-    </div>
-</div>
+</app-management-layout>

@@ -1,20 +1,19 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
-import { TopbarComponent } from '../../../shared/components/topbar/topbar.component';
-import { FooterComponent } from '../../../shared/components/footer/footer.component';
+import { ManagementLayoutComponent } from '../../../shared/components/management-layout/management-layout.component';
 import { UserService } from '../../../core/services/user.service';
 
 @Component({
     selector: 'app-user-management',
     standalone: true,
-    imports: [CommonModule, SidebarComponent, TopbarComponent, FooterComponent],
+    imports: [CommonModule, ManagementLayoutComponent],
     templateUrl: './users.html',
     styleUrl: './users.scss'
 })
 export class UserManagement implements OnInit {
     users = signal<any[]>([]);
     loading = signal(true);
+    hasData = computed(() => this.users().length > 0);
 
     constructor(private userService: UserService) { }
 
