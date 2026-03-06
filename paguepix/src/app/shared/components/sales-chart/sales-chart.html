@@ -23,7 +23,7 @@
         <!-- Y-Axis Labels (Left) -->
         <div class="flex flex-col justify-between items-end text-[10px] text-slate-400 font-medium pb-8 w-20 shrink-0">
             <span *ngFor="let tick of [4, 3, 2, 1, 0]">
-                R$ {{ (maxChartValueLabel() * tick / 4) | number:'1.0-0' }}
+                {{ (maxChartValueLabel() * tick / 4) | currency:'BRL':'symbol':'1.2-2' }}
             </span>
         </div>
 
