@@ -23,7 +23,7 @@ export class PartnerEdit implements OnInit {
   description = signal('');
   bankProvider = signal('');
   pixKey = signal('');
-  adminFee = signal<number | null>(null);
+  commissionRate = signal<number | null>(null);
   logo = signal<string | null>(null);
 
   selectedFile: File | null = null;
@@ -47,7 +47,7 @@ export class PartnerEdit implements OnInit {
         this.description.set(partner.description || '');
         this.bankProvider.set(partner.bankProvider || '');
         this.pixKey.set(partner.pixKey || '');
-        this.adminFee.set(partner.adminFee || null);
+        this.commissionRate.set(partner.commissionRate || null);
         this.logo.set(partner.logo || null);
         this.loading.set(false);
       },
@@ -77,7 +77,7 @@ export class PartnerEdit implements OnInit {
       description: this.description(),
       bankProvider: this.bankProvider(),
       pixKey: this.pixKey(),
-      adminFee: this.adminFee()
+      commissionRate: this.commissionRate()
     };
 
     this.loading.set(true);

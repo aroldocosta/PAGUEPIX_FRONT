@@ -118,7 +118,7 @@
                                 <td class="px-8 py-0.5 text-sm font-bold text-gray-900 dark:text-slate-200">
                                     {{ txn.paidValue | currency:'BRL' }}</td>
                                 <td class="px-8 py-0.5 text-sm text-red-500">
-                                    - {{ txn.feeRate | currency:'BRL' }}</td>
+                                    - {{ txn.commissionAmount | currency:'BRL' }}</td>
                                 <td class="px-8 py-0.5 text-sm font-bold text-green-600">
                                     {{ txn.netAmount | currency:'BRL' }}</td>
                                 <td class="px-8 py-0.5 text-right">

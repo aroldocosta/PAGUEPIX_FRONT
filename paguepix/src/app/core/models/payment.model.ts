@@ -18,7 +18,8 @@ export interface Payment {
     qrCode?: string;
     paymentLink?: string;
     customerPhone?: string;
-    feeRate?: number;
+    commissionRate?: number;
+    commissionAmount?: number;
     transferredValue?: number;
     transactionId?: string;
     netAmount?: number;

@@ -45,8 +45,8 @@
             </td>
             <td class="px-8 py-0.5">
                 <div class="text-sm font-bold"
-                    [ngClass]="{'text-emerald-600 dark:text-emerald-400': (partner.adminFee || 0) > 0, 'text-gray-400': !(partner.adminFee || 0)}">
-                    {{ (partner.adminFee || 0) | number:'1.2-2' }}%
+                    [ngClass]="{'text-emerald-600 dark:text-emerald-400': (partner.commissionRate || 0) > 0, 'text-gray-400': !(partner.commissionRate || 0)}">
+                    {{ (partner.commissionRate || 0) | number:'1.2-2' }}%
                 </div>
             </td>
             <td class="px-8 py-0.5">

@@ -9,7 +9,7 @@ export interface Partner {
     description?: string;
     bankProvider?: string;
     pixKey?: string;
-    adminFee?: number;
+    commissionRate?: number;
     userList?: User[];
     paymentList?: Payment[];
     deviceList?: Device[];
