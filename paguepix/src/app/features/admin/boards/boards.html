@@ -6,15 +6,14 @@
 
     <ng-template #tableHeader>
         <th class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-            Modelo / Hardware
+            ID MQTT
         </th>
         <th class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-            ID MQTT
+            Modelo
         </th>
         <th class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
             Script Ativo
         </th>
-        <th class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
         <th class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
             Proprietário
         </th>
@@ -32,16 +31,16 @@
                         class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-slate-800 dark:to-slate-700 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-xs font-bold ring-1 ring-cyan-100 dark:ring-slate-700">
                         <span class="material-icons-outlined text-lg">memory</span>
                     </div>
-                    <div>
-                        <div class="text-sm font-bold text-gray-900 dark:text-slate-200">{{
-                            board.model || 'N/A' }}</div>
-                        <div class="text-[10px] text-gray-400 dark:text-slate-500 font-mono">ID: #{{
-                            board.id }}</div>
+                    <div class="text-sm font-medium text-gray-600 dark:text-slate-400 font-mono">
+                        {{ board.clientId }}
                     </div>
                 </div>
             </td>
-            <td class="px-8 py-0.5 text-sm font-medium text-gray-600 dark:text-slate-400 font-mono">
-                {{ board.clientId }}
+            <td class="px-8 py-0.5">
+                <div class="text-sm font-bold text-gray-900 dark:text-slate-200">{{
+                    board.model || 'N/A' }}</div>
+                <div class="text-[10px] text-gray-400 dark:text-slate-500 font-mono">ID: #{{
+                    board.id }}</div>
             </td>
             <td class="px-8 py-0.5">
                 <span class="text-sm font-medium text-blue-600 dark:text-blue-400">{{
