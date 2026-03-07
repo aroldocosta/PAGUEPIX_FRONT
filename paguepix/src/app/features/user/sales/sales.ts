@@ -1,11 +1,11 @@
-import { Component, signal, OnInit, inject } from '@angular/core';
+import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { TopbarComponent } from '../../../shared/components/topbar/topbar.component';
 import { FooterComponent } from '../../../shared/components/footer/footer.component';
 import { Sale } from '../../../core/models/sale.model';
 import { PaymentService } from '../../../core/services/payment.service';
-
+import { AuthService } from '../../../core/services/auth.service';
 @Component({
     selector: 'app-sales',
     standalone: true,
@@ -15,6 +15,9 @@ import { PaymentService } from '../../../core/services/payment.service';
 })
 export class SalesComponent implements OnInit {
     private paymentService = inject(PaymentService);
+    private authService = inject(AuthService);
+
+    partnerName = computed(() => this.authService.partnerName());
 
     sales = signal<Sale[]>([]);
     loading = signal(false);

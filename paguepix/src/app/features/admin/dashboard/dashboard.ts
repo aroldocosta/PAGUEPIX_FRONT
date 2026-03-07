@@ -21,6 +21,7 @@ export class Dashboard implements OnInit {
   protected themeService = inject(ThemeService);
 
   userName = computed(() => this.authService.name());
+  partnerName = computed(() => this.authService.partnerName());
 
   // Cards
   availableBalance = signal(0);

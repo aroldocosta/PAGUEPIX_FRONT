@@ -25,6 +25,7 @@ export class SidebarComponent {
 
     adminMenuItems: MenuItem[] = [
         { label: 'Dashboard', icon: 'home', route: '/admin/dashboard' },
+        { label: 'Estatísticas', icon: 'query_stats', route: '/admin/statistics' },
         { label: 'Parceiros', icon: 'handshake', route: '/admin/partners' },
         { label: 'Pagamentos', icon: 'payments', route: '/admin/payments' },
         { label: 'Usuários', icon: 'group', route: '/admin/users' },

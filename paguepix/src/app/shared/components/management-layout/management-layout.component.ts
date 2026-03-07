@@ -1,8 +1,9 @@
-import { Component, Input, ContentChild, TemplateRef, Signal, signal } from '@angular/core';
+import { Component, Input, ContentChild, TemplateRef, Signal, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { TopbarComponent } from '../topbar/topbar.component';
 import { FooterComponent } from '../footer/footer.component';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
     selector: 'app-management-layout',
@@ -11,6 +12,8 @@ import { FooterComponent } from '../footer/footer.component';
     templateUrl: './management-layout.component.html'
 })
 export class ManagementLayoutComponent {
+    private authService = inject(AuthService);
+    partnerName = computed(() => this.authService.partnerName());
     @Input() title: string = '';
     @Input() subtitle: string = '';
     @Input() searchPlaceholder: string = 'Buscar...';

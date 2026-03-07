@@ -21,6 +21,7 @@ export class UserDashboard implements OnInit {
   protected themeService = inject(ThemeService);
 
   userName = computed(() => this.authService.name());
+  partnerName = computed(() => this.authService.partnerName());
 
   // Cards
   balance = signal(0);

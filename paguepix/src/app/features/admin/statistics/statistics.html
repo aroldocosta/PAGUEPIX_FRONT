@@ -1,0 +1,156 @@
+<div
+    class="flex flex-col h-screen bg-slate-50 dark:bg-slate-950 font-sans text-slate-900 dark:text-slate-100 overflow-hidden transition-colors duration-300">
+
+    <app-topbar searchPlaceholder="Buscar relatórios, dados..."></app-topbar>
+
+    <div class="max-w-[1660px] mx-auto w-full px-4 flex flex-1 overflow-hidden mt-6 gap-6">
+
+        <!-- Left Column: Partner Logo + Sidebar -->
+        <aside class="w-72 flex-shrink-0 flex flex-col gap-6 hidden lg:flex h-full pb-6">
+
+            <!-- Partner Logo Card -->
+            <div
+                class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[32px] p-6 flex flex-col items-center justify-center shadow-sm">
+                <h2 class="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight">{{ partnerName() ||
+                    'Parceiro' }}</h2>
+                <span
+                    class="text-[10px] uppercase tracking-widest font-bold text-slate-400 dark:text-slate-500 mt-1">Logo
+                    do Parceiro</span>
+            </div>
+
+            <!-- Sidebar Container -->
+            <div
+                class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[32px] overflow-hidden flex-1 shadow-sm flex flex-col">
+                <app-sidebar class="flex-1 overflow-y-auto"></app-sidebar>
+            </div>
+        </aside>
+
+        <main class="flex-1 overflow-y-auto pb-10 space-y-10 pr-2">
+
+            <!-- Header with Filters -->
+            <section class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div>
+                    <h1 class="text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">Histórico e
+                        Estatísticas</h1>
+                    <p class="text-slate-500 dark:text-slate-400 mt-1 font-medium">Análise de longo prazo e métricas
+                        avançadas.</p>
+                </div>
+
+                <!-- Filters -->
+                <div class="flex items-center gap-4">
+                    <!-- Partner Filter -->
+                    <div class="relative">
+                        <select [(ngModel)]="selectedPartnerId" (change)="onFilterChange()"
+                            class="appearance-none bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-sm font-bold rounded-2xl pl-4 pr-10 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none shadow-sm transition-all min-w-[200px]">
+                            <option [ngValue]="null">🌍 Visão Global (Todos)</option>
+                            <option *ngFor="let p of partners()" [ngValue]="p.id">🏬 {{ p.name }}</option>
+                        </select>
+                        <span
+                            class="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+                    </div>
+
+                    <!-- Date Filter -->
+                    <div class="relative">
+                        <select [(ngModel)]="selectedPeriod" (change)="onFilterChange()"
+                            class="appearance-none bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/50 text-[#6366f1] dark:text-[#818cf8] text-sm font-bold rounded-2xl pl-4 pr-10 py-3 focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all">
+                            <option *ngFor="let per of periods" [value]="per.value">{{ per.label }}</option>
+                        </select>
+                        <span
+                            class="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-indigo-400 pointer-events-none">event</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Loading State -->
+            <div *ngIf="loading()" class="flex justify-center py-20">
+                <span class="material-icons-outlined animate-spin text-4xl text-indigo-500">refresh</span>
+            </div>
+
+            <ng-container *ngIf="!loading()">
+                <!-- Stats Grid -->
+                <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Custody -->
+                    <div
+                        class="bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-hidden group">
+                        <div class="flex items-center justify-between mb-8 relative z-10">
+                            <div
+                                class="w-12 h-12 bg-indigo-50 dark:bg-indigo-950/50 text-[#6366f1] dark:text-[#818cf8] rounded-2xl flex items-center justify-center">
+                                <span class="material-icons-outlined">account_balance</span>
+                            </div>
+                        </div>
+                        <p class="text-slate-400 font-bold text-sm uppercase relative z-10">Total em Caixa (Custódia)
+                        </p>
+                        <h3
+                            class="text-4xl font-black text-slate-900 dark:text-slate-100 mt-2 tracking-tight relative z-10">
+                            {{ availableBalance() | currency:'BRL':'symbol':'1.2-2' }}</h3>
+                    </div>
+
+                    <!-- Revenue -->
+                    <div
+                        class="bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-hidden group">
+                        <div class="flex items-center justify-between mb-8 relative z-10">
+                            <div
+                                class="w-12 h-12 bg-indigo-50 dark:bg-indigo-950/50 text-[#6366f1] dark:text-[#818cf8] rounded-2xl flex items-center justify-center">
+                                <span class="material-icons-outlined">savings</span>
+                            </div>
+                        </div>
+                        <p class="text-slate-400 font-bold text-sm uppercase relative z-10">Receita Arrecadada</p>
+                        <h3
+                            class="text-4xl font-black text-slate-900 dark:text-slate-100 mt-2 tracking-tight relative z-10">
+                            {{ totalTransacted() | currency:'BRL':'symbol':'1.2-2' }}</h3>
+                    </div>
+
+                    <!-- Payouts -->
+                    <div
+                        class="bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-hidden group">
+                        <div class="flex items-center justify-between mb-8 relative z-10">
+                            <div
+                                class="w-12 h-12 bg-indigo-50 dark:bg-indigo-950/50 text-[#6366f1] dark:text-[#818cf8] rounded-2xl flex items-center justify-center">
+                                <span class="material-icons-outlined">outbox</span>
+                            </div>
+                        </div>
+                        <p class="text-slate-400 font-bold text-sm uppercase relative z-10">Volume Repassado</p>
+                        <h3
+                            class="text-4xl font-black text-slate-900 dark:text-slate-100 mt-2 tracking-tight relative z-10">
+                            {{ completedPayouts() | currency:'BRL':'symbol':'1.2-2' }}</h3>
+                    </div>
+                </section>
+
+                <!-- Charts Area -->
+                <section class="grid grid-cols-1 gap-8">
+                    <div
+                        class="bg-white dark:bg-slate-900 p-10 rounded-[40px] border border-slate-100 dark:border-slate-800 shadow-sm">
+                        <h3 class="text-xl font-black text-slate-900 dark:text-slate-100 tracking-tight mb-8">Evolução
+                            de Faturamento</h3>
+
+                        <div class="flex gap-4 items-end min-h-[300px] mt-10">
+                            <div *ngIf="salesOverviewData()?.length === 0"
+                                class="w-full text-center text-slate-500 font-bold">Nenhum dado encontrado para o
+                                período.</div>
+
+                            <div *ngFor="let item of salesOverviewData()"
+                                class="flex-1 flex flex-col justify-end relative group">
+                                <!-- Bar -->
+                                <div class="bg-indigo-500 rounded-t-xl hover:brightness-110 transition-all cursor-crosshair min-h-[4px]"
+                                    [style.height]="item.amount > 0 ? ((item.amount / 1000) + 'px') : '4px' ">
+                                    <!-- Minimalist hack for dynamic height scale. In a real chart, we'd scale relative to Max() -->
+                                </div>
+                                <span
+                                    class="mt-4 text-center text-xs font-bold text-slate-400 rotate-[-45deg] whitespace-nowrap origin-top-left ml-4">{{
+                                    item.periodLabel }}</span>
+
+                                <!-- Tooltip -->
+                                <div
+                                    class="absolute -top-12 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-slate-700 text-white text-xs font-bold px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 pointer-events-none">
+                                    {{ item.amount | currency:'BRL' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </ng-container>
+
+            <app-footer></app-footer>
+        </main>
+    </div>
+</div>

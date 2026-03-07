@@ -1,10 +1,11 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { TopbarComponent } from '../../../shared/components/topbar/topbar.component';
 import { FooterComponent } from '../../../shared/components/footer/footer.component';
 import { PayoutService } from '../../../core/services/payout.service';
 import { Payout } from '../../../core/models/payout.model';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
     selector: 'app-partner-payouts',
@@ -14,6 +15,9 @@ import { Payout } from '../../../core/models/payout.model';
     styleUrl: './payouts.scss'
 })
 export class PartnerPayouts implements OnInit {
+    private authService = inject(AuthService);
+    partnerName = computed(() => this.authService.partnerName());
+
     payouts = signal<Payout[]>([]);
     loading = signal(true);
     currentPage = signal(0);

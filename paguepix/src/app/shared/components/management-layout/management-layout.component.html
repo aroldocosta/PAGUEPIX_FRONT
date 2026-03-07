@@ -1,65 +1,83 @@
-<div class="min-h-screen bg-slate-50 dark:bg-slate-950 flex justify-center overflow-hidden">
-    <div
-        class="w-full max-w-[1440px] flex h-screen bg-white dark:bg-slate-900 shadow-2xl overflow-hidden ring-1 ring-slate-200 dark:ring-slate-800">
-        <!-- Sidebar -->
-        <app-sidebar></app-sidebar>
+<div
+    class="flex flex-col h-screen bg-slate-50 dark:bg-slate-950 font-sans text-slate-900 dark:text-slate-100 overflow-hidden transition-colors duration-300">
 
-        <!-- Main Content -->
-        <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
-            <app-topbar [searchPlaceholder]="searchPlaceholder"></app-topbar>
+    <!-- Top Bar Full Width -->
+    <app-topbar [searchPlaceholder]="searchPlaceholder"></app-topbar>
 
-            <main class="flex-1 overflow-y-auto p-4 md:p-10">
-                <div class="w-full">
-                    <header class="flex items-center justify-between mb-10">
-                        <div>
-                            <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">{{ title
-                                }}
-                            </h1>
-                            <p class="text-slate-500 dark:text-slate-400 mt-1 font-medium">{{ subtitle }}</p>
-                        </div>
-                        <div class="flex items-center gap-4" *ngIf="addButtonLabel">
-                            <button
-                                class="bg-indigo-600 text-white px-6 py-3 rounded-2xl text-sm font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-200 dark:shadow-none transition-all flex items-center gap-2 group">
-                                <span
-                                    class="material-icons-outlined text-sm transition-transform group-hover:rotate-90">{{
-                                    addButtonIcon }}</span> {{ addButtonLabel }}
-                            </button>
-                        </div>
-                    </header>
+    <!-- Boxed Content Area -->
+    <div class="max-w-[1660px] mx-auto w-full px-4 flex flex-1 overflow-hidden mt-6 gap-6">
 
-                    <!-- Table Container -->
-                    <div
-                        class="bg-white dark:bg-slate-900 rounded-[32px] shadow-sm border border-slate-100 dark:border-slate-800 ring-1 ring-slate-900/5 dark:ring-white/10 overflow-hidden">
-                        <div class="overflow-x-auto">
-                            <!-- Loading State -->
-                            <div *ngIf="loading()" class="p-16 flex flex-col items-center justify-center space-y-4">
-                                <div
-                                    class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin">
-                                </div>
-                                <p class="text-slate-500 dark:text-slate-400 font-bold tracking-wide">Carregando...</p>
-                            </div>
+        <!-- Left Column: Partner Logo + Sidebar -->
+        <aside class="w-72 flex-shrink-0 flex flex-col gap-6 hidden lg:flex h-full pb-6">
 
-                            <!-- Empty State -->
-                            <div *ngIf="!loading() && !hasData()" class="p-16 text-center">
-                                <span
-                                    class="material-icons-outlined text-5xl text-slate-200 dark:text-slate-800 mb-4">{{
-                                    emptyStateIcon }}</span>
-                                <p class="text-slate-500 dark:text-slate-400 font-bold">{{ emptyStateMessage }}</p>
-                            </div>
+            <!-- Partner Logo Card -->
+            <div
+                class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[32px] p-6 flex flex-col items-center justify-center shadow-sm">
+                <h2 class="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight">{{ partnerName() ||
+                    'Parceiro' }}</h2>
+                <span
+                    class="text-[10px] uppercase tracking-widest font-bold text-slate-400 dark:text-slate-500 mt-1">Logo
+                    do Parceiro</span>
+            </div>
 
-                            <!-- Custom Table Content -->
-                            <div *ngIf="!loading() && hasData()">
-                                <ng-container *ngTemplateOutlet="tableContent || defaultTable"></ng-container>
-                            </div>
-                        </div>
+            <!-- Sidebar Container -->
+            <div
+                class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[32px] overflow-hidden flex-1 shadow-sm flex flex-col">
+                <app-sidebar class="flex-1 overflow-y-auto"></app-sidebar>
+            </div>
+
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto pb-10 pr-2 pt-2">
+            <div class="w-full">
+                <header class="flex items-center justify-between mb-10">
+                    <div>
+                        <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">{{ title
+                            }}
+                        </h1>
+                        <p class="text-slate-500 dark:text-slate-400 mt-1 font-medium">{{ subtitle }}</p>
                     </div>
+                    <div class="flex items-center gap-4" *ngIf="addButtonLabel">
+                        <button
+                            class="bg-indigo-600 text-white px-6 py-3 rounded-2xl text-sm font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-200 dark:shadow-none transition-all flex items-center gap-2 group">
+                            <span class="material-icons-outlined text-sm transition-transform group-hover:rotate-90">{{
+                                addButtonIcon }}</span> {{ addButtonLabel }}
+                        </button>
+                    </div>
+                </header>
 
-                    <div class="mt-12">
-                        <app-footer></app-footer>
+                <!-- Table Container -->
+                <div
+                    class="bg-white dark:bg-slate-900 rounded-[32px] shadow-sm border border-slate-100 dark:border-slate-800 ring-1 ring-slate-900/5 dark:ring-white/10 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <!-- Loading State -->
+                        <div *ngIf="loading()" class="p-16 flex flex-col items-center justify-center space-y-4">
+                            <div
+                                class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin">
+                            </div>
+                            <p class="text-slate-500 dark:text-slate-400 font-bold tracking-wide">Carregando...</p>
+                        </div>
+
+                        <!-- Empty State -->
+                        <div *ngIf="!loading() && !hasData()" class="p-16 text-center">
+                            <span class="material-icons-outlined text-5xl text-slate-200 dark:text-slate-800 mb-4">{{
+                                emptyStateIcon }}</span>
+                            <p class="text-slate-500 dark:text-slate-400 font-bold">{{ emptyStateMessage }}</p>
+                        </div>
+
+                        <!-- Custom Table Content -->
+                        <div *ngIf="!loading() && hasData()">
+                            <ng-container *ngTemplateOutlet="tableContent || defaultTable"></ng-container>
+                        </div>
                     </div>
                 </div>
-            </main>
-        </div>
+
+                <div class="mt-12">
+                    <app-footer></app-footer>
+                </div>
+            </div>
+        </main>
     </div>
 </div>
 

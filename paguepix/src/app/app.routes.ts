@@ -14,7 +14,7 @@ import { SalesComponent } from './features/user/sales/sales';
 import { SalesTimeComponent } from './features/public/sales-time/sales-time';
 import { PayoutsManagement } from './features/admin/payouts/payouts';
 import { PartnerPayouts } from './features/user/payout/payouts';
-
+import { Statistics } from './features/admin/statistics/statistics';
 
 import { authGuard } from './core/guards/auth.guard';
 
@@ -24,6 +24,7 @@ export const routes: Routes = [
     { path: 'sales/:token', component: SalesTimeComponent },
 
     { path: 'admin/dashboard', component: Dashboard, canActivate: [authGuard] },
+    { path: 'admin/statistics', component: Statistics, canActivate: [authGuard] },
     { path: 'admin/payments', component: PaymentsManagement, canActivate: [authGuard] },
     { path: 'admin/payouts', component: PayoutsManagement, canActivate: [authGuard] },
     { path: 'admin/users', component: UserManagement, canActivate: [authGuard] },

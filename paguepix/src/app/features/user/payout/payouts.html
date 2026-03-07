@@ -1,12 +1,35 @@
-<div class="flex h-screen bg-gray-50 dark:bg-slate-950 font-sans">
-    <!-- Sidebar -->
-    <app-sidebar></app-sidebar>
+<div
+    class="flex flex-col h-screen bg-slate-50 dark:bg-slate-950 font-sans text-slate-900 dark:text-slate-100 overflow-hidden transition-colors duration-300">
 
-    <!-- Main Content -->
-    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <app-topbar searchPlaceholder="Buscar saques..."></app-topbar>
+    <!-- Top Bar Full Width -->
+    <app-topbar searchPlaceholder="Buscar saques..."></app-topbar>
 
-        <main class="flex-1 overflow-y-auto p-4 md:p-5">
+    <!-- Boxed Content Area -->
+    <div class="max-w-[1660px] mx-auto w-full px-4 flex flex-1 overflow-hidden mt-6 gap-6">
+
+        <!-- Left Column: Partner Logo + Sidebar -->
+        <aside class="w-72 flex-shrink-0 flex flex-col gap-6 hidden lg:flex h-full pb-6">
+
+            <!-- Partner Logo Card -->
+            <div
+                class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[32px] p-6 flex flex-col items-center justify-center shadow-sm">
+                <h2 class="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight">{{ partnerName() ||
+                    'Parceiro' }}</h2>
+                <span
+                    class="text-[10px] uppercase tracking-widest font-bold text-slate-400 dark:text-slate-500 mt-1">Logo
+                    do Parceiro</span>
+            </div>
+
+            <!-- Sidebar Container -->
+            <div
+                class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[32px] overflow-hidden flex-1 shadow-sm flex flex-col">
+                <app-sidebar class="flex-1 overflow-y-auto"></app-sidebar>
+            </div>
+
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto pb-10 pr-2 pt-2">
             <header class="flex items-center justify-between mb-5">
                 <div>
                     <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Saques</h1>
