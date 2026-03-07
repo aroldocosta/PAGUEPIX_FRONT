@@ -9,40 +9,107 @@
                 class="lg:col-span-2 space-y-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-3xl shadow-sm h-fit">
 
                 <div class="grid grid-cols-1 gap-6">
-                    <!-- Modelo/MAC Address -->
+                    <!-- Identificador MQTT (MAC Address / Serial) -->
                     <div class="space-y-2">
-                        <label for="model" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
-                            Modelo (MAC Address / Serial)
+                        <label for="clientId" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
+                            Identificador MQTT (MAC Address / Serial)
                         </label>
                         <div class="relative group">
                             <span
-                                class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors">memory</span>
-                            <input id="model" name="model" type="text" [ngModel]="model()"
-                                (ngModelChange)="model.set($event)" required
+                                class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors">fingerprint</span>
+                            <input id="clientId" name="clientId" type="text" [ngModel]="clientId()"
+                                (ngModelChange)="clientId.set($event)" required
                                 class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white"
                                 placeholder="Ex: XX:XX:XX:XX:XX:XX">
                         </div>
                     </div>
 
-                    <!-- Descrição/Versão -->
-                    <div class="space-y-2">
-                        <label for="description" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
-                            Descrição / Nome Amigável
-                        </label>
-                        <div class="relative group">
-                            <span
-                                class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors">description</span>
-                            <input id="description" name="description" type="text" [ngModel]="description()"
-                                (ngModelChange)="description.set($event)" required
-                                class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white"
-                                placeholder="Ex: Placa Vending Machine V1.2">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Modelo do Hardware -->
+                        <div class="space-y-2">
+                            <label for="model" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
+                                Modelo do Hardware (Specs)
+                            </label>
+                            <div class="relative group">
+                                <span
+                                    class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors">memory</span>
+                                <input id="model" name="model" type="text" [ngModel]="model()"
+                                    (ngModelChange)="model.set($event)" required
+                                    class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white"
+                                    placeholder="Ex: ESP32 4 Relés">
+                            </div>
+                        </div>
+
+                        <!-- Descrição/Versão -->
+                        <div class="space-y-2">
+                            <label for="description" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
+                                Nome Amigável / Descrição
+                            </label>
+                            <div class="relative group">
+                                <span
+                                    class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors">description</span>
+                                <input id="description" name="description" type="text" [ngModel]="description()"
+                                    (ngModelChange)="description.set($event)" required
+                                    class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white"
+                                    placeholder="Ex: Placa Vending V1.2">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Script Selection -->
+                        <div class="space-y-2">
+                            <label for="scriptId" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
+                                Script de Lógica
+                            </label>
+                            <div class="relative group">
+                                <span
+                                    class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors">code</span>
+                                <select id="scriptId" name="scriptId" [ngModel]="scriptId()"
+                                    (ngModelChange)="scriptId.set($event)" required
+                                    class="w-full pl-10 pr-10 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white appearance-none">
+                                    <option value="" disabled class="bg-white dark:bg-slate-900 text-gray-500">
+                                        Selecionar Script...</option>
+                                    <option *ngFor="let script of scripts()" [value]="script.id"
+                                        class="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">
+                                        {{ script.name }}
+                                    </option>
+                                </select>
+                                <span
+                                    class="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">expand_more</span>
+                            </div>
+                        </div>
+
+                        <!-- Device Selection -->
+                        <div class="space-y-2">
+                            <label for="deviceId" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
+                                Dispositivo (Hospedeiro)
+                            </label>
+                            <div class="relative group">
+                                <span
+                                    class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors">qr_code_2</span>
+                                <select id="deviceId" name="deviceId" [ngModel]="deviceId()"
+                                    (ngModelChange)="deviceId.set($event)"
+                                    class="w-full pl-10 pr-10 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white appearance-none">
+                                    <option [value]="''"
+                                        class="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">Nenhum (Placa
+                                        Avulsa)</option>
+                                    <option *ngFor="let device of devices()" [value]="device.id"
+                                        class="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">
+                                        {{ device.code }} - {{ device.model }}
+                                    </option>
+                                </select>
+                                <span
+                                    class="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">expand_more</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Ações -->
                 <div class="flex items-center gap-4 pt-4 border-t border-slate-100 dark:border-slate-800 mt-6">
-                    <button type="submit" [disabled]="loading() || !model() || !description()"
+                    <button type="submit"
+                        [disabled]="loading() || !clientId() || !model() || !description() || !scriptId()"
                         class="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-purple-200 dark:shadow-none">
                         <span class="material-icons-outlined text-lg">save</span>
                         Salvar Placa
@@ -66,8 +133,8 @@
                     <p class="text-sm text-purple-700/80 dark:text-purple-400/80 leading-relaxed">
                         A Placa de Hardware (Board) é a interface de comunicação de baixo nível que executará os Scripts
                         e que ficará armazenada dentro do Dispositivo (Device - QRCode).<br><br>
-                        Certifique-se de que o <strong>MAC Address (Modelo)</strong> esteja perfeitamente preenchido,
-                        pois é a identificação unificada do firmware.
+                        Certifique-se de que o <strong>ID MQTT (clientId)</strong> esteja perfeitamente preenchido,
+                        pois é a identificação unificada que o Broker usará para autorizar a conexão do módulo.
                     </p>
                 </div>
             </div>

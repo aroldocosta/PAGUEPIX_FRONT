@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { BoardService } from '../../../../core/services/board.service';
+import { ScriptService } from '../../../../core/services/script.service';
+import { DeviceService } from '../../../../core/services/device.service';
 import { BoardRequest } from '../../../../core/models/board.model';
 import { ManagementLayoutComponent } from '../../../../shared/components/management-layout/management-layout.component';
 
@@ -17,10 +19,18 @@ export class BoardEdit implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private boardService = inject(BoardService);
+  private scriptService = inject(ScriptService);
+  private deviceService = inject(DeviceService);
 
   id = signal<string | number | null>(null);
+  clientId = signal('');
   model = signal('');
   description = signal('');
+  scriptId = signal<string | number>('');
+  deviceId = signal<string | number>('');
+
+  scripts = signal<any[]>([]);
+  devices = signal<any[]>([]);
 
   loading = signal(false);
   hasData = signal(true);
@@ -31,14 +41,33 @@ export class BoardEdit implements OnInit {
       this.id.set(idParam);
       this.loadBoard(idParam);
     }
+    this.loadScripts();
+    this.loadDevices();
+  }
+
+  loadScripts() {
+    this.scriptService.findAll(0, 100).subscribe({
+      next: (resp) => this.scripts.set(resp.content),
+      error: (err) => console.error('Error loading scripts', err)
+    });
+  }
+
+  loadDevices() {
+    this.deviceService.findAll(undefined, 0, 100).subscribe({
+      next: (resp) => this.devices.set(resp.content),
+      error: (err) => console.error('Error loading devices', err)
+    });
   }
 
   loadBoard(id: string | number) {
     this.loading.set(true);
     this.boardService.findById(id).subscribe({
       next: (board) => {
+        this.clientId.set(board.clientId || '');
         this.model.set(board.model || '');
         this.description.set(board.description || '');
+        this.scriptId.set(board.script?.id || '');
+        this.deviceId.set(board.device?.id || '');
         this.loading.set(false);
       },
       error: (err) => {
@@ -51,8 +80,11 @@ export class BoardEdit implements OnInit {
   onSave() {
     const boardData: BoardRequest = {
       id: this.id() || undefined,
+      clientId: this.clientId(),
       model: this.model(),
       description: this.description(),
+      scriptId: this.scriptId(),
+      deviceId: this.deviceId() || undefined
     };
 
     this.loading.set(true);

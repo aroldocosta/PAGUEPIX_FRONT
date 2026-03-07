@@ -18,6 +18,7 @@ export class ScriptEdit implements OnInit {
   private scriptService = inject(ScriptService);
 
   id = signal<string | number | null>(null);
+  name = signal('');
   code = signal('');
   type = signal('');
   description = signal('');
@@ -37,6 +38,7 @@ export class ScriptEdit implements OnInit {
     this.loading.set(true);
     this.scriptService.findById(id).subscribe({
       next: (script) => {
+        this.name.set(script.name || '');
         this.code.set(script.code || '');
         this.type.set(script.type || '');
         this.description.set(script.description || '');
@@ -53,6 +55,7 @@ export class ScriptEdit implements OnInit {
     // Backend model might need ID appended to body, or not.
     // We'll mimic save/update paradigm
     const scriptData: any = {
+      name: this.name(),
       code: this.code(),
       type: this.type(),
       description: this.description(),
