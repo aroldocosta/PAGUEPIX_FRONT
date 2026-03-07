@@ -243,9 +243,9 @@
                 </td>
                 <td class="px-10 py-6">
                   <span [ngClass]="{
-                    'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400': tx.status === 'CONFIRMED',
-                    'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400': tx.status === 'PENDING',
-                    'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400': tx.status === 'FAILED'
+                    'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400': tx.status === 'APPROVED' || tx.status === 'PAID_OUT' || tx.status === 'CONFIRMED',
+                    'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400': tx.status === 'PENDING' || tx.status === 'WAITING_PAYMENT',
+                    'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400': tx.status === 'FAILED' || tx.status === 'CANCELLED' || tx.status === 'EXPIRED'
                   }" class="px-3 py-1 rounded-lg text-[10px] font-black tracking-widest uppercase">
                     {{ tx.status }}
                   </span>

@@ -120,12 +120,12 @@
                     </td>
                     <td class="px-8 py-0.5">
                         <span [ngClass]="{
-                            'bg-green-50 text-green-700 ring-1 ring-green-600/10': payment.state === 'PAID',
+                            'bg-green-50 text-green-700 ring-1 ring-green-600/10': payment.state === 'APPROVED',
                             'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-600/10': payment.state === 'PENDING',
                             'bg-red-50 text-red-700 ring-1 ring-red-600/10': payment.state === 'EXPIRED' || payment.state === 'CANCELED'
                         }" class="px-2.5 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1">
                             <span class="w-1 h-1 rounded-full" [ngClass]="{
-                                'bg-green-600': payment.state === 'PAID',
+                                'bg-green-600': payment.state === 'APPROVED',
                                 'bg-yellow-600': payment.state === 'PENDING',
                                 'bg-red-600': payment.state === 'EXPIRED' || payment.state === 'CANCELED'
                             }"></span>

@@ -62,7 +62,7 @@ export class PartnerPayouts implements OnInit {
         switch (status) {
             case 'AVAILABLE':
                 return 'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-600/10';
-            case 'TRANSFERRED':
+            case 'PAID_OUT':
                 return 'bg-green-50 text-green-700 ring-1 ring-green-600/10';
             case 'FAILED':
                 return 'bg-red-50 text-red-700 ring-1 ring-red-600/10';
@@ -75,7 +75,7 @@ export class PartnerPayouts implements OnInit {
         switch (status) {
             case 'AVAILABLE':
                 return 'bg-yellow-600';
-            case 'TRANSFERRED':
+            case 'PAID_OUT':
                 return 'bg-green-600';
             case 'FAILED':
                 return 'bg-red-600';
