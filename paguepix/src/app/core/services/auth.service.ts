@@ -51,12 +51,13 @@ export class AuthService {
         const userRole = this.role();
         if (userRole === 'ADMIN') {
             this.router.navigate(['/admin/dashboard']);
-        } else if (userRole === 'USER') {
+        } else if (userRole === 'USER' || userRole === 'PARTNER') {
             this.router.navigate(['/user/dashboard']);
         } else {
             this.router.navigate(['/login']);
         }
     }
+
 
     logout() {
         localStorage.removeItem(this.STORAGE_KEY);

@@ -15,6 +15,7 @@ import { environment } from '../../../../../environments/environment';
   styleUrl: './edit.scss'
 })
 export class UserEdit implements OnInit {
+  // User management properties
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private userService = inject(UserService);

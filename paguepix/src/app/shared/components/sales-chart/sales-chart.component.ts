@@ -44,25 +44,32 @@ export class SalesChartComponent {
             const d = new Date();
             d.setDate(now.getDate() - i);
 
-            // Mode: 30 days -> Day of month (DD), 7 days -> Day of week name (DDD.)
-            const dayLabel = daysCount === 30
-                ? d.getDate().toString().padStart(2, '0')
-                : dayNames[d.getDay()];
+            // Search label (always DD) to match backend data
+            const searchLabel = d.getDate().toString().padStart(2, '0');
+
+            // Display label (rules: 30 days -> only every 5 steps, 7 days -> always name)
+            let displayLabel = '';
+            if (daysCount === 30) {
+                // User wants labels every 5 days counting back from today (i=0)
+                // e.g. 7 (today), 2, 25, 20...
+                displayLabel = (i % 5 === 0) ? d.getDate().toString() : '';
+            } else {
+                displayLabel = dayNames[d.getDay()];
+            }
 
             // Busca o dia correspondente nos dados vindos do API
-            // No caso de 30 dias, o backend pode mandar a data em formato YYYY-MM-DD ou DD/MM
-            // Aqui fazemos uma busca flexível
             const apiDay = data.find(s => {
                 const normalizedAPI = normalize(s.date);
-                const normalizedLabel = normalize(dayLabel);
-                return normalizedAPI === normalizedLabel || normalizedAPI.includes(normalizedLabel);
+                const normalizedSearch = normalize(searchLabel);
+                return normalizedAPI === normalizedSearch || normalizedAPI.includes(normalizedSearch);
             });
 
             baseline.push({
-                day: dayLabel,
+                day: displayLabel,
                 rawAmount: apiDay ? apiDay.amount : 0
             });
         }
+
 
         // 2. Normalize values (0-85 scale for peak 90% filling)
         const maxAmount = Math.max(...baseline.map(s => s.rawAmount), 1);

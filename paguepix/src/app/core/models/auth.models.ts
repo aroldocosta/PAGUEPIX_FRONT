@@ -1,7 +1,7 @@
 export interface LoginResponse {
     userId: string;
     token: string;
-    role: 'ADMIN' | 'USER';
+    role: 'ADMIN' | 'USER' | 'PARTNER';
     name: string;
     partnerName?: string;
 }
@@ -9,7 +9,8 @@ export interface LoginResponse {
 export interface UserSession {
     userId: string;
     token: string;
-    role: 'ADMIN' | 'USER';
+    role: 'ADMIN' | 'USER' | 'PARTNER';
     name: string;
     partnerName?: string;
 }
+
