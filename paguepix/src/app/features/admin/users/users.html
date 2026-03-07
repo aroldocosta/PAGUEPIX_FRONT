@@ -39,12 +39,12 @@
             <td class="px-8 py-0.5 text-sm text-gray-600 dark:text-slate-400">
                 <span
                     class="px-2 py-1 bg-gray-100 dark:bg-slate-800 rounded-md text-xs font-medium text-gray-600 dark:text-slate-300">{{
-                    user.email }}</span>
+                    user.login }}</span>
             </td>
             <td class="px-8 py-0.5">
                 <span class="text-sm font-bold text-gray-700 dark:text-slate-300"
                     [ngClass]="user.role === 'ADMIN' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-400'">
-                    {{ user.role === 'ADMIN' ? 'SUPER ADMIN' : 'PARCEIRO' }}
+                    {{ user.role === 'ADMIN' ? 'ADMIN' : 'PARTNER' }}
                 </span>
             </td>
             <td class="px-8 py-0.5">

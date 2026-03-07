@@ -24,18 +24,18 @@
                         </div>
                     </div>
 
-                    <!-- Email -->
+                    <!-- Login -->
                     <div class="space-y-2">
-                        <label for="email" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
-                            Endereço de E-mail
+                        <label for="login" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
+                            Login de Acesso
                         </label>
                         <div class="relative group">
                             <span
                                 class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">email</span>
-                            <input id="email" name="new-login-email" type="email" [ngModel]="email()"
-                                (ngModelChange)="email.set($event)" required autocomplete="off"
+                            <input id="login" name="new-login-email" type="text" [ngModel]="login()"
+                                (ngModelChange)="login.set($event)" required autocomplete="off"
                                 class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white"
-                                placeholder="E-mail de acesso">
+                                placeholder="E-mail ou login de acesso">
                         </div>
                     </div>
 
@@ -96,7 +96,7 @@
 
                 <!-- Ações -->
                 <div class="flex items-center gap-4 pt-4 border-t border-slate-100 dark:border-slate-800 mt-6">
-                    <button type="submit" [disabled]="loading() || !name() || !email() || (!id() && !password())"
+                    <button type="submit" [disabled]="loading() || !name() || !login() || (!id() && !password())"
                         class="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-blue-200 dark:shadow-none">
                         <span class="material-icons-outlined text-lg">save</span>
                         Salvar Alterações

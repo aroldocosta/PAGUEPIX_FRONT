@@ -22,7 +22,7 @@ export class UserEdit implements OnInit {
 
   id = signal<string | number | null>(null);
   name = signal('');
-  email = signal('');
+  login = signal('');
   password = signal('');
   role = signal('PARTNER');
   partnerId = signal<number | null>(null);
@@ -55,7 +55,7 @@ export class UserEdit implements OnInit {
     this.userService.getById(id).subscribe({
       next: (user: any) => {
         this.name.set(user.name || '');
-        this.email.set(user.login || ''); // Fixed mapping from user.login
+        this.login.set(user.login || ''); // Fixed mapping from user.login
         this.role.set(user.role || 'PARTNER');
         // The backend user object might have partner.id or partnerId. Adjust as needed:
         this.partnerId.set(user.partner?.id || user.partnerId || null);
@@ -72,7 +72,7 @@ export class UserEdit implements OnInit {
     const userData: any = {
       id: this.id() ? this.id() : undefined,
       name: this.name(),
-      login: this.email(), // Send login instead of email to match backend API
+      login: this.login(), // Send login instead of email to match backend API
       role: this.role(),
     };
 
