@@ -51,7 +51,7 @@
                     <!-- Tooltip -->
                     <div
                         class="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-slate-700 text-white text-[10px] font-bold px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20">
-                        {{ item.rawAmount | currency:'BRL':'symbol':'1.2-2' }}
+                        {{ item.tooltipLabel }} - {{ item.rawAmount | currency:'BRL':'symbol':'1.2-2' }}
                     </div>
                 </div>
 
@@ -71,7 +71,7 @@
                     <!-- Tooltip -->
                     <div
                         class="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-slate-700 text-white text-[10px] font-bold px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20">
-                        {{ item.rawAmount | currency:'BRL':'symbol':'1.2-2' }}
+                        {{ item.tooltipLabel }} - {{ item.rawAmount | currency:'BRL':'symbol':'1.2-2' }}
                     </div>
                 </div>
 

@@ -28,8 +28,9 @@ export class SalesChartComponent {
         const data = this._rawData();
         const daysCount = this.selectedDays;
         const dayNames = ['DOM.', 'SEG.', 'TER.', 'QUA.', 'QUI.', 'SEX.', 'SAB.'];
+        const monthNames = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
         const now = new Date();
-        const fullSalesOverview: { day: string, rawAmount: number, value: number }[] = [];
+        const fullSalesOverview: { day: string, rawAmount: number, value: number, tooltipLabel: string }[] = [];
 
         const normalize = (val: string) =>
             val.toUpperCase()
@@ -39,7 +40,7 @@ export class SalesChartComponent {
                 .trim();
 
         // 1. Generate baseline and merge
-        const baseline: { day: string, rawAmount: number }[] = [];
+        const baseline: { day: string, rawAmount: number, tooltipLabel: string }[] = [];
         for (let i = daysCount - 1; i >= 0; i--) {
             const d = new Date();
             d.setDate(now.getDate() - i);
@@ -68,9 +69,14 @@ export class SalesChartComponent {
                 return normalizedAPI === normalizedSearch || normalizedAPI.includes(normalizedSearch);
             });
 
+            const day = d.getDate().toString().padStart(2, '0');
+            const month = monthNames[d.getMonth()];
+            const tooltipLabel = `${day}/${month}`;
+
             baseline.push({
                 day: displayLabel,
-                rawAmount: apiDay ? apiDay.amount : 0
+                rawAmount: apiDay ? apiDay.amount : 0,
+                tooltipLabel
             });
         }
 
