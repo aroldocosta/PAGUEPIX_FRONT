@@ -11,7 +11,6 @@ export interface Payment {
     device?: Device;
     partner?: Partner;
     externalId: string;
-    transferDone: boolean;
     transferReceipt?: string;
     state: string;
     solicitationChannel: string;
