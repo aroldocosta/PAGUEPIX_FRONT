@@ -44,8 +44,12 @@ export class SalesChartComponent {
             const d = new Date();
             d.setDate(now.getDate() - i);
 
-            // Search label (always DD) to match backend data
-            const searchLabel = d.getDate().toString().padStart(2, '0');
+            // Search label to match backend data: 
+            // 7 days -> Day name (SAB, DOM...), 30 days -> Day number (07, 08...)
+            const searchLabel = daysCount === 7
+                ? dayNames[d.getDay()]
+                : d.getDate().toString().padStart(2, '0');
+
 
             // Display label (rules: 30 days -> only every 5 steps, 7 days -> always name)
             let displayLabel = '';
