@@ -23,7 +23,7 @@ export class UserService {
         return this.http.get<any>(this.apiUrl, { params });
     }
 
-    getById(id: number) {
+    getById(id: string | number) {
         return this.http.get<User>(`${this.apiUrl}/${id}`);
     }
 
@@ -35,11 +35,11 @@ export class UserService {
         return this.http.put<User>(this.apiUrl, user);
     }
 
-    delete(id: number) {
+    delete(id: string | number) {
         return this.http.delete<User>(`${this.apiUrl}/${id}`);
     }
 
-    getUserPartner(id: number) {
+    getUserPartner(id: string | number) {
         return this.http.get<any>(`${this.apiUrl}/${id}/partner`);
     }
 }

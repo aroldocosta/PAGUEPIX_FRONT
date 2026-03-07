@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ManagementLayoutComponent } from '../../../shared/components/management-layout/management-layout.component';
 import { BoardService } from '../../../core/services/board.service';
 
+import { RouterModule } from '@angular/router';
+
 @Component({
     selector: 'app-board-management',
     standalone: true,
-    imports: [CommonModule, ManagementLayoutComponent],
+    imports: [CommonModule, RouterModule, ManagementLayoutComponent],
     templateUrl: './boards.html',
     styleUrl: './boards.scss'
 })

@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ManagementLayoutComponent } from '../../../shared/components/management-layout/management-layout.component';
 import { ScriptService } from '../../../core/services/script.service';
 
+import { RouterModule } from '@angular/router';
+
 @Component({
     selector: 'app-scripts-management',
     standalone: true,
-    imports: [CommonModule, ManagementLayoutComponent],
+    imports: [CommonModule, RouterModule, ManagementLayoutComponent],
     templateUrl: './scripts.html',
     styleUrl: './scripts.scss'
 })

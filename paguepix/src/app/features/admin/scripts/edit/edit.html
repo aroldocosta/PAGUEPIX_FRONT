@@ -1,0 +1,80 @@
+<app-management-layout [title]="id() ? 'Editar Script' : 'Novo Script'"
+    [subtitle]="id() ? 'Edite o código e a configuração do script.' : 'Cadastre uma nova lógica ou firmware.'"
+    [loading]="loading" [hasData]="hasData">
+
+    <ng-template #tableContent>
+        <div class="p-8 grid grid-cols-1 gap-8">
+            <!-- Formulário de Edição -->
+            <form (ngSubmit)="onSave()"
+                class="space-y-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-3xl shadow-sm h-fit">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Tipo -->
+                    <div class="space-y-2">
+                        <label for="type" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
+                            Tipo de Script
+                        </label>
+                        <div class="relative group">
+                            <span
+                                class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-emerald-500 transition-colors">category</span>
+                            <input id="type" name="type" type="text" [ngModel]="type()"
+                                (ngModelChange)="type.set($event)" required
+                                class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white"
+                                placeholder="Ex: Firmware / Pulse Log / Monitor">
+                        </div>
+                    </div>
+
+                    <!-- Descrição -->
+                    <div class="space-y-2">
+                        <label for="description" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
+                            Descrição Resumida
+                        </label>
+                        <div class="relative group">
+                            <span
+                                class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-emerald-500 transition-colors">description</span>
+                            <input id="description" name="description" type="text" [ngModel]="description()"
+                                (ngModelChange)="description.set($event)" required
+                                class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white"
+                                placeholder="Ex: Update de Vending Machine v2">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Código do Script -->
+                <div class="space-y-2">
+                    <label for="code" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
+                        Bloco de Código / Conteúdo (<span class="text-xs text-slate-400">Syntax Highlighted Area</span>)
+                    </label>
+                    <div class="relative group">
+                        <textarea id="code" name="code" [ngModel]="code()" (ngModelChange)="code.set($event)" required
+                            rows="10"
+                            class="w-full p-4 font-mono text-sm bg-slate-900 text-emerald-400 dark:bg-slate-950 dark:text-emerald-300 border border-slate-700 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all resize-y shadow-inner"
+                            placeholder="// Insira seu código C++, Python, Lua ou Script PaguePix..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Ações -->
+                <div
+                    class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800 mt-6">
+                    <div class="flex items-center gap-4">
+                        <button type="submit" [disabled]="loading() || !type() || !description() || !code()"
+                            class="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-emerald-200 dark:shadow-none">
+                            <span class="material-icons-outlined text-lg">save</span>
+                            Salvar Script
+                        </button>
+                        <button type="button" routerLink="/admin/scripts"
+                            class="px-8 py-3 rounded-xl font-bold text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-all">
+                            Cancelar
+                        </button>
+                    </div>
+
+                    <div
+                        class="hidden sm:flex bg-emerald-50 dark:bg-emerald-900/20 px-4 py-2 rounded-lg items-center gap-2 text-emerald-700 dark:text-emerald-400">
+                        <span class="material-icons-outlined text-sm">terminal</span>
+                        <span class="text-xs font-bold">Modo PaguePix Scripting</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </ng-template>
+</app-management-layout>

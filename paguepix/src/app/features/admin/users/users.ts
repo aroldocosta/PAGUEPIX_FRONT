@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ManagementLayoutComponent } from '../../../shared/components/management-layout/management-layout.component';
 import { UserService } from '../../../core/services/user.service';
 
+import { RouterModule } from '@angular/router';
+
 @Component({
     selector: 'app-user-management',
     standalone: true,
-    imports: [CommonModule, ManagementLayoutComponent],
+    imports: [CommonModule, RouterModule, ManagementLayoutComponent],
     templateUrl: './users.html',
     styleUrl: './users.scss'
 })

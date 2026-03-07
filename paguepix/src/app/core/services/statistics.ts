@@ -19,7 +19,7 @@ export interface StatisticsData {
 export class StatisticsService {
   private http = inject(HttpClient);
 
-  getStatistics(startDate: string, endDate: string, partnerId?: number): Observable<StatisticsData> {
+  getStatistics(startDate: string, endDate: string, partnerId?: number | string): Observable<StatisticsData> {
     let params = new HttpParams()
       .set('startDate', startDate)
       .set('endDate', endDate);

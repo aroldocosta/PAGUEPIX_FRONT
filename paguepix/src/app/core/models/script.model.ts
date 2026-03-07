@@ -1,5 +1,5 @@
 export interface Script {
-    id: number;
+    id: string | number;
     code: string;
     type: string;
     description: string;
@@ -12,7 +12,7 @@ export interface ScriptRequest {
 }
 
 export interface ScriptResponse {
-    id: number;
+    id: string | number;
     code: string;
     type: string;
     description: string;

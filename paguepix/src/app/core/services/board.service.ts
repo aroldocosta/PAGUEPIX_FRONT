@@ -22,7 +22,7 @@ export class BoardService {
         return this.http.get<any>(this.apiUrl, { params });
     }
 
-    findById(id: number) {
+    findById(id: string | number) {
         return this.http.get<BoardResponse>(`${this.apiUrl}/${id}`);
     }
 
@@ -34,7 +34,7 @@ export class BoardService {
         return this.http.put<BoardResponse>(this.apiUrl, board);
     }
 
-    delete(id: number) {
+    delete(id: string | number) {
         return this.http.delete<void>(`${this.apiUrl}/${id}`);
     }
 }

@@ -20,7 +20,7 @@ export class ScriptService {
         return this.http.get<any>(this.apiUrl, { params });
     }
 
-    findById(id: number): Observable<ScriptResponse> {
+    findById(id: string | number): Observable<ScriptResponse> {
         return this.http.get<ScriptResponse>(`${this.apiUrl}/${id}`);
     }
 
@@ -32,7 +32,7 @@ export class ScriptService {
         return this.http.put<ScriptResponse>(this.apiUrl, script);
     }
 
-    delete(id: number): Observable<ScriptResponse> {
+    delete(id: string | number): Observable<ScriptResponse> {
         return this.http.delete<ScriptResponse>(`${this.apiUrl}/${id}`);
     }
 }

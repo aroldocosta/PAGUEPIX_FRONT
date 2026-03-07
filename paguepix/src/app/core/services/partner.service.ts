@@ -18,7 +18,7 @@ export class PartnerService {
         return this.http.get<any>(this.apiUrl, { params });
     }
 
-    getById(id: number) {
+    getById(id: string | number) {
         return this.http.get<Partner>(`${this.apiUrl}/${id}`);
     }
 
@@ -30,11 +30,11 @@ export class PartnerService {
         return this.http.put<Partner>(this.apiUrl, partner);
     }
 
-    delete(id: number) {
+    delete(id: string | number) {
         return this.http.delete<Partner>(`${this.apiUrl}/${id}`);
     }
 
-    uploadLogo(id: number, file: File) {
+    uploadLogo(id: string | number, file: File) {
         const formData = new FormData();
         formData.append('file', file);
         return this.http.post<Partner>(`${this.apiUrl}/${id}/logo`, formData);

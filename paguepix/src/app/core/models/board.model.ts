@@ -1,14 +1,14 @@
 import { Device } from './device.model';
 
 export interface Board {
-    id: number;
+    id: string | number;
     model: string;
     description: string;
     device?: Device;
 }
 
 export interface BoardRequest {
-    id?: number;
+    id?: string | number;
     model: string;
     description: string;
 }

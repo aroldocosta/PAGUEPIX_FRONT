@@ -6,6 +6,7 @@ import localePt from '@angular/common/locales/pt';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { jsonBigIntInterceptor } from './core/interceptors/json-bigint.interceptor';
 
 registerLocaleData(localePt);
 
@@ -15,8 +16,9 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(
       withFetch(),
-      withInterceptors([authInterceptor])
+      withInterceptors([authInterceptor, jsonBigIntInterceptor])
     ),
     { provide: LOCALE_ID, useValue: 'pt-BR' }
   ]
 };
+

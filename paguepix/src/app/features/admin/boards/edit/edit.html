@@ -1,0 +1,76 @@
+<app-management-layout [title]="id() ? 'Editar Placa de Hardware' : 'Nova Placa'"
+    [subtitle]="id() ? 'Altere as informações da placa controladora.' : 'Cadastre uma nova placa de interface no sistema.'"
+    [loading]="loading" [hasData]="hasData">
+
+    <ng-template #tableContent>
+        <div class="p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Formulário de Edição -->
+            <form (ngSubmit)="onSave()"
+                class="lg:col-span-2 space-y-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-3xl shadow-sm h-fit">
+
+                <div class="grid grid-cols-1 gap-6">
+                    <!-- Modelo/MAC Address -->
+                    <div class="space-y-2">
+                        <label for="model" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
+                            Modelo (MAC Address / Serial)
+                        </label>
+                        <div class="relative group">
+                            <span
+                                class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors">memory</span>
+                            <input id="model" name="model" type="text" [ngModel]="model()"
+                                (ngModelChange)="model.set($event)" required
+                                class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white"
+                                placeholder="Ex: XX:XX:XX:XX:XX:XX">
+                        </div>
+                    </div>
+
+                    <!-- Descrição/Versão -->
+                    <div class="space-y-2">
+                        <label for="description" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
+                            Descrição / Nome Amigável
+                        </label>
+                        <div class="relative group">
+                            <span
+                                class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors">description</span>
+                            <input id="description" name="description" type="text" [ngModel]="description()"
+                                (ngModelChange)="description.set($event)" required
+                                class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white"
+                                placeholder="Ex: Placa Vending Machine V1.2">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ações -->
+                <div class="flex items-center gap-4 pt-4 border-t border-slate-100 dark:border-slate-800 mt-6">
+                    <button type="submit" [disabled]="loading() || !model() || !description()"
+                        class="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-purple-200 dark:shadow-none">
+                        <span class="material-icons-outlined text-lg">save</span>
+                        Salvar Placa
+                    </button>
+                    <button type="button" routerLink="/admin/boards"
+                        class="px-8 py-3 rounded-xl font-bold text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-all">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+
+            <!-- Guide Card -->
+            <div class="space-y-6">
+                <div
+                    class="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-3xl border border-purple-100 dark:border-purple-900/30">
+                    <div class="flex gap-3 text-purple-700 dark:text-purple-400 mb-4">
+                        <span class="material-icons-outlined text-2xl">hardware</span>
+                        <h4 class="font-bold text-lg">Hardware Control</h4>
+                    </div>
+
+                    <p class="text-sm text-purple-700/80 dark:text-purple-400/80 leading-relaxed">
+                        A Placa de Hardware (Board) é a interface de comunicação de baixo nível que executará os Scripts
+                        e que ficará armazenada dentro do Dispositivo (Device - QRCode).<br><br>
+                        Certifique-se de que o <strong>MAC Address (Modelo)</strong> esteja perfeitamente preenchido,
+                        pois é a identificação unificada do firmware.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</app-management-layout>

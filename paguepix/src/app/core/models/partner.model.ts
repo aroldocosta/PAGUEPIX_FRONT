@@ -3,7 +3,7 @@ import { Device } from './device.model';
 import { Payment } from './payment.model';
 
 export interface Partner {
-    id: number;
+    id: string | number;
     name: string;
     logo?: string;
     description?: string;

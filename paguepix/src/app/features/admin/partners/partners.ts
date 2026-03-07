@@ -4,10 +4,12 @@ import { ManagementLayoutComponent } from '../../../shared/components/management
 import { PartnerService } from '../../../core/services/partner.service';
 import { Partner } from '../../../core/models/partner.model';
 
+import { RouterModule } from '@angular/router';
+
 @Component({
     selector: 'app-partner-management',
     standalone: true,
-    imports: [CommonModule, ManagementLayoutComponent],
+    imports: [CommonModule, RouterModule, ManagementLayoutComponent],
     templateUrl: './partners.html',
     styleUrl: './partners.scss'
 })
@@ -27,6 +29,7 @@ export class PartnerManagement implements OnInit {
         this.partnerService.getAll().subscribe({
             next: (response) => {
                 this.partners.set(response.content || response);
+                console.log('PARTNERS LOADED:', this.partners().map(p => ({ original: p.id, type: typeof p.id })));
                 this.loading.set(false);
             },
             error: (err) => {

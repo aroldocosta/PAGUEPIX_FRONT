@@ -30,7 +30,7 @@ export class Statistics implements OnInit {
 
   // Partners list for the dropdown filter
   partners = signal<Partner[]>([]);
-  selectedPartnerId = signal<number | null>(null);
+  selectedPartnerId = signal<number | string | null>(null);
 
   // Period filters
   periods = [
@@ -94,7 +94,8 @@ export class Statistics implements OnInit {
   private loadStatistics(): void {
     this.loading.set(true);
     const { startDate, endDate } = this.calculateDateRange();
-    const partnerId = this.selectedPartnerId() ? Number(this.selectedPartnerId()) : undefined;
+    const currentPartnerId = this.selectedPartnerId();
+    const partnerId = currentPartnerId != null ? currentPartnerId : undefined;
 
     this.statisticsService.getStatistics(startDate, endDate, partnerId).subscribe({
       next: (data: StatisticsData) => {

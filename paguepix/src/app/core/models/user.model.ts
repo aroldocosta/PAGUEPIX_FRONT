@@ -1,7 +1,7 @@
 import { Partner } from './partner.model';
 
 export interface User {
-    id: number;
+    id: string | number;
     name: string;
     login: string;
     password?: string;
