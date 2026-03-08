@@ -63,10 +63,13 @@ export class SalesChartComponent {
             }
 
             // Busca o dia correspondente nos dados vindos do API
+            // Agora que o backend envia a data completa (yyyy-MM-dd), comparamos diretamente
             const apiDay = data.find(s => {
-                const normalizedAPI = normalize(s.date);
-                const normalizedSearch = normalize(searchLabel);
-                return normalizedAPI === normalizedSearch || normalizedAPI.includes(normalizedSearch);
+                const year = d.getFullYear();
+                const month = (d.getMonth() + 1).toString().padStart(2, '0');
+                const day = d.getDate().toString().padStart(2, '0');
+                const searchDate = `${year}-${month}-${day}`;
+                return s.date === searchDate;
             });
 
             const day = d.getDate().toString().padStart(2, '0');
