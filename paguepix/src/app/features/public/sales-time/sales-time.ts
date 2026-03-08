@@ -1,6 +1,6 @@
 import { Component, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PaymentService } from '../../../core/services/payment.service';
 import { DeviceService } from '../../../core/services/device.service';
 import { CryptoService } from '../../../core/services/crypto.service';
@@ -52,6 +52,8 @@ export class SalesTimeComponent implements OnDestroy {
     private paymentService = inject(PaymentService);
     private deviceService = inject(DeviceService);
     private cryptoService = inject(CryptoService);
+    private router = inject(Router);
+    private route = inject(ActivatedRoute);
 
     durationOptions: DurationOption[] = [
         { minutes: 1, label: '1 minuto', description: 'Banho ultra-rápido', price: 1.0, icon: 'timer' },
@@ -63,12 +65,23 @@ export class SalesTimeComponent implements OnDestroy {
     constructor() {
         this.selectedDuration.set(this.durationOptions[1]); // Default to 3 minutes (index 1)
 
-        const route = inject(ActivatedRoute);
-        const pathParams = route.snapshot.paramMap;
-        const queryParams = route.snapshot.queryParamMap;
+        this.route.paramMap.subscribe(params => {
+            const token = params.get('token');
+            if (token) {
+                this.handleInitialization(token, this.route.snapshot.queryParamMap);
+            } else {
+                const dId = this.route.snapshot.queryParamMap.get('deviceId');
+                if (dId) {
+                    this.handleInitialization(dId, this.route.snapshot.queryParamMap);
+                } else {
+                    this.currentState.set('ERROR');
+                    this.errorMessage.set('Identificador do dispositivo não fornecido.');
+                }
+            }
+        });
+    }
 
-        const token = pathParams.get('token') || queryParams.get('token');
-
+    private handleInitialization(token: string, queryParams: any) {
         if (token && token.length >= 10) {
             this.deviceId.set(token);
             this.validateDevice(token);
@@ -108,14 +121,8 @@ export class SalesTimeComponent implements OnDestroy {
                 }
             }
         } else {
-            const dId = queryParams.get('deviceId');
-            if (dId) {
-                this.deviceId.set(dId);
-                this.validateDevice(dId);
-            } else {
-                this.currentState.set('ERROR');
-                this.errorMessage.set('Identificador do dispositivo não fornecido.');
-            }
+            this.currentState.set('ERROR');
+            this.errorMessage.set('Identificador do dispositivo inválido.');
         }
     }
 
@@ -326,6 +333,11 @@ twIDAQAB
         this.stopPolling();
         this.currentState.set('IDLE');
         this.errorMessage.set('');
+
+        const device = this.deviceInfo();
+        if (device && device.code) {
+            this.router.navigate(['/sales', device.code]);
+        }
     }
 
     copyPixKey() {
