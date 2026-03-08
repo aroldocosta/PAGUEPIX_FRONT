@@ -334,10 +334,10 @@ twIDAQAB
         this.currentState.set('IDLE');
         this.errorMessage.set('');
 
-        const device = this.deviceInfo();
-        if (device && device.code) {
-            this.router.navigate(['/sales', device.code]);
-        }
+        // Previously redirected to /sales/:deviceCode, but now we use temporary sessions.
+        // Redirecting to home or allowing the user to just see the IDLE state for a NEW session.
+        // Since the current session is used, we shouldn't redirect to it.
+        // For now, let's keep them on the page but they'll need to re-scan for a new session if they want another purchase.
     }
 
     copyPixKey() {
