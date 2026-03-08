@@ -67,6 +67,7 @@ export class SalesTimeComponent implements OnDestroy {
 
         this.route.paramMap.subscribe(params => {
             const token = params.get('token');
+            console.log("====================", token);
             if (token) {
                 this.handleInitialization(token, this.route.snapshot.queryParamMap);
             } else {
@@ -138,7 +139,8 @@ export class SalesTimeComponent implements OnDestroy {
             },
             error: (err) => {
                 console.error('Error validating device:', err);
-                this.errorMessage.set('Dispositivo não reconhecido ou inativo. Por favor, verifique o QR Code.');
+                const backendMessage = err.error?.message;
+                this.errorMessage.set(backendMessage || 'Dispositivo não reconhecido ou inativo. Por favor, leia novamente o QR Code.');
                 this.currentState.set('ERROR');
             }
         });
@@ -209,7 +211,8 @@ twIDAQAB
                     },
                     error: (err) => {
                         console.error('Error creating charge:', err);
-                        this.errorMessage.set('Falha na comunicação com o servidor. Tente novamente.');
+                        const backendMessage = err.error?.message;
+                        this.errorMessage.set(backendMessage || 'Falha na comunicação com o servidor. Tente novamente.');
                         this.currentState.set('ERROR');
                     }
                 });
