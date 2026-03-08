@@ -69,7 +69,7 @@ export class SalesTimeComponent implements OnDestroy {
 
         const token = pathParams.get('token') || queryParams.get('token');
 
-        if (token && token.length >= 18) {
+        if (token && token.length >= 10) {
             this.deviceId.set(token);
             this.validateDevice(token);
 
