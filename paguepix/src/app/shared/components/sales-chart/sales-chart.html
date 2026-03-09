@@ -1,5 +1,5 @@
 <div
-    class="lg:col-span-2 bg-white dark:bg-slate-900 pt-10 px-10 pb-0 rounded-[40px] border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-hidden transition-colors flex flex-col w-full h-full">
+    class="lg:col-span-2 bg-white dark:bg-slate-900 pt-6 md:pt-10 px-3 md:px-10 pb-0 rounded-[40px] border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-hidden transition-colors flex flex-col w-full h-full">
     <div class="flex items-center justify-between mb-4 relative z-10">
         <div>
             <h3 class="text-xl font-black text-slate-900 dark:text-slate-100 tracking-tight">{{ title }}</h3>
@@ -18,17 +18,19 @@
         </div>
     </div>
     <!-- Chart Area Wrapper -->
-    <div class="flex-1 flex px-4 pt-4 pb-8 min-h-[300px] relative gap-4">
+    <div class="flex-1 flex px-1 md:px-4 pt-4 pb-8 min-h-[300px] relative gap-1 md:gap-4">
 
         <!-- Y-Axis Labels (Left) -->
-        <div class="flex flex-col justify-between items-end text-[10px] text-slate-400 font-medium pb-8 w-20 shrink-0">
+        <div
+            class="flex flex-col justify-between items-end text-[9px] md:text-[10px] text-slate-400 font-medium pb-8 w-10 md:w-20 shrink-0 pr-[0.5em]">
             <span *ngFor="let tick of [4, 3, 2, 1, 0]">
                 {{ (maxChartValueLabel() * tick / 4) | currency:'BRL':'symbol':'1.2-2' }}
             </span>
         </div>
 
         <!-- Grid Lines & Bars Area -->
-        <div class="flex-1 relative flex items-stretch" [ngClass]="selectedDays === 30 ? 'gap-1' : 'gap-3'">
+        <div class="flex-1 relative flex items-stretch"
+            [ngClass]="selectedDays === 30 ? 'gap-[3px] md:gap-1' : 'gap-[3px] md:gap-3'">
 
             <!-- Horizontal Grid Lines -->
             <div class="absolute inset-x-0 inset-y-0 flex flex-col justify-between pointer-events-none pb-8">
@@ -41,7 +43,7 @@
 
                 <!-- 7 Days Bar Structure -->
                 <div *ngIf="selectedDays === 7"
-                    class="absolute inset-x-1 rounded-xl transition-all duration-500 hover:brightness-110"
+                    class="absolute inset-x-0 md:inset-x-1 rounded-xl transition-all duration-500 hover:brightness-110"
                     [style.bottom.px]="32" [style.height]="item.rawAmount === 0 ? '3px' : (item.value * 90 / 85) + '%'"
                     [class.bg-slate-200]="item.rawAmount === 0" [class.dark:bg-slate-700]="item.rawAmount === 0"
                     [class.bg-indigo-600]="item.rawAmount > 0 && item.value === maxChartValue()"
