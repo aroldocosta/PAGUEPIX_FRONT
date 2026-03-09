@@ -1,30 +1,22 @@
+<!-- =================== TOPBAR =================== -->
 <header
-    class="h-20 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between px-10 flex-shrink-0 transition-colors duration-300 w-full">
+    class="h-20 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between px-6 md:px-10 flex-shrink-0 transition-colors duration-300 w-full">
 
     <div class="flex flex-1 items-center gap-6">
         <!-- Platform Logo Left Side -->
-        <div class="flex items-center gap-3 pr-8 border-r border-slate-100 dark:border-slate-800">
+        <div
+            class="flex flex-col items-center md:flex-row md:items-center gap-1 md:gap-3 pr-4 md:pr-8 border-r border-slate-100 dark:border-slate-800">
             <img src="logo.png" alt="PaguePix Logo" class="w-8 h-8 object-contain">
-            <div class="flex flex-col">
+            <div class="flex flex-col items-center md:items-start">
                 <span
-                    class="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-none">PaguePix</span>
+                    class="text-[0.469rem] md:text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-none">PaguePix</span>
                 <span
-                    class="text-[9px] uppercase tracking-widest font-bold text-slate-400 dark:text-slate-500 mt-0.5">Plataforma</span>
+                    class="hidden md:block text-[9px] uppercase tracking-widest font-bold text-slate-400 dark:text-slate-500 mt-0.5">Plataforma</span>
             </div>
-        </div>
-
-        <!-- Search -->
-        <div class="relative w-[480px] group">
-            <span
-                class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 dark:text-slate-600 group-focus-within:text-[#6366f1] transition-colors">
-                <span class="material-icons-outlined text-lg">search</span>
-            </span>
-            <input type="text" [placeholder]="searchPlaceholder()"
-                class="w-full pl-12 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border-transparent rounded-2xl focus:bg-white dark:focus:bg-slate-700 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all text-sm outline-none dark:text-slate-100">
         </div>
     </div>
 
-    <div class="flex items-center gap-8">
+    <div class="flex items-center gap-4 md:gap-8">
         <!-- Theme Toggle -->
         <div
             class="flex items-center bg-slate-50 dark:bg-slate-800 p-1 rounded-2xl border border-slate-100 dark:border-slate-700 transition-colors">
@@ -40,8 +32,8 @@
             </button>
         </div>
 
-        <!-- User Info -->
-        <div class="flex items-center gap-4 pl-8 border-l border-slate-100 dark:border-slate-800">
+        <!-- User Info (desktop only) -->
+        <div class="hidden md:flex items-center gap-4 pl-8 border-l border-slate-100 dark:border-slate-800">
             <div class="text-right">
                 <p class="text-sm font-bold text-slate-900 dark:text-slate-100 leading-none">Olá, {{ userName() }}</p>
                 <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 mt-1 uppercase tracking-wider">
@@ -55,5 +47,56 @@
                 </div>
             </div>
         </div>
+
+        <!-- Hamburger Button (mobile only) -->
+        <button (click)="toggleDrawer()"
+            class="md:hidden flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-95">
+            <span class="material-icons-outlined text-xl">{{ drawerOpen() ? 'close' : 'menu' }}</span>
+        </button>
     </div>
 </header>
+
+<!-- ============ MOBILE DRAWER OVERLAY ============ -->
+<div *ngIf="drawerOpen()" class="fixed inset-0 z-40 md:hidden" (click)="closeDrawer()">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+</div>
+
+<!-- Drawer Panel -->
+<div [class.translate-x-0]="drawerOpen()" [class.translate-x-full]="!drawerOpen()"
+    class="fixed top-0 right-0 h-full w-72 z-50 md:hidden bg-white dark:bg-slate-900 shadow-2xl flex flex-col transition-transform duration-300 ease-in-out">
+
+    <!-- Drawer Header -->
+    <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100 dark:border-slate-800">
+        <div>
+            <p class="text-sm font-bold text-slate-900 dark:text-slate-100 leading-none">{{ userName() }}</p>
+            <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 mt-1 uppercase tracking-wider">
+                {{ partnerName() }}</p>
+        </div>
+        <button (click)="closeDrawer()"
+            class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+            <span class="material-icons-outlined text-xl">close</span>
+        </button>
+    </div>
+
+    <!-- Nav Items -->
+    <nav class="flex-1 overflow-y-auto px-4 py-4 space-y-1">
+        <a *ngFor="let item of menuItems()" (click)="navigate(item.route)" [class.bg-indigo-50]="isActive(item.route)"
+            [class.dark:bg-indigo-950]="isActive(item.route)" [class.text-indigo-600]="isActive(item.route)"
+            [class.border-l-4]="isActive(item.route)" [class.border-indigo-500]="isActive(item.route)"
+            class="flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all cursor-pointer">
+            <span class="material-icons-outlined text-xl" [class.text-indigo-600]="isActive(item.route)">{{ item.icon
+                }}</span>
+            {{ item.label }}
+        </a>
+    </nav>
+
+    <!-- Logout -->
+    <div class="px-4 pb-8 border-t border-slate-100 dark:border-slate-800 pt-4">
+        <button (click)="logout()"
+            class="flex items-center gap-4 w-full px-4 py-3 text-sm font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl transition-all">
+            <span class="material-icons-outlined text-xl">logout</span>
+            Sair
+        </button>
+    </div>
+</div>

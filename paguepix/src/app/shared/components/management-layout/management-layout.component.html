@@ -29,17 +29,19 @@
         </aside>
 
         <!-- Main Content Area -->
-        <main class="flex-1 overflow-y-auto pb-10 pr-2 pt-2">
+        <main class="flex-1 overflow-y-auto pb-10 pr-2">
             <div class="w-full">
                 <header class="flex items-center justify-between mb-10">
                     <div>
-                        <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">{{ title
-                            }}
-                        </h1>
-                        <p class="text-slate-500 dark:text-slate-400 mt-1 font-medium">{{ subtitle }}</p>
+                        <h1
+                            class="text-[1.05rem] md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                            {{ title }}</h1>
+                        <p class="text-[0.7rem] md:text-base text-slate-500 dark:text-slate-400 mt-1 font-medium">{{
+                            subtitle }}</p>
                     </div>
-                    <div class="flex items-center gap-4" *ngIf="addButtonLabel">
-                        <ng-container *ngIf="addRoute; else noRouteBtn">
+                    <!-- Desktop button (hidden on mobile) -->
+                    <div class="hidden md:flex items-center gap-4" *ngIf="addButtonLabel">
+                        <ng-container *ngIf="addRoute; else noRouteBtnDesktop">
                             <a [routerLink]="addRoute"
                                 class="bg-indigo-600 text-white px-6 py-3 rounded-2xl text-sm font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-200 dark:shadow-none transition-all flex items-center gap-2 group cursor-pointer inline-flex">
                                 <span
@@ -47,7 +49,7 @@
                                     addButtonIcon }}</span> {{ addButtonLabel }}
                             </a>
                         </ng-container>
-                        <ng-template #noRouteBtn>
+                        <ng-template #noRouteBtnDesktop>
                             <button
                                 class="bg-indigo-600 text-white px-6 py-3 rounded-2xl text-sm font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-200 dark:shadow-none transition-all flex items-center gap-2 group">
                                 <span
@@ -90,6 +92,25 @@
             </div>
         </main>
     </div>
+
+    <!-- Mobile FAB (hidden on desktop) -->
+    <ng-container *ngIf="addButtonLabel">
+        <ng-container *ngIf="addRoute; else noRouteFab">
+            <a [routerLink]="addRoute"
+                class="md:hidden fixed bottom-6 right-6 z-30 w-14 h-14 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-xl shadow-indigo-400/40 active:scale-90 transition-transform duration-150"
+                aria-label="{{ addButtonLabel }}">
+                <span class="material-icons-outlined text-2xl">add</span>
+            </a>
+        </ng-container>
+        <ng-template #noRouteFab>
+            <button
+                class="md:hidden fixed bottom-6 right-6 z-30 w-14 h-14 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-xl shadow-indigo-400/40 active:scale-90 transition-transform duration-150"
+                aria-label="{{ addButtonLabel }}">
+                <span class="material-icons-outlined text-2xl">add</span>
+            </button>
+        </ng-template>
+    </ng-container>
+
 </div>
 
 <ng-template #defaultTable>

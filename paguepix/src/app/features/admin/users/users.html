@@ -1,7 +1,7 @@
-<app-management-layout title="Gestão de Usuários"
-    subtitle="Gerencie administradores, permissões e acessos ao sistema central." searchPlaceholder="Buscar usuários..."
-    addButtonLabel="Adicionar Usuário" addButtonIcon="person_add" addRoute="/admin/users/new" [loading]="loading"
-    [hasData]="hasData" emptyStateIcon="person_off" emptyStateMessage="Nenhum usuário encontrado.">
+<app-management-layout title="Gestão de Usuários" subtitle="Gerencie administradores, permissões e acessos ao sistema."
+    searchPlaceholder="Buscar usuários..." addButtonLabel="Adicionar Usuário" addButtonIcon="person_add"
+    addRoute="/admin/users/new" [loading]="loading" [hasData]="hasData" emptyStateIcon="person_off"
+    emptyStateMessage="Nenhum usuário encontrado.">
 
     <ng-template #tableHeader>
         <th class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
