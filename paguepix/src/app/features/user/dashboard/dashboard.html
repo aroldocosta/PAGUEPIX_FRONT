@@ -43,7 +43,7 @@
                 </section>
 
                 <!-- Stats Grid -->
-                <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <section class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
                     <!-- Available Balance -->
                     <div
                         class="bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-hidden group transition-colors">
@@ -51,19 +51,23 @@
                             class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 dark:bg-indigo-900/10 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110">
                         </div>
                         <div class="relative z-10">
-                            <div class="flex items-center justify-between mb-8">
-                                <div
-                                    class="w-12 h-12 bg-indigo-50 dark:bg-indigo-950/50 text-[#6366f1] dark:text-[#818cf8] rounded-2xl flex items-center justify-center">
-                                    <span class="material-icons-outlined">account_balance_wallet</span>
+                            <div class="flex items-center justify-between mb-[0.667rem] md:mb-8">
+                                <div class="flex items-center gap-2">
+                                    <div
+                                        class="w-12 h-12 bg-indigo-50 dark:bg-indigo-950/50 text-[#6366f1] dark:text-[#818cf8] rounded-2xl flex items-center justify-center">
+                                        <span class="material-icons-outlined">account_balance_wallet</span>
+                                    </div>
+                                    <span
+                                        class="md:hidden text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">Saldo</span>
                                 </div>
                                 <div
                                     class="flex items-center gap-1 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 px-3 py-1.5 rounded-full text-xs font-bold">
                                     <span class="material-icons-outlined text-sm">trending_up</span> +5.2%
                                 </div>
                             </div>
-                            <p class="text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">
-                                Saldo Total
-                                Disponível</p>
+                            <p
+                                class="hidden md:block text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">
+                                Saldo Total Disponível</p>
                             <h3 class="text-4xl font-black text-slate-900 dark:text-slate-100 mt-2 tracking-tight">
                                 {{
                                 balance() | currency:'BRL':'symbol':'1.2-2' }}</h3>
@@ -77,19 +81,23 @@
                             class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 dark:bg-indigo-900/10 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110">
                         </div>
                         <div class="relative z-10">
-                            <div class="flex items-center justify-between mb-8">
-                                <div
-                                    class="w-12 h-12 bg-indigo-50 dark:bg-indigo-950/50 text-[#6366f1] dark:text-[#818cf8] rounded-2xl flex items-center justify-center">
-                                    <span class="material-icons-outlined">shopping_cart</span>
+                            <div class="flex items-center justify-between mb-[0.667rem] md:mb-8">
+                                <div class="flex items-center gap-2">
+                                    <div
+                                        class="w-12 h-12 bg-indigo-50 dark:bg-indigo-950/50 text-[#6366f1] dark:text-[#818cf8] rounded-2xl flex items-center justify-center">
+                                        <span class="material-icons-outlined">shopping_cart</span>
+                                    </div>
+                                    <span
+                                        class="md:hidden text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">Vendas</span>
                                 </div>
                                 <div
                                     class="flex items-center gap-1 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 px-3 py-1.5 rounded-full text-xs font-bold">
                                     <span class="material-icons-outlined text-sm">trending_up</span> +12.8%
                                 </div>
                             </div>
-                            <p class="text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">
-                                Saldo venda
-                                últimos {{ selectedDays() }} dias</p>
+                            <p
+                                class="hidden md:block text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">
+                                Saldo venda últimos {{ selectedDays() }} dias</p>
                             <h3 class="text-4xl font-black text-slate-900 dark:text-slate-100 mt-2 tracking-tight">
                                 {{
                                 todaySales() | currency:'BRL':'symbol':'1.2-2' }}</h3>
@@ -103,19 +111,24 @@
                             class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 dark:bg-indigo-900/10 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110">
                         </div>
                         <div class="relative z-10">
-                            <div class="flex items-center justify-between mb-8">
-                                <div
-                                    class="w-12 h-12 bg-indigo-50 dark:bg-indigo-950/50 text-[#6366f1] dark:text-[#818cf8] rounded-2xl flex items-center justify-center">
-                                    <span class="material-icons-outlined">confirmation_number</span>
+                            <div class="flex items-center justify-between mb-[0.667rem] md:mb-8">
+                                <div class="flex items-center gap-2">
+                                    <div
+                                        class="w-12 h-12 bg-indigo-50 dark:bg-indigo-950/50 text-[#6366f1] dark:text-[#818cf8] rounded-2xl flex items-center justify-center">
+                                        <span class="material-icons-outlined">confirmation_number</span>
+                                    </div>
+                                    <span
+                                        class="md:hidden text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">Ticket
+                                        Médio</span>
                                 </div>
                                 <div
                                     class="flex items-center gap-1 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 px-3 py-1.5 rounded-full text-xs font-bold">
                                     <span class="material-icons-outlined text-sm">trending_flat</span> 0.0%
                                 </div>
                             </div>
-                            <p class="text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">
-                                Ticket
-                                Médio Últimos {{ selectedDays() }} Dias</p>
+                            <p
+                                class="hidden md:block text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">
+                                Ticket Médio Últimos {{ selectedDays() }} Dias</p>
                             <h3 class="text-4xl font-black text-slate-900 dark:text-slate-100 mt-2 tracking-tight">
                                 {{
                                 averageTicket() | currency:'BRL':'symbol':'1.2-2' }}</h3>
