@@ -60,9 +60,10 @@
                                     <span
                                         class="md:hidden text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">Saldo</span>
                                 </div>
-                                <div
-                                    class="flex items-center gap-1 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 px-3 py-1.5 rounded-full text-xs font-bold">
-                                    <span class="material-icons-outlined text-sm">trending_up</span> +5.2%
+                                <div [ngClass]="trendClass(balanceTrend())"
+                                    class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold">
+                                    <span class="material-icons-outlined text-sm">{{ trendIcon(balanceTrend()) }}</span>
+                                    {{ trendLabel(balanceTrend()) }}
                                 </div>
                             </div>
                             <p
@@ -90,9 +91,10 @@
                                     <span
                                         class="md:hidden text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">Vendas</span>
                                 </div>
-                                <div
-                                    class="flex items-center gap-1 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 px-3 py-1.5 rounded-full text-xs font-bold">
-                                    <span class="material-icons-outlined text-sm">trending_up</span> +12.8%
+                                <div [ngClass]="trendClass(salesTrend())"
+                                    class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold">
+                                    <span class="material-icons-outlined text-sm">{{ trendIcon(salesTrend()) }}</span>
+                                    {{ trendLabel(salesTrend()) }}
                                 </div>
                             </div>
                             <p
@@ -121,9 +123,10 @@
                                         class="md:hidden text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">Ticket
                                         Médio</span>
                                 </div>
-                                <div
-                                    class="flex items-center gap-1 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 px-3 py-1.5 rounded-full text-xs font-bold">
-                                    <span class="material-icons-outlined text-sm">trending_flat</span> 0.0%
+                                <div [ngClass]="trendClass(ticketTrend())"
+                                    class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold">
+                                    <span class="material-icons-outlined text-sm">{{ trendIcon(ticketTrend()) }}</span>
+                                    {{ trendLabel(ticketTrend()) }}
                                 </div>
                             </div>
                             <p

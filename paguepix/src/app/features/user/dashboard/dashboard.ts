@@ -23,15 +23,24 @@ export class UserDashboard implements OnInit {
   userName = computed(() => this.authService.name());
   partnerName = computed(() => this.authService.partnerName());
 
-  // Cards
+  // Cards — período atual
   balance = signal(0);
   todaySales = signal(0);
   averageTicket = signal(0);
 
-  // Data from API
+  // Cards — período anterior
+  prevTodaySales = signal(0);
+  prevAverageTicket = signal(0);
+
+  // Tendências calculadas
+  balanceTrend = computed(() => this.calcTrend(this.prevTodaySales(), this.todaySales()));
+  salesTrend = computed(() => this.calcTrend(this.prevTodaySales(), this.todaySales()));
+  ticketTrend = computed(() => this.calcTrend(this.prevAverageTicket(), this.averageTicket()));
+
+  // Dados do gráfico
   salesOverviewData = signal<DailySales[]>([]);
 
-  // Table
+  // Tabela
   recentTxns = signal<{
     id: string; partner: string; initials: string;
     avatarBg: string; date: string; amount: number; status: string;
@@ -53,15 +62,42 @@ export class UserDashboard implements OnInit {
     this.loadDashboard();
   }
 
+  /** Calcula % de variação entre período anterior e atual. */
+  calcTrend(prev: number, curr: number): number {
+    if (prev === 0) return curr > 0 ? 100 : 0;
+    return ((curr - prev) / prev) * 100;
+  }
+
+  /** Formata o valor de tendência com sinal e 1 decimal. */
+  trendLabel(value: number): string {
+    const sign = value >= 0 ? '+' : '';
+    return `${sign}${value.toFixed(1)}%`;
+  }
+
+  /** Classe CSS do badge conforme direção da tendência. */
+  trendClass(value: number): string {
+    if (value > 0) return 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400';
+    if (value < 0) return 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400';
+    return 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400';
+  }
+
+  /** Ícone de tendência. */
+  trendIcon(value: number): string {
+    if (value > 0) return 'trending_up';
+    if (value < 0) return 'trending_down';
+    return 'trending_flat';
+  }
+
   private loadDashboard(): void {
     this.loading.set(true);
     this.dashboardService.getStats(this.selectedDays()).subscribe({
       next: (data: DashboardData) => {
         this.balance.set(data.availableBalance);
         this.todaySales.set(data.totalTransacted);
-
-        // Ticket médio agora vem do backend
         this.averageTicket.set(data.averageTicket);
+
+        this.prevTodaySales.set(data.previousTotalTransacted ?? 0);
+        this.prevAverageTicket.set(data.previousAverageTicket ?? 0);
 
         this.salesOverviewData.set(data.salesOverview);
 

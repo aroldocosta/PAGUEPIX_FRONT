@@ -71,6 +71,10 @@ export class TopbarComponent {
         return this.authService.role() === 'ADMIN' ? this.adminMenuItems : this.userMenuItems;
     });
 
+    dashboardRoute = computed(() =>
+        this.authService.role() === 'ADMIN' ? '/admin/dashboard' : '/user/dashboard'
+    );
+
     isActive(route: string): boolean {
         return this.router.url === route;
     }

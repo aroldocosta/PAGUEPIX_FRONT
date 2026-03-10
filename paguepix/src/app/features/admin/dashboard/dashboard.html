@@ -61,9 +61,10 @@
                 <span class="md:hidden text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">Em
                   caixa</span>
               </div>
-              <div
-                class="flex items-center gap-1 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 px-3 py-1.5 rounded-full text-xs font-bold">
-                <span class="material-icons-outlined text-sm">trending_up</span> +12.5%
+              <div [ngClass]="trendClass(balanceTrend())"
+                class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold">
+                <span class="material-icons-outlined text-sm">{{ trendIcon(balanceTrend()) }}</span>
+                {{ trendLabel(balanceTrend()) }}
               </div>
             </div>
             <p class="hidden md:block text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">Em
@@ -91,9 +92,10 @@
                 <span
                   class="md:hidden text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">Receita</span>
               </div>
-              <div
-                class="flex items-center gap-1 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 px-3 py-1.5 rounded-full text-xs font-bold">
-                <span class="material-icons-outlined text-sm">trending_up</span> +8.2%
+              <div [ngClass]="trendClass(revenueTrend())"
+                class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold">
+                <span class="material-icons-outlined text-sm">{{ trendIcon(revenueTrend()) }}</span>
+                {{ trendLabel(revenueTrend()) }}
               </div>
             </div>
             <p class="hidden md:block text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">
@@ -121,9 +123,10 @@
                 <span
                   class="md:hidden text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">Repasses</span>
               </div>
-              <div
-                class="flex items-center gap-1 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 px-3 py-1.5 rounded-full text-xs font-bold">
-                <span class="material-icons-outlined text-sm">trending_up</span> Efetuados
+              <div [ngClass]="trendClass(payoutsTrend())"
+                class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold">
+                <span class="material-icons-outlined text-sm">{{ trendIcon(payoutsTrend()) }}</span>
+                {{ trendLabel(payoutsTrend()) }}
               </div>
             </div>
             <p class="hidden md:block text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">
