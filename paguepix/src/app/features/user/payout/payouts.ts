@@ -103,4 +103,9 @@ export class PartnerPayouts implements OnInit {
             return '';
         }
     }
+
+    openNewPayout() {
+        console.log('Abrir fluxo de novo saque');
+        // Implementação futura do fluxo de saque
+    }
 }
