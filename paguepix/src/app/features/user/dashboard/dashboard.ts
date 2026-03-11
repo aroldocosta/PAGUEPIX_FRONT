@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
 import { ThemeService } from '../../../core/services/theme.service';
 import { DashboardService, DashboardData } from '../../../core/services/dashboard.service';
+import { PaymentService } from '../../../core/services/payment.service';
 import { SalesChartComponent, DailySales } from '../../../shared/components/sales-chart/sales-chart.component';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { TopbarComponent } from '../../../shared/components/topbar/topbar.component';
@@ -18,6 +19,7 @@ import { FooterComponent } from '../../../shared/components/footer/footer.compon
 export class UserDashboard implements OnInit {
   private authService = inject(AuthService);
   private dashboardService = inject(DashboardService);
+  private paymentService = inject(PaymentService);
   protected themeService = inject(ThemeService);
 
   userName = computed(() => this.authService.name());
@@ -48,6 +50,9 @@ export class UserDashboard implements OnInit {
 
   selectedDays = signal(7);
   loading = signal(false);
+  showWithdrawModal = signal(false);
+  apiResponseMessage = signal<string | null>(null);
+  apiResponseCode = signal<number | null>(null);
 
   private readonly AVATAR_COLORS = [
     'bg-gray-100', 'bg-purple-100', 'bg-indigo-100', 'bg-rose-100', 'bg-green-100'
@@ -88,6 +93,15 @@ export class UserDashboard implements OnInit {
     return 'trending_flat';
   }
 
+  /** Classe de cor para a resposta da API (20x = Verde, 40x = Vermelho, 50x = Laranja) */
+  responseCodeClass(): string {
+    const code = this.apiResponseCode();
+    if (!code) return '';
+    if (code >= 200 && code < 300) return 'bg-green-50 dark:bg-green-900/10 border-green-100 dark:border-green-900/20 text-green-600 dark:text-green-400';
+    if (code >= 500) return 'bg-amber-50 dark:bg-amber-900/10 border-amber-100 dark:border-amber-900/20 text-amber-600 dark:text-amber-400';
+    return 'bg-red-50 dark:bg-red-900/10 border-red-100 dark:border-red-900/20 text-red-600 dark:text-red-400';
+  }
+
   private loadDashboard(): void {
     this.loading.set(true);
     this.dashboardService.getStats(this.selectedDays()).subscribe({
@@ -124,5 +138,52 @@ export class UserDashboard implements OnInit {
 
   logout(): void {
     this.authService.logout();
+  }
+
+  requestPayout(): void {
+    this.apiResponseMessage.set(null); // Limpa resposta anterior
+    this.apiResponseCode.set(null);
+    this.showWithdrawModal.set(true);
+  }
+
+  closeWithdrawModal(): void {
+    this.showWithdrawModal.set(false);
+  }
+
+  confirmWithdraw(): void {
+    this.loading.set(true);
+    this.apiResponseMessage.set(null);
+    this.apiResponseCode.set(null);
+    this.paymentService.payout({ partnerId: this.authService.partnerId() }).subscribe({
+      next: (res: any) => {
+        this.loading.set(false);
+        this.apiResponseCode.set(200);
+        
+        // Prioriza o campo statusMessage que vem do PayoutResponse do backend
+        const msg = typeof res === 'string' ? res : (res?.statusMessage || res?.message || 'Transferência realizada com sucesso!');
+        this.apiResponseMessage.set(msg);
+        
+        // Sucesso real: aguarda os 10 segundos
+        setTimeout(() => {
+          this.showWithdrawModal.set(false);
+          this.loadDashboard();
+        }, 10000);
+      },
+      error: (err) => {
+        this.loading.set(false);
+        
+        // O backend agora retorna 400/500, então caímos aqui naturalmente
+        const status = err?.status || 400;
+        this.apiResponseCode.set(status);
+        
+        console.error('Erro ao realizar saque:', err);
+        
+        // Tenta extrair a mensagem do corpo do erro (PayoutResponse ou erro genérico)
+        const errorData = err?.error;
+        const msg = errorData?.statusMessage || errorData?.message || errorData || err?.message || 'Erro inesperado na API do Mercado Pago';
+        
+        this.apiResponseMessage.set(`ERRO: ${msg}`);
+      }
+    });
   }
 }

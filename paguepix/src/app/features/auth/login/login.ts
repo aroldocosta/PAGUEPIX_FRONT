@@ -41,6 +41,7 @@ export class Login implements OnInit {
             token: response.token,
             role: response.role,
             name: response.name,
+            partnerId: response.partnerId,
             partnerName: response.partnerName
           });
 

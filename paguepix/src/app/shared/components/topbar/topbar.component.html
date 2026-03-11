@@ -50,21 +50,21 @@
 
         <!-- Hamburger Button (mobile only) -->
         <button (click)="toggleDrawer()"
-            class="md:hidden flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-95">
+            class="lg:hidden flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-95">
             <span class="material-icons-outlined text-xl">{{ drawerOpen() ? 'close' : 'menu' }}</span>
         </button>
     </div>
 </header>
 
 <!-- ============ MOBILE DRAWER OVERLAY ============ -->
-<div *ngIf="drawerOpen()" class="fixed inset-0 z-40 md:hidden" (click)="closeDrawer()">
+<div *ngIf="drawerOpen()" class="fixed inset-0 z-40 lg:hidden" (click)="closeDrawer()">
     <!-- Backdrop -->
     <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
 </div>
 
 <!-- Drawer Panel -->
 <div [class.translate-x-0]="drawerOpen()" [class.translate-x-full]="!drawerOpen()"
-    class="fixed top-0 right-0 h-full w-72 z-50 md:hidden bg-white dark:bg-slate-900 shadow-2xl flex flex-col transition-transform duration-300 ease-in-out">
+    class="fixed top-0 right-0 h-full w-72 z-50 lg:hidden bg-white dark:bg-slate-900 shadow-2xl flex flex-col transition-transform duration-300 ease-in-out">
 
     <!-- Drawer Header -->
     <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100 dark:border-slate-800">
