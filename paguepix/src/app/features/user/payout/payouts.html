@@ -30,21 +30,17 @@
 
         <!-- Main Content Area -->
         <main class="flex-1 overflow-y-auto pb-10 pr-2 pt-2">
-            <header class="flex items-center justify-between mb-5">
-                <div>
-                    <h1 class="text-[1.05rem] md:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+            <section class="flex items-center justify-between gap-6 mb-8">
+                <div class="flex-1 min-w-0">
+                    <h1
+                        class="text-[1.05rem] md:text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight truncate">
                         Saques</h1>
-                    <p class="text-[0.7rem] md:text-base text-gray-500 dark:text-slate-400 mt-1">Acompanhe todos os seus
+                    <p class="text-[0.7rem] md:text-base text-slate-500 dark:text-slate-400 mt-1 font-medium">Acompanhe
+                        todos os seus
                         saques e transferências recebidas.</p>
                 </div>
-                <div class="flex items-center gap-6">
-                    <!-- Botão Novo Saque -->
-                    <button (click)="openNewPayout()"
-                        class="hidden md:flex items-center gap-2 px-6 py-3 bg-[#6366f1] hover:bg-indigo-700 text-white rounded-2xl font-bold transition-all shadow-md shadow-indigo-100 dark:shadow-none group">
-                        <span class="material-icons-outlined text-lg">add_circle_outline</span>
-                        <span>Solicitar saque</span>
-                    </button>
-
+                <div class="flex flex-shrink-0 items-center gap-6">
+                    <!-- Paginação (Mover para esquerda do botão) -->
                     <div class="flex items-center gap-4 text-sm">
                         <ng-container *ngIf="totalPages() > 1 && !loading()">
                             <span class="font-medium text-gray-500 dark:text-slate-400">
@@ -64,8 +60,18 @@
                             </div>
                         </ng-container>
                     </div>
+
+                    <!-- Botão Novo Saque (Agora na extrema direita) -->
+                    <button (click)="openNewPayout()"
+                        class="flex flex-shrink-0 items-center justify-center gap-2 px-4 md:px-8 py-2 md:py-3 bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 rounded-2xl font-black text-[10px] md:text-xs uppercase tracking-wider shadow-sm transition-all group/btn">
+                        <span class="material-icons-outlined text-sm md:text-lg">payments</span>
+                        <span class="hidden sm:inline">SOLICITAR SAQUE</span>
+                        <span class="sm:hidden">SACAR</span>
+                        <span
+                            class="material-icons-outlined text-[10px] transition-transform group-hover/btn:translate-x-1">chevron_right</span>
+                    </button>
                 </div>
-            </header>
+            </section>
 
             <!-- Payouts Table -->
             <div
