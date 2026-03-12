@@ -32,22 +32,23 @@
         <main class="flex-1 overflow-y-auto pb-10 pr-2 pt-2">
             <div class="w-full space-y-10">
                 <!-- Greeting -->
-                <section class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div>
+                <section class="flex items-center justify-between gap-6">
+                    <div class="flex-1 min-w-0">
                         <h1
-                            class="text-[1.05rem] md:text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
-                            Seja bem vindo, {{ userName() }}</h1>
+                            class="text-[1.05rem] md:text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight truncate">
+                            Bem vindo, {{ userName() }}</h1>
                         <p class="text-[0.7rem] md:text-base text-slate-500 dark:text-slate-400 mt-1 font-medium">
                             Gerencie e acompanhe seu desempenho de vendas.</p>
                     </div>
 
                     <!-- Botão Solicitar Saque (Moved to Header) -->
                     <button (click)="requestPayout()"
-                        class="flex items-center justify-center gap-2 px-8 py-3 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-[#6366f1] dark:text-[#818cf8] border border-slate-200 dark:border-slate-800 rounded-2xl font-black text-xs uppercase tracking-wider shadow-sm transition-all group/btn">
-                        <span class="material-icons-outlined text-lg">payments</span>
-                        <span>SOLICITAR SAQUE</span>
+                        class="flex flex-shrink-0 items-center justify-center gap-2 px-4 md:px-8 py-2 md:py-3 bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 rounded-2xl font-black text-[10px] md:text-xs uppercase tracking-wider shadow-sm transition-all group/btn">
+                        <span class="material-icons-outlined text-sm md:text-lg">payments</span>
+                        <span class="hidden sm:inline">SOLICITAR SAQUE</span>
+                        <span class="sm:hidden">SACAR</span>
                         <span
-                            class="material-icons-outlined text-sm transition-transform group-hover/btn:translate-x-1">chevron_right</span>
+                            class="material-icons-outlined text-[10px] transition-transform group-hover/btn:translate-x-1">chevron_right</span>
                     </button>
                 </section>
 
