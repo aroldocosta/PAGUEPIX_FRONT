@@ -1,0 +1,49 @@
+<div class="space-y-6">
+    <div
+        class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-8 rounded-[40px] shadow-sm flex flex-col items-center">
+        
+        <!-- Header Info -->
+        <div class="w-full flex items-center gap-4 mb-3 px-2">
+            <div class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                <span class="material-icons-outlined text-2xl">qr_code_2</span>
+            </div>
+            <h3 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">QR Code de Vendas</h3>
+        </div>
+        
+        <p class="text-xs text-slate-500 dark:text-slate-400 mb-8 leading-relaxed px-2 w-full text-left">
+            Aponte para levar o cliente direto à página de vendas deste terminal.
+        </p>
+
+        <!-- QR Code Display Box -->
+        <div class="w-full aspect-square bg-[#f8fafc] dark:bg-slate-800/50 rounded-[32px] border border-slate-100 dark:border-slate-800 flex items-center justify-center p-8 mb-8">
+            <ngx-kjua [text]="qrUrl" [render]="'svg'" [size]="240" [back]="'transparent'" [rounded]="25"></ngx-kjua>
+        </div>
+
+        <!-- Action Button -->
+        <button (click)="printQr()"
+            class="w-full flex items-center justify-center gap-3 py-5 rounded-[24px] bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white font-black hover:bg-slate-100 dark:hover:bg-slate-700 transition-all group active:scale-95 border border-slate-100 dark:border-slate-700 shadow-sm mb-8">
+            <span class="material-icons-outlined group-hover:scale-110 transition-transform">print</span>
+            Imprimir Etiqueta
+        </button>
+
+        <!-- Raw URL -->
+        <div class="w-full text-center">
+            <span class="text-[10px] font-mono text-slate-400 select-all opacity-60">
+                {{ qrUrl }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Dica Info Card -->
+    <div *ngIf="showTip"
+        class="bg-blue-50 dark:bg-blue-900/20 p-8 rounded-[32px] border border-blue-100 dark:border-blue-900/30">
+        <div class="flex gap-4">
+            <div class="w-10 h-10 rounded-full bg-white dark:bg-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0 shadow-sm border border-blue-100/50">
+                <span class="material-icons-outlined text-lg">info</span>
+            </div>
+            <div class="text-[13px] leading-relaxed text-blue-800 dark:text-blue-300 font-bold">
+                <strong class="text-blue-900 dark:text-blue-100">Dica PaguePix:</strong> Este QR Code utiliza redirecionamento dinâmico. Se você mudar a URL da loja no futuro, os adesivos já impressos continuarão funcionando!
+            </div>
+        </div>
+    </div>
+</div>

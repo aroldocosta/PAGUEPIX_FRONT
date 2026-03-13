@@ -39,6 +39,7 @@ export class SidebarComponent {
         { label: 'Dashboard', icon: 'home', route: '/user/dashboard' },
         { label: 'Saques', icon: 'account_balance', route: '/user/payout' },
         { label: 'Vendas', icon: 'history', route: '/user/sales' },
+        { label: 'Devices', icon: 'devices', route: '/user/devices' },
     ];
 
     menuItems = computed(() => {

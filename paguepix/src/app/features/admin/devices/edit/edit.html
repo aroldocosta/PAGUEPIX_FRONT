@@ -80,40 +80,8 @@
             </form>
 
             <!-- Card do QR Code -->
-            <div *ngIf="id()" class="space-y-6">
-                <div
-                    class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-3xl shadow-sm text-center">
-                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">QR Code de Vendas</h3>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-8">Aponte para levar o cliente direto à
-                        página de vendas deste terminal.</p>
-
-                    <div class="flex justify-center mb-8 p-4 bg-white rounded-2xl shadow-inner border border-slate-50">
-                        <ngx-kjua [text]="qrUrl()" [render]="'svg'" [size]="220" [back]="'#ffffff'"
-                            [rounded]="25"></ngx-kjua>
-                    </div>
-
-                    <button (click)="printQr()"
-                        class="w-full flex items-center justify-center gap-3 py-4 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all group">
-                        <span class="material-icons-outlined group-hover:scale-110 transition-transform">print</span>
-                        Imprimir Etiqueta
-                    </button>
-
-                    <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-                        <span class="text-[10px] font-mono text-slate-400 break-all select-all">{{ qrUrl() }}</span>
-                    </div>
-                </div>
-
-                <div
-                    class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-3xl border border-blue-100 dark:border-blue-900/30">
-                    <div class="flex gap-3 text-blue-700 dark:text-blue-400">
-                        <span class="material-icons-outlined text-xl">info</span>
-                        <div class="text-sm leading-relaxed">
-                            <strong>Dica PaguePix:</strong> Este QR Code utiliza redirecionamento dinâmico. Se você
-                            mudar a URL da loja no futuro, os adesivos já impressos continuarão funcionando!
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <app-device-qr-card *ngIf="id()" [qrUrl]="qrUrl()" [code]="code()" [model]="model()" [id]="id()!">
+            </app-device-qr-card>
         </div>
     </ng-template>
 </app-management-layout>

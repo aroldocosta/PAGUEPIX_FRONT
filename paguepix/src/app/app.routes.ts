@@ -19,6 +19,8 @@ import { SalesTimeComponent } from './features/public/sales-time/sales-time';
 import { PayoutsManagement } from './features/admin/payouts/payouts';
 import { PartnerPayouts } from './features/user/payout/payouts';
 import { Statistics } from './features/admin/statistics/statistics';
+import { UserDeviceManagement } from './features/user/devices/devices';
+import { UserDeviceView } from './features/user/devices/view/view';
 
 import { authGuard } from './core/guards/auth.guard';
 
@@ -49,4 +51,6 @@ export const routes: Routes = [
     { path: 'user/dashboard', component: UserDashboard, canActivate: [authGuard] },
     { path: 'user/payout', component: PartnerPayouts, canActivate: [authGuard] },
     { path: 'user/sales', component: SalesComponent, canActivate: [authGuard] },
+    { path: 'user/devices', component: UserDeviceManagement, canActivate: [authGuard] },
+    { path: 'user/devices/view/:id', component: UserDeviceView, canActivate: [authGuard] },
 ];

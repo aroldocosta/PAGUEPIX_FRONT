@@ -5,13 +5,14 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DeviceService } from '../../../../core/services/device.service';
 import { PartnerService } from '../../../../core/services/partner.service';
 import { ManagementLayoutComponent } from '../../../../shared/components/management-layout/management-layout.component';
-import { NgxKjuaComponent } from 'ngx-kjua';
+import { DeviceQrCardComponent } from '../../../../shared/components/devices/device-qr-card/device-qr-card.component';
+import { DeviceDetailsCardComponent } from '../../../../shared/components/devices/device-details-card/device-details-card.component';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
     selector: 'app-device-edit',
     standalone: true,
-    imports: [CommonModule, FormsModule, RouterModule, ManagementLayoutComponent, NgxKjuaComponent],
+    imports: [CommonModule, FormsModule, RouterModule, ManagementLayoutComponent, DeviceQrCardComponent],
     templateUrl: './edit.html',
     styleUrl: './edit.scss'
 })

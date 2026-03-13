@@ -1,0 +1,17 @@
+<app-management-layout title="Detalhes do Dispositivo" subtitle="Visualize informações e gerencie operações do seu terminal."
+    [loading]="loading" [hasData]="hasData">
+
+    <ng-template #tableContent>
+        <div class="p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Informações do Dispositivo -->
+            <app-device-details-card class="lg:col-span-2" mode="view" [loading]="loading()" [id]="id()!" [code]="code()"
+                [model]="model()" (release)="onRelease()">
+            </app-device-details-card>
+
+            <!-- Card do QR Code -->
+            <app-device-qr-card *ngIf="id()" [qrUrl]="qrUrl()" [code]="code()" [model]="model()" [id]="id()!">
+            </app-device-qr-card>
+        </div>
+    </ng-template>
+
+</app-management-layout>

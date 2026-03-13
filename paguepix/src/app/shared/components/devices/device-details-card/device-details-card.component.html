@@ -1,0 +1,67 @@
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-[40px] shadow-sm">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="space-y-1">
+            <span class="text-[10px] uppercase tracking-widest font-bold text-slate-400 dark:text-slate-500">Código de
+                Identificação</span>
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                    <span class="material-icons-outlined text-xl">qr_code</span>
+                </div>
+                <span class="text-xl font-black text-slate-900 dark:text-white">{{ code }}</span>
+            </div>
+        </div>
+
+        <div class="space-y-1">
+            <span class="text-[10px] uppercase tracking-widest font-bold text-slate-400 dark:text-slate-500">Modelo /
+                Fabricante</span>
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                    <span class="material-icons-outlined text-xl">settings_remote</span>
+                </div>
+                <span class="text-xl font-black text-slate-900 dark:text-white">{{ model }}</span>
+            </div>
+        </div>
+
+        <div class="space-y-1 md:col-span-2">
+            <span class="text-[10px] uppercase tracking-widest font-bold text-slate-400 dark:text-slate-500">ID Interno do
+                Sistema</span>
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 flex items-center justify-center">
+                    <span class="material-icons-outlined text-xl">fingerprint</span>
+                </div>
+                <span class="text-lg font-bold text-slate-500 dark:text-slate-400 font-mono">{{ id }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ações Rápidas -->
+    <div class="pt-8 border-t border-slate-100 dark:border-slate-800 mt-8">
+        <h4 class="text-sm font-black text-slate-900 dark:text-white mb-6 uppercase tracking-wider">Ações de Operação</h4>
+        <div class="flex flex-wrap gap-4">
+            <button (click)="onRelease()" [disabled]="loading"
+                class="bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 px-8 py-4 rounded-[24px] font-black flex items-center gap-3 transition-all shadow-sm group">
+                <span class="material-icons-outlined text-xl group-hover:rotate-12 transition-transform">bolt</span>
+                LIBERAÇÃO MANUAL
+            </button>
+
+            <ng-container *ngIf="mode === 'admin'">
+                <button (click)="onEdit()"
+                    class="bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 px-8 py-4 rounded-[24px] font-black flex items-center gap-3 transition-all shadow-sm">
+                    <span class="material-icons-outlined text-xl">edit</span>
+                    EDITAR
+                </button>
+                <button (click)="onDelete()"
+                    class="bg-rose-50 dark:bg-rose-500/10 hover:bg-rose-100 dark:hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-100/50 dark:border-rose-500/20 px-8 py-4 rounded-[24px] font-black flex items-center gap-3 transition-all shadow-sm">
+                    <span class="material-icons-outlined text-xl">delete</span>
+                    EXCLUIR
+                </button>
+            </ng-container>
+        </div>
+        <p class="mt-4 text-[11px] text-slate-400 dark:text-slate-500 leading-relaxed max-w-lg">
+            DICA: A liberação manual enviará um comando direto pelo broker para destravar o terminal sem necessidade de
+            pagamento imediato. Use apenas em casos de manutenção ou teste.
+        </p>
+    </div>
+</div>
