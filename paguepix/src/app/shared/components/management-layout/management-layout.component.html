@@ -43,7 +43,7 @@
                     <div class="hidden md:flex items-center gap-4" *ngIf="addButtonLabel">
                         <ng-container *ngIf="addRoute; else noRouteBtnDesktop">
                             <a [routerLink]="addRoute"
-                                class="bg-indigo-600 text-white px-6 py-3 rounded-2xl text-sm font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-200 dark:shadow-none transition-all flex items-center gap-2 group cursor-pointer inline-flex">
+                                class="bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 px-6 py-3 rounded-2xl text-sm font-bold shadow-sm transition-all flex items-center gap-2 group cursor-pointer inline-flex">
                                 <span
                                     class="material-icons-outlined text-sm transition-transform group-hover:rotate-90">{{
                                     addButtonIcon }}</span> {{ addButtonLabel }}
@@ -51,7 +51,7 @@
                         </ng-container>
                         <ng-template #noRouteBtnDesktop>
                             <button
-                                class="bg-indigo-600 text-white px-6 py-3 rounded-2xl text-sm font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-200 dark:shadow-none transition-all flex items-center gap-2 group">
+                                class="bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 px-6 py-3 rounded-2xl text-sm font-bold shadow-sm transition-all flex items-center gap-2 group">
                                 <span
                                     class="material-icons-outlined text-sm transition-transform group-hover:rotate-90">{{
                                     addButtonIcon }}</span> {{ addButtonLabel }}
@@ -97,14 +97,14 @@
     <ng-container *ngIf="addButtonLabel">
         <ng-container *ngIf="addRoute; else noRouteFab">
             <a [routerLink]="addRoute"
-                class="md:hidden fixed bottom-6 right-6 z-30 w-14 h-14 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-xl shadow-indigo-400/40 active:scale-90 transition-transform duration-150"
+                class="md:hidden fixed bottom-6 right-6 z-30 w-14 h-14 rounded-full bg-indigo-50/80 dark:bg-indigo-500/20 backdrop-blur-md text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 flex items-center justify-center shadow-lg active:scale-95 transition-all duration-150"
                 aria-label="{{ addButtonLabel }}">
                 <span class="material-icons-outlined text-2xl">add</span>
             </a>
         </ng-container>
         <ng-template #noRouteFab>
             <button
-                class="md:hidden fixed bottom-6 right-6 z-30 w-14 h-14 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-xl shadow-indigo-400/40 active:scale-90 transition-transform duration-150"
+                class="md:hidden fixed bottom-6 right-6 z-30 w-14 h-14 rounded-full bg-indigo-50/80 dark:bg-indigo-500/20 backdrop-blur-md text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 flex items-center justify-center shadow-lg active:scale-95 transition-all duration-150"
                 aria-label="{{ addButtonLabel }}">
                 <span class="material-icons-outlined text-2xl">add</span>
             </button>

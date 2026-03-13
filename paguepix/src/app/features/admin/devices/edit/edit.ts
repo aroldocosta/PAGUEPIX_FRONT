@@ -90,6 +90,23 @@ export class DeviceEdit implements OnInit {
         });
     }
 
+    onRelease() {
+        if (!confirm('Deseja enviar um comando de liberação manual para este dispositivo?')) return;
+
+        this.loading.set(true);
+        this.deviceService.release(this.id()!).subscribe({
+            next: () => {
+                this.loading.set(false);
+                alert('Comando de liberação enviado com sucesso!');
+            },
+            error: (err) => {
+                console.error('Error releasing device', err);
+                this.loading.set(false);
+                alert('Erro ao enviar comando de liberação.');
+            }
+        });
+    }
+
     printQr() {
         const printWindow = window.open('', '_blank');
         if (!printWindow) return;

@@ -63,9 +63,14 @@
                 <!-- Ações -->
                 <div class="flex items-center gap-4 pt-4">
                     <button type="submit" [disabled]="loading()"
-                        class="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-blue-200 dark:shadow-none">
+                        class="bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-sm">
                         <span class="material-icons-outlined text-lg">save</span>
                         Salvar Alterações
+                    </button>
+                    <button *ngIf="id()" type="button" (click)="onRelease()" [disabled]="loading()"
+                        class="bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-sm">
+                        <span class="material-icons-outlined text-lg">bolt</span>
+                        Liberação Manual
                     </button>
                     <button type="button" routerLink="/admin/devices"
                         class="px-8 py-3 rounded-xl font-bold text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-all">
