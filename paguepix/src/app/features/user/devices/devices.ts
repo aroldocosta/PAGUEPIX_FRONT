@@ -7,14 +7,19 @@ import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.com
 import { TopbarComponent } from '../../../shared/components/topbar/topbar.component';
 import { FooterComponent } from '../../../shared/components/footer/footer.component';
 
+import { ManagementLayoutComponent } from '../../../shared/components/management-layout/management-layout.component';
+import { DeviceListComponent } from '../../../shared/components/devices/device-list/device-list.component';
+import { Router } from '@angular/router';
+
 @Component({
     selector: 'app-user-device-management',
     standalone: true,
-    imports: [CommonModule, RouterModule, SidebarComponent, TopbarComponent, FooterComponent],
+    imports: [CommonModule, RouterModule, ManagementLayoutComponent, DeviceListComponent],
     templateUrl: './devices.html',
     styleUrl: './devices.scss'
 })
 export class UserDeviceManagement implements OnInit {
+    private router = inject(Router);
     private deviceService = inject(DeviceService);
     private authService = inject(AuthService);
 
@@ -45,5 +50,9 @@ export class UserDeviceManagement implements OnInit {
                 this.loading.set(false);
             }
         });
+    }
+
+    onView(id: string) {
+        this.router.navigate(['/user/devices/view', id]);
     }
 }
