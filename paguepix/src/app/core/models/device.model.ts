@@ -5,5 +5,6 @@ export interface Device {
     code: string;
     model: string;
     type: string;
+    name: string;
     partner?: Partner;
 }

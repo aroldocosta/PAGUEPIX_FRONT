@@ -24,6 +24,7 @@ export class DeviceEdit implements OnInit {
 
     id = signal<string | null>(null);
     code = signal('');
+    name = signal('');
     model = signal('');
     partnerId = signal<string | null>(null);
     partners = signal<any[]>([]);
@@ -50,6 +51,7 @@ export class DeviceEdit implements OnInit {
             next: (device) => {
                 console.log('Device loaded:', device);
                 this.code.set(device.code);
+                this.name.set(device.name || '');
                 this.model.set(device.model);
                 this.partnerId.set(device.partner?.id || null);
                 this.loading.set(false);
@@ -73,6 +75,7 @@ export class DeviceEdit implements OnInit {
     onSave() {
         const deviceData = {
             code: this.code(),
+            name: this.name(),
             model: this.model(),
             partnerId: this.partnerId()
         };

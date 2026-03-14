@@ -8,7 +8,22 @@
                     class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                     <span class="material-icons-outlined text-xl">qr_code</span>
                 </div>
-                <span class="text-xl font-black text-slate-900 dark:text-white">{{ code }}</span>
+                <div class="flex flex-col">
+                    <span class="text-[10px] uppercase font-bold text-slate-400">Código</span>
+                    <span class="text-xl font-black text-slate-900 dark:text-white">{{ code }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-1" *ngIf="name">
+            <span class="text-[10px] uppercase tracking-widest font-bold text-slate-400 dark:text-slate-500">Nome do
+                Dispositivo</span>
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+                    <span class="material-icons-outlined text-xl">label</span>
+                </div>
+                <span class="text-xl font-black text-slate-900 dark:text-white">{{ name }}</span>
             </div>
         </div>
 
@@ -25,10 +40,12 @@
         </div>
 
         <div class="space-y-1 md:col-span-2">
-            <span class="text-[10px] uppercase tracking-widest font-bold text-slate-400 dark:text-slate-500">ID Interno do
+            <span class="text-[10px] uppercase tracking-widest font-bold text-slate-400 dark:text-slate-500">ID Interno
+                do
                 Sistema</span>
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 flex items-center justify-center">
+                <div
+                    class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 flex items-center justify-center">
                     <span class="material-icons-outlined text-xl">fingerprint</span>
                 </div>
                 <span class="text-lg font-bold text-slate-500 dark:text-slate-400 font-mono">{{ id }}</span>
@@ -38,7 +55,8 @@
 
     <!-- Ações Rápidas -->
     <div class="pt-8 border-t border-slate-100 dark:border-slate-800 mt-8">
-        <h4 class="text-sm font-black text-slate-900 dark:text-white mb-6 uppercase tracking-wider">Ações de Operação</h4>
+        <h4 class="text-sm font-black text-slate-900 dark:text-white mb-6 uppercase tracking-wider">Ações de Operação
+        </h4>
         <div class="flex flex-wrap gap-4">
             <button (click)="onRelease()" [disabled]="loading"
                 class="bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 px-8 py-4 rounded-[24px] font-black flex items-center gap-3 transition-all shadow-sm group">

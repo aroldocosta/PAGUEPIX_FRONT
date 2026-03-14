@@ -96,7 +96,7 @@
                                         Avulsa)</option>
                                     <option *ngFor="let device of devices()" [value]="device.id"
                                         class="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">
-                                        {{ device.code }} - {{ device.model }}
+                                        {{ device.name || device.code }} - {{ device.model }}
                                     </option>
                                 </select>
                                 <span

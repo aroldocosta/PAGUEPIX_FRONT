@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 export class DeviceDetailsCardComponent {
     @Input({ required: true }) id!: string;
     @Input({ required: true }) code!: string;
+    @Input() name: string = '';
     @Input({ required: true }) model!: string;
     @Input() loading: boolean = false;
     @Input() mode: 'admin' | 'view' = 'view';

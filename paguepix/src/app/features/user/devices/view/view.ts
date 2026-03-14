@@ -23,6 +23,7 @@ export class UserDeviceView implements OnInit {
 
     id = signal<string | null>(null);
     code = signal('');
+    name = signal('');
     model = signal('');
     loading = signal(false);
     hasData = signal(true);
@@ -46,6 +47,7 @@ export class UserDeviceView implements OnInit {
         this.deviceService.findById(id).subscribe({
             next: (device) => {
                 this.code.set(device.code);
+                this.name.set(device.name || '');
                 this.model.set(device.model);
                 this.loading.set(false);
             },

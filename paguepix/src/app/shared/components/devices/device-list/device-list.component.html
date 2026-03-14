@@ -19,7 +19,8 @@
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-100 dark:divide-slate-800">
-            <tr *ngFor="let device of devices" class="hover:bg-gray-50/80 dark:hover:bg-slate-800/50 transition-colors group">
+            <tr *ngFor="let device of devices"
+                class="hover:bg-gray-50/80 dark:hover:bg-slate-800/50 transition-colors group">
                 <td class="px-8 py-4">
                     <div class="flex items-center gap-4">
                         <div
@@ -27,8 +28,12 @@
                             <span class="material-icons-outlined text-lg">devices</span>
                         </div>
                         <div>
-                            <div class="text-sm font-bold text-gray-900 dark:text-slate-200">{{ device.code }}</div>
-                            <div class="text-[10px] text-gray-400 dark:text-slate-500 font-mono">ID: #{{ device.id }}</div>
+                            <div class="text-sm font-bold text-gray-900 dark:text-slate-200">
+                                {{ device.name || 'Sem nome' }}
+                            </div>
+                            <div class="text-[10px] text-gray-400 dark:text-slate-500 font-mono">
+                                Código: {{ device.code }} | ID: #{{ device.id }}
+                            </div>
                         </div>
                     </div>
                 </td>
