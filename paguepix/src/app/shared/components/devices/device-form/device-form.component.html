@@ -124,13 +124,39 @@
                     </div>
                 </div>
 
-                <div
+                <!-- Alerta de Aviso (Default) -->
+                <div *ngIf="!loading && !releaseError"
                     class="bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/30 p-4 rounded-2xl">
                     <div class="flex gap-3">
                         <span class="material-icons-outlined text-amber-600 dark:text-amber-400 text-lg">warning</span>
                         <p class="text-[11px] text-amber-800 dark:text-amber-300 leading-relaxed font-medium">
                             Esta ação enviará um comando imediato ao terminal. Certifique-se de que o equipamento
                             está pronto.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Alerta de Loading -->
+                <div *ngIf="loading"
+                    class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/30 p-4 rounded-2xl animate-pulse">
+                    <div class="flex items-center gap-3">
+                        <span
+                            class="material-icons-outlined text-blue-600 dark:text-blue-400 text-lg animate-spin">sync</span>
+                        <p
+                            class="text-[11px] text-blue-800 dark:text-blue-300 leading-relaxed font-bold uppercase tracking-tight">
+                            Enviando mensagem ao dispositivo...
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Alerta de Erro -->
+                <div *ngIf="releaseError"
+                    class="bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-900/30 p-4 rounded-2xl animate-in shake duration-500">
+                    <div class="flex gap-3">
+                        <span
+                            class="material-icons-outlined text-rose-600 dark:text-rose-400 text-lg">error_outline</span>
+                        <p class="text-[11px] text-rose-800 dark:text-rose-300 leading-relaxed font-bold">
+                            {{ releaseError }}
                         </p>
                     </div>
                 </div>
@@ -141,9 +167,10 @@
                     class="flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 py-4 rounded-2xl font-black text-sm transition-all">
                     CANCELAR
                 </button>
-                <button (click)="confirmRelease()"
+                <button (click)="confirmRelease()" [disabled]="loading"
                     class="flex-1 bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 py-4 rounded-2xl font-black text-sm transition-all flex items-center justify-center gap-2">
-                    CONFIRMAR
+                    <span *ngIf="loading" class="material-icons-outlined animate-spin text-sm">sync</span>
+                    {{ releaseError ? 'TENTAR NOVAMENTE' : 'CONFIRMAR' }}
                 </button>
             </div>
         </div>

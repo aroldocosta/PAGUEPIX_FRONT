@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject, computed } from '@angular/core';
+import { Component, OnInit, signal, inject, computed, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DeviceService } from '../../../../core/services/device.service';
@@ -21,12 +21,18 @@ export class UserDeviceView implements OnInit {
     private deviceService = inject(DeviceService);
     private authService = inject(AuthService);
 
+    @ViewChild(DeviceFormComponent) deviceForm!: DeviceFormComponent;
+
     id = signal<string | null>(null);
     mqttId = signal('');
     name = signal('');
     model = signal('');
+    partnerId = signal<string | null>(null);
+    partners = signal<any[]>([]);
     loading = signal(false);
     hasData = signal(true);
+    releasing = signal(false);
+    releaseError = signal<string | null>(null);
     partnerName = computed(() => this.authService.partnerName());
 
     qrUrl = computed(() => {
@@ -49,6 +55,10 @@ export class UserDeviceView implements OnInit {
                 this.mqttId.set(device.mqttId);
                 this.name.set(device.name || '');
                 this.model.set(device.model);
+                this.partnerId.set(device.partner?.id || null);
+                if (device.partner) {
+                    this.partners.set([device.partner]);
+                }
                 this.loading.set(false);
             },
             error: (err) => {
@@ -61,15 +71,18 @@ export class UserDeviceView implements OnInit {
     }
 
     onReleaseManual(event: { id: string, minutes: number }) {
-        this.loading.set(true);
+        this.releasing.set(true);
+        this.releaseError.set(null);
+
         this.deviceService.releaseManual(event.id, event.minutes).subscribe({
             next: () => {
-                this.loading.set(false);
+                this.releasing.set(false);
+                this.deviceForm.showReleaseModal.set(false);
             },
             error: (err) => {
                 console.error('Error releasing device', err);
-                this.loading.set(false);
-                alert('Erro ao enviar comando de liberação.');
+                this.releasing.set(false);
+                this.releaseError.set('Erro ao enviar comando de liberação.');
             }
         });
     }

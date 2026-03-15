@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject, computed } from '@angular/core';
+import { Component, OnInit, signal, inject, computed, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -22,6 +22,8 @@ export class DeviceEdit implements OnInit {
     private deviceService = inject(DeviceService);
     private partnerService = inject(PartnerService);
 
+    @ViewChild(DeviceFormComponent) deviceForm!: DeviceFormComponent;
+
     id = signal<string | null>(null);
     formMode = signal<'view' | 'edit'>('edit');
     mqttId = signal('');
@@ -31,6 +33,8 @@ export class DeviceEdit implements OnInit {
     partners = signal<any[]>([]);
     loading = signal(false);
     hasData = signal(true);
+    releaseError = signal<string | null>(null);
+    releasing = signal(false);
 
     qrUrl = computed(() => {
         const currentId = this.id();
@@ -94,17 +98,20 @@ export class DeviceEdit implements OnInit {
         });
     }
 
+
     onReleaseManual(event: { id: string, minutes: number }) {
-        this.loading.set(true);
+        this.releasing.set(true);
+        this.releaseError.set(null);
+
         this.deviceService.releaseManual(event.id, event.minutes).subscribe({
             next: () => {
-                this.loading.set(false);
-                alert('Comando de liberação enviado com sucesso!');
+                this.releasing.set(false);
+                this.deviceForm.showReleaseModal.set(false);
             },
             error: (err) => {
                 console.error('Error releasing device', err);
-                this.loading.set(false);
-                alert('Erro ao enviar comando de liberação.');
+                this.releasing.set(false);
+                this.releaseError.set('Erro ao enviar comando de liberação.');
             }
         });
     }

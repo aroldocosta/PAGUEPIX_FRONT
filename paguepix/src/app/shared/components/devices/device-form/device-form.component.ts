@@ -21,6 +21,7 @@ export class DeviceFormComponent {
     @Input() partners: any[] = [];
     @Input() mode: 'view' | 'edit' = 'view';
     @Input() loading = false;
+    @Input() releaseError: string | null = null;
 
     @Output() save = new EventEmitter<any>();
     @Output() releaseManual = new EventEmitter<{ id: string, minutes: number }>();
@@ -44,15 +45,16 @@ export class DeviceFormComponent {
     }
 
     onOpenReleaseModal() {
+        this.releaseError = null;
         this.showReleaseModal.set(true);
     }
 
     cancelRelease() {
         this.showReleaseModal.set(false);
+        this.releaseError = null;
     }
 
     confirmRelease() {
-        this.showReleaseModal.set(false);
         this.releaseManual.emit({
             id: this.id,
             minutes: this.selectedReleaseMinutes()
