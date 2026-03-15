@@ -1,0 +1,86 @@
+<div class="space-y-6">
+    <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-8 rounded-[40px] shadow-sm">
+
+        <!-- Header Info -->
+        <div class="flex items-center justify-between mb-4 px-1">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-11 h-11 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                    <span class="material-icons-outlined text-2xl">qr_code_2</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <h3 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">QR Code</h3>
+                    <button (click)="toggleTipModal()"
+                        class="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors flex items-center justify-center group">
+                        <span class="material-icons-outlined text-[16px]">help_outline</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Print Button in Header -->
+            <button (click)="printQr()"
+                class="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-900 dark:text-white transition-all group active:scale-95">
+                <span class="material-icons-outlined text-xl">print</span>
+                <span class="font-black text-sm uppercase tracking-wide">Imprimir</span>
+            </button>
+        </div>
+
+        <p class="text-[13px] text-slate-400 dark:text-slate-500 mb-8 leading-relaxed font-semibold px-1">
+            Aponte para levar o cliente direto à página de vendas deste terminal.
+        </p>
+
+        <!-- QR Code Display Box -->
+        <div
+            class="w-full aspect-square bg-[#f8fafc] dark:bg-slate-800/30 rounded-[48px] border border-slate-100/50 dark:border-slate-800/50 flex flex-col items-center justify-center p-8 mb-6">
+            <div class="flex-1 flex items-center justify-center w-full">
+                <ngx-kjua [text]="qrUrl" [render]="'svg'" [size]="240" [back]="'transparent'" [rounded]="25"></ngx-kjua>
+            </div>
+
+            <!-- Raw URL in the bottom of the box -->
+            <div class="w-full text-center mt-4">
+                <p
+                    class="text-[11px] font-mono text-slate-300 dark:text-slate-600 select-all leading-tight break-all px-4">
+                    {{ qrUrl }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Modal de Dica -->
+        <div *ngIf="showTipModal"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+            <div
+                class="bg-white dark:bg-slate-900 w-full max-w-md rounded-[32px] shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-300">
+                <div class="p-8">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                            <span class="material-icons-outlined text-2xl">info</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                                Dica PaguePix</h3>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="text-[14px] leading-relaxed text-slate-600 dark:text-slate-400 font-medium">
+                            <p>
+                                Este QR Code utiliza redirecionamento dinâmico. Se você mudar a URL da loja no futuro,
+                                os
+                                adesivos já impressos continuarão funcionando!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3 mt-8">
+                        <button (click)="toggleTipModal()"
+                            class="flex-1 bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 py-4 rounded-2xl font-black text-sm transition-all flex items-center justify-center gap-2">
+                            ENTENDI
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,17 +1,18 @@
-import { Component, OnInit, signal, inject, computed } from '@angular/core';
+import { Component, OnInit, signal, inject, computed, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DeviceService } from '../../../../core/services/device.service';
 import { PartnerService } from '../../../../core/services/partner.service';
 import { ManagementLayoutComponent } from '../../../../shared/components/management-layout/management-layout.component';
-import { NgxKjuaComponent } from 'ngx-kjua';
+import { DeviceQrCardComponent } from '../../../../shared/components/devices/device-qr-card/device-qr-card.component';
+import { DeviceFormComponent } from '../../../../shared/components/devices/device-form/device-form.component';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
     selector: 'app-device-edit',
     standalone: true,
-    imports: [CommonModule, FormsModule, RouterModule, ManagementLayoutComponent, NgxKjuaComponent],
+    imports: [CommonModule, FormsModule, RouterModule, ManagementLayoutComponent, DeviceQrCardComponent, DeviceFormComponent],
     templateUrl: './edit.html',
     styleUrl: './edit.scss'
 })
@@ -21,13 +22,19 @@ export class DeviceEdit implements OnInit {
     private deviceService = inject(DeviceService);
     private partnerService = inject(PartnerService);
 
+    @ViewChild(DeviceFormComponent) deviceForm!: DeviceFormComponent;
+
     id = signal<string | null>(null);
-    code = signal('');
+    formMode = signal<'view' | 'edit'>('edit');
+    mqttId = signal('');
+    name = signal('');
     model = signal('');
     partnerId = signal<string | null>(null);
     partners = signal<any[]>([]);
     loading = signal(false);
     hasData = signal(true);
+    releaseError = signal<string | null>(null);
+    releasing = signal(false);
 
     qrUrl = computed(() => {
         const currentId = this.id();
@@ -36,6 +43,12 @@ export class DeviceEdit implements OnInit {
 
     ngOnInit() {
         const idParam = this.route.snapshot.paramMap.get('id');
+        const modeParam = this.route.snapshot.queryParamMap.get('mode') as 'view' | 'edit';
+
+        if (modeParam) {
+            this.formMode.set(modeParam);
+        }
+
         if (idParam) {
             this.id.set(idParam);
             this.loadDevice(idParam);
@@ -48,7 +61,8 @@ export class DeviceEdit implements OnInit {
         this.deviceService.findById(id).subscribe({
             next: (device) => {
                 console.log('Device loaded:', device);
-                this.code.set(device.code);
+                this.mqttId.set(device.mqttId);
+                this.name.set(device.name || '');
                 this.model.set(device.model);
                 this.partnerId.set(device.partner?.id || null);
                 this.loading.set(false);
@@ -69,13 +83,7 @@ export class DeviceEdit implements OnInit {
         });
     }
 
-    onSave() {
-        const deviceData = {
-            code: this.code(),
-            model: this.model(),
-            partnerId: this.partnerId()
-        };
-
+    onSave(deviceData: any) {
         this.loading.set(true);
         this.deviceService.update(this.id()!, deviceData).subscribe({
             next: () => {
@@ -88,6 +96,28 @@ export class DeviceEdit implements OnInit {
                 alert('Erro ao atualizar dispositivo.');
             }
         });
+    }
+
+
+    onReleaseManual(event: { id: string, minutes: number }) {
+        this.releasing.set(true);
+        this.releaseError.set(null);
+
+        this.deviceService.releaseManual(event.id, event.minutes).subscribe({
+            next: () => {
+                this.releasing.set(false);
+                this.deviceForm.showReleaseModal.set(false);
+            },
+            error: (err) => {
+                console.error('Error releasing device', err);
+                this.releasing.set(false);
+                this.releaseError.set('Erro ao enviar comando de liberação.');
+            }
+        });
+    }
+
+    onCancel() {
+        this.router.navigate(['/admin/devices']);
     }
 
     printQr() {
@@ -105,7 +135,7 @@ export class DeviceEdit implements OnInit {
         printWindow.document.write(`
             <html>
                 <head>
-                    <title>Impressão QR Code - ${this.code()}</title>
+                    <title>Impressão QR Code - ${this.mqttId()}</title>
                     <style>
                         body { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; font-family: sans-serif; }
                         .container { text-align: center; border: 2px dashed #ccc; padding: 20px; border-radius: 10px; }
@@ -117,7 +147,7 @@ export class DeviceEdit implements OnInit {
                 <body>
                     <div class="container">
                         ${qrHtml}
-                        <h2>${this.model()}</h2>
+                        <h2>${this.name()}</h2>
                         <p>ID: ${this.id()}</p>
                         <p>PaguePix Payments</p>
                     </div>

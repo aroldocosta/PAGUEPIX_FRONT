@@ -17,7 +17,8 @@
         class="w-full bg-blue-50 border-b border-blue-100 px-6 py-2.5 flex items-center justify-center gap-2 animate-fade-in">
         <span class="material-icons-outlined text-[#0d7ff2] text-sm">location_on</span>
         <span class="text-[11px] font-bold text-blue-800 uppercase tracking-wider">
-            {{ deviceInfo().model }} <span class="mx-1 opacity-30">|</span> {{ deviceInfo().partner?.name }}
+            {{ deviceInfo().name || deviceInfo().model }} <span class="mx-1 opacity-30">|</span> {{
+            deviceInfo().partner?.name }}
         </span>
     </div>
 

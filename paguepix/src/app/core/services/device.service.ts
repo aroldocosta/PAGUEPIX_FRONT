@@ -42,4 +42,14 @@ export class DeviceService {
     getInfoByToken(token: string): Observable<any> {
         return this.http.get<any>(`${this.apiUrl}/info/${token}`);
     }
+
+    release(id: string): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/${id}/release`, {});
+    }
+
+    releaseManual(id: string, minutes: number): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/${id}/release-manual`, {}, {
+            params: { minutes: minutes.toString() }
+        });
+    }
 }

@@ -1,0 +1,10 @@
+<app-management-layout title="Meus Dispositivos" subtitle="Gerencie os equipamentos vinculados à sua empresa."
+    searchPlaceholder="Buscar dispositivos..." [loading]="loading" [hasData]="hasData" emptyStateIcon="no_sim"
+    emptyStateMessage="Nenhum dispositivo encontrado.">
+
+    <ng-template #tableContent>
+        <app-device-list [devices]="devices()" mode="user" [loading]="loading()" (view)="onView($event)">
+        </app-device-list>
+    </ng-template>
+
+</app-management-layout>

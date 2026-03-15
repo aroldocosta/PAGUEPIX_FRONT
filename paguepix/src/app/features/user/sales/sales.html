@@ -89,7 +89,7 @@
                                     Equipamento</th>
                                 <th
                                     class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                                    Tempo de Uso</th>
+                                    Situação</th>
                                 <th
                                     class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                                     Valor Pago</th>
@@ -98,7 +98,7 @@
                                     Taxa de Serviço</th>
                                 <th
                                     class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                                    Valor Líquido</th>
+                                    A RECEBER</th>
                                 <th
                                     class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider text-right">
                                     Ações</th>
@@ -111,15 +111,22 @@
                                     {{ txn.date + ' ' + txn.time | date:'dd/MM/yyyy HH:mm:ss' }}
                                 </td>
                                 <td class="px-8 py-0.5 text-sm text-gray-600 dark:text-slate-400">
-                                    {{ txn.device?.type || 'Chuveiro' }} / #{{ txn.device?.id }}
+                                    {{ txn.device?.name ||'DEVICE' }}
                                 </td>
-                                <td class="px-8 py-0.5 text-sm text-gray-900 dark:text-slate-200 font-medium">
-                                    {{ txn.usageTime || '-' }}
+                                <td class="px-8 py-0.5">
+                                    <span [ngClass]="{
+                                        'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400': txn.state === 'APPROVED' || txn.state === 'CONSUMED' || txn.state === 'PAID_OUT',
+                                        'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400': txn.state === 'WAITING_PAYMENT' || txn.state === 'PENDING_BANK',
+                                        'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400': txn.state === 'CANCELLED' || txn.state === 'FAILED' || txn.state === 'REFUNDED'
+                                    }"
+                                        class="px-2.5 py-1 rounded-lg text-[10px] font-black tracking-widest uppercase inline-flex items-center">
+                                        {{ txn.state }}
+                                    </span>
                                 </td>
                                 <td class="px-8 py-0.5 text-sm font-bold text-gray-900 dark:text-slate-200">
                                     {{ txn.paidValue | currency:'BRL' }}</td>
                                 <td class="px-8 py-0.5 text-sm text-red-500">
-                                    - {{ txn.commissionAmount | currency:'BRL' }}</td>
+                                    {{ txn.commissionAmount | currency:'BRL' }}</td>
                                 <td class="px-8 py-0.5 text-sm font-bold text-green-600">
                                     {{ txn.netAmount | currency:'BRL' }}</td>
                                 <td class="px-8 py-0.5 text-right">
