@@ -5,98 +5,25 @@
     <ng-template #tableContent>
         <div class="p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Formulário de Edição -->
-            <form (ngSubmit)="onSave()"
-                class="lg:col-span-2 space-y-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-3xl shadow-sm">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Código do Dispositivo -->
-                    <div class="space-y-2">
-                        <label for="code" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
-                            Código de Identificação
-                        </label>
-                        <div class="relative group">
-                            <span
-                                class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">qr_code</span>
-                            <input id="code" name="code" type="text" [ngModel]="code()"
-                                (ngModelChange)="code.set($event)"
-                                class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white"
-                                placeholder="Ex: POS-001">
-                        </div>
-                    </div>
-
-                    <!-- Nome do Dispositivo -->
-                    <div class="space-y-2">
-                        <label for="name" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
-                            Nome do Dispositivo
-                        </label>
-                        <div class="relative group">
-                            <span
-                                class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">label</span>
-                            <input id="name" name="name" type="text" [ngModel]="name()"
-                                (ngModelChange)="name.set($event)"
-                                class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white"
-                                placeholder="Ex: Chuveiro Masculino 01">
-                        </div>
-                    </div>
-
-                    <!-- Modelo -->
-                    <div class="space-y-2">
-                        <label for="model" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
-                            Modelo / Fabricante
-                        </label>
-                        <div class="relative group">
-                            <span
-                                class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">settings_remote</span>
-                            <input id="model" name="model" type="text" [ngModel]="model()"
-                                (ngModelChange)="model.set($event)"
-                                class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white"
-                                placeholder="Ex: Gertec GP-100">
-                        </div>
-                    </div>
-
-                    <!-- Parceiro Vinculado -->
-                    <div class="space-y-2 md:col-span-2">
-                        <label for="partner" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
-                            Parceiro Vinculado
-                        </label>
-                        <div class="relative group">
-                            <span
-                                class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">handshake</span>
-                            <select id="partner" name="partner" [ngModel]="partnerId()"
-                                (ngModelChange)="partnerId.set($event)"
-                                class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white appearance-none">
-                                <option [value]="null">Nenhum parceiro vinculado</option>
-                                <option *ngFor="let partner of partners()" [value]="partner.id">
-                                    {{ partner.name }}
-                                </option>
-                            </select>
-                            <span
-                                class="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">expand_more</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ações -->
-                <div class="flex items-center gap-4 pt-4">
-                    <button type="submit" [disabled]="loading()"
-                        class="bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-sm">
-                        <span class="material-icons-outlined text-lg">save</span>
-                        Salvar Alterações
-                    </button>
-                    <button *ngIf="id()" type="button" (click)="onRelease()" [disabled]="loading()"
-                        class="bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-sm">
-                        <span class="material-icons-outlined text-lg">bolt</span>
-                        Liberação Manual
-                    </button>
-                    <button type="button" routerLink="/admin/devices"
-                        class="px-8 py-3 rounded-xl font-bold text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-all">
-                        Cancelar
-                    </button>
-                </div>
-            </form>
+            <app-device-form class="lg:col-span-2" [id]="id()!" [mqttId]="mqttId()" [name]="name()" [model]="model()"
+                [partnerId]="partnerId()" [partners]="partners()" [mode]="formMode()" [loading]="loading()"
+                (save)="onSave($event)" (releaseManual)="onReleaseManual($event)" (cancel)="onCancel()">
+            </app-device-form>
 
             <!-- Card do QR Code -->
-            <app-device-qr-card *ngIf="id()" [qrUrl]="qrUrl()" [code]="code()" [model]="model()" [id]="id()!">
-            </app-device-qr-card>
+            <div class="space-y-6">
+                <app-device-qr-card *ngIf="id()" [qrUrl]="qrUrl()" [mqttId]="mqttId()" [name]="name()" [model]="model()"
+                    [id]="id()!">
+                </app-device-qr-card>
+
+                <!-- Ações do QR Code -->
+                <button *ngIf="id()" (click)="printQr()"
+                    class="w-full bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 py-4 rounded-3xl font-black text-sm flex items-center justify-center gap-2 transition-all border border-slate-200 dark:border-slate-700">
+                    <span class="material-icons-outlined">print</span>
+                    IMPRIMIR QR CODE
+                </button>
+            </div>
         </div>
     </ng-template>
+
 </app-management-layout>

@@ -98,7 +98,7 @@
                                     Taxa de Serviço</th>
                                 <th
                                     class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                                    Valor Líquido</th>
+                                    A RECEBER</th>
                                 <th
                                     class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider text-right">
                                     Ações</th>
@@ -111,7 +111,7 @@
                                     {{ txn.date + ' ' + txn.time | date:'dd/MM/yyyy HH:mm:ss' }}
                                 </td>
                                 <td class="px-8 py-0.5 text-sm text-gray-600 dark:text-slate-400">
-                                    {{ txn.device?.type || 'Chuveiro' }} / #{{ txn.device?.id }}
+                                    {{ txn.device?.name ||'DEVICE' }}
                                 </td>
                                 <td class="px-8 py-0.5">
                                     <span [ngClass]="{
@@ -126,7 +126,7 @@
                                 <td class="px-8 py-0.5 text-sm font-bold text-gray-900 dark:text-slate-200">
                                     {{ txn.paidValue | currency:'BRL' }}</td>
                                 <td class="px-8 py-0.5 text-sm text-red-500">
-                                    - {{ txn.commissionAmount | currency:'BRL' }}</td>
+                                    {{ txn.commissionAmount | currency:'BRL' }}</td>
                                 <td class="px-8 py-0.5 text-sm font-bold text-green-600">
                                     {{ txn.netAmount | currency:'BRL' }}</td>
                                 <td class="px-8 py-0.5 text-right">

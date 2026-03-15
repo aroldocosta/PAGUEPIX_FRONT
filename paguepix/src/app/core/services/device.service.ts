@@ -46,4 +46,10 @@ export class DeviceService {
     release(id: string): Observable<any> {
         return this.http.post<any>(`${this.apiUrl}/${id}/release`, {});
     }
+
+    releaseManual(id: string, minutes: number): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/${id}/release-manual`, {}, {
+            params: { minutes: minutes.toString() }
+        });
+    }
 }

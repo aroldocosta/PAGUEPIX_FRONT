@@ -3,13 +3,14 @@
 
     <ng-template #tableContent>
         <div class="p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Informações do Dispositivo -->
-            <app-device-details-card class="lg:col-span-2" mode="view" [loading]="loading()" [id]="id()!"
-                [code]="code()" [name]="name()" [model]="model()" (release)="onRelease()">
-            </app-device-details-card>
+            <!-- Formulário e Detalhes -->
+            <app-device-form class="lg:col-span-2" [id]="id()!" [mqttId]="mqttId()" [name]="name()" [model]="model()"
+                mode="view" [loading]="loading()" (releaseManual)="onReleaseManual($event)" (cancel)="onCancel()">
+            </app-device-form>
 
             <!-- Card do QR Code -->
-            <app-device-qr-card *ngIf="id()" [qrUrl]="qrUrl()" [code]="code()" [model]="model()" [id]="id()!">
+            <app-device-qr-card *ngIf="id()" [qrUrl]="qrUrl()" [mqttId]="mqttId()" [name]="name()" [model]="model()"
+                [id]="id()!">
             </app-device-qr-card>
         </div>
     </ng-template>

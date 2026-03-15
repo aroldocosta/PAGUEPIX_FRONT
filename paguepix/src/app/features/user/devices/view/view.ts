@@ -5,13 +5,13 @@ import { DeviceService } from '../../../../core/services/device.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ManagementLayoutComponent } from '../../../../shared/components/management-layout/management-layout.component';
 import { DeviceQrCardComponent } from '../../../../shared/components/devices/device-qr-card/device-qr-card.component';
-import { DeviceDetailsCardComponent } from '../../../../shared/components/devices/device-details-card/device-details-card.component';
+import { DeviceFormComponent } from '../../../../shared/components/devices/device-form/device-form.component';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
     selector: 'app-user-device-view',
     standalone: true,
-    imports: [CommonModule, RouterModule, ManagementLayoutComponent, DeviceQrCardComponent, DeviceDetailsCardComponent],
+    imports: [CommonModule, RouterModule, ManagementLayoutComponent, DeviceQrCardComponent, DeviceFormComponent],
     templateUrl: './view.html',
     styleUrl: './view.scss'
 })
@@ -22,7 +22,7 @@ export class UserDeviceView implements OnInit {
     private authService = inject(AuthService);
 
     id = signal<string | null>(null);
-    code = signal('');
+    mqttId = signal('');
     name = signal('');
     model = signal('');
     loading = signal(false);
@@ -46,7 +46,7 @@ export class UserDeviceView implements OnInit {
         this.loading.set(true);
         this.deviceService.findById(id).subscribe({
             next: (device) => {
-                this.code.set(device.code);
+                this.mqttId.set(device.mqttId);
                 this.name.set(device.name || '');
                 this.model.set(device.model);
                 this.loading.set(false);
@@ -60,14 +60,11 @@ export class UserDeviceView implements OnInit {
         });
     }
 
-    onRelease() {
-        if (!confirm('Deseja enviar um comando de liberação manual para este dispositivo?')) return;
-
+    onReleaseManual(event: { id: string, minutes: number }) {
         this.loading.set(true);
-        this.deviceService.release(this.id()!).subscribe({
+        this.deviceService.releaseManual(event.id, event.minutes).subscribe({
             next: () => {
                 this.loading.set(false);
-                alert('Comando de liberação enviado com sucesso!');
             },
             error: (err) => {
                 console.error('Error releasing device', err);
@@ -75,5 +72,9 @@ export class UserDeviceView implements OnInit {
                 alert('Erro ao enviar comando de liberação.');
             }
         });
+    }
+
+    onCancel() {
+        this.router.navigate(['/user/devices']);
     }
 }

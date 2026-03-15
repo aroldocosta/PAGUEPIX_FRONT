@@ -40,11 +40,11 @@ export class DeviceManagement implements OnInit {
     }
 
     onView(id: string) {
-        this.router.navigate(['/admin/devices/edit', id]); // Admin edit is the detail view
+        this.router.navigate(['/admin/devices/edit', id], { queryParams: { mode: 'view' } });
     }
 
     onEdit(id: string) {
-        this.router.navigate(['/admin/devices/edit', id]);
+        this.router.navigate(['/admin/devices/edit', id], { queryParams: { mode: 'edit' } });
     }
 
     onDelete(id: string) {
