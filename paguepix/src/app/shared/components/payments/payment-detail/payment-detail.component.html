@@ -1,0 +1,173 @@
+<div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+    <div
+        class="bg-white dark:bg-slate-900 w-full max-w-4xl rounded-[32px] shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-300">
+
+        <!-- Header -->
+        <div
+            class="p-8 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/30">
+            <div class="flex items-center gap-5">
+                <div
+                    class="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shadow-sm ring-1 ring-indigo-100 dark:ring-indigo-500/20">
+                    <span class="material-icons-outlined text-3xl">receipt_long</span>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                        Detalhes {{ mode === 'admin' ? 'do Pagamento' : 'da Venda' }}
+                    </h2>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mt-0.5">
+                        Transação #{{ payment.externalId || payment.id }}
+                    </p>
+                </div>
+            </div>
+            <button (click)="onClose()"
+                class="p-2.5 rounded-2xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 transition-all">
+                <span class="material-icons-outlined text-2xl">close</span>
+            </button>
+        </div>
+
+        <div class="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
+
+            <!-- Main Info Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+                <!-- Status Column -->
+                <div class="space-y-6">
+                    <div>
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Situação</label>
+                        <div class="mt-2 text-sm font-bold">
+                            <span [ngClass]="{
+                                'bg-green-50 text-green-700 ring-1 ring-green-600/10 dark:bg-green-900/30 dark:text-green-400': payment.state === 'APPROVED' || payment.state === 'CONSUMED' || payment.state === 'PAID_OUT',
+                                'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-600/10 dark:bg-amber-900/30 dark:text-amber-400': payment.state === 'PENDING' || payment.state === 'WAITING_PAYMENT' || payment.state === 'PENDING_BANK',
+                                'bg-red-50 text-red-700 ring-1 ring-red-600/10 dark:bg-rose-900/30 dark:text-rose-400': payment.state === 'EXPIRED' || payment.state === 'CANCELED' || payment.state === 'CANCELLED' || payment.state === 'FAILED' || payment.state === 'REFUNDED'
+                            }"
+                                class="px-4 py-2 rounded-xl text-xs font-black inline-flex items-center gap-2 uppercase tracking-wider shadow-sm">
+                                <span class="w-2 h-2 rounded-full" [ngClass]="{
+                                    'bg-green-600': payment.state === 'APPROVED' || payment.state === 'CONSUMED' || payment.state === 'PAID_OUT',
+                                    'bg-yellow-600': payment.state === 'PENDING' || payment.state === 'WAITING_PAYMENT' || payment.state === 'PENDING_BANK',
+                                    'bg-red-600': payment.state === 'EXPIRED' || payment.state === 'CANCELED' || payment.state === 'CANCELLED' || payment.state === 'FAILED' || payment.state === 'REFUNDED'
+                                }"></span>
+                                {{ payment.state }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Data
+                            e Hora</label>
+                        <div class="mt-2 flex items-center gap-3">
+                            <span class="material-icons-outlined text-slate-400 text-lg">calendar_today</span>
+                            <span class="text-sm font-bold text-slate-700 dark:text-slate-200">
+                                {{ payment.date + ' ' + payment.time | date:'dd/MM/yyyy' }} às {{ payment.date + ' ' +
+                                payment.time | date:'HH:mm:ss' }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Values Column -->
+                <div class="space-y-6">
+                    <div>
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Valor
+                            Total</label>
+                        <div class="mt-2 text-2xl font-black text-slate-900 dark:text-white">
+                            {{ payment.paidValue | currency:'BRL' }}
+                        </div>
+                    </div>
+
+                    <div
+                        class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[10px] uppercase font-bold text-slate-500">{{ mode === 'admin' ?
+                                'Comissão' : 'Taxa' }}</span>
+                            <span class="text-sm font-bold text-rose-500">- {{ payment.commissionAmount | currency:'BRL'
+                                }}</span>
+                        </div>
+                        <div class="h-px bg-slate-200 dark:bg-slate-700 my-2"></div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] uppercase font-black text-slate-900 dark:text-white">{{ mode ===
+                                'admin' ? 'Líquido' : 'A Receber' }}</span>
+                            <span class="text-lg font-black text-green-600">{{ payment.netAmount | currency:'BRL'
+                                }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Device/Context Column -->
+                <div class="space-y-6">
+                    <div>
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Dispositivo</label>
+                        <div
+                            class="mt-2 p-4 rounded-2xl bg-indigo-50/30 dark:bg-indigo-500/5 border border-indigo-100/50 dark:border-indigo-500/10">
+                            <div class="flex items-center gap-3">
+                                <span class="material-icons-outlined text-indigo-500">devices</span>
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-bold text-slate-900 dark:text-white">{{
+                                        payment.device?.name || 'N/A' }}</span>
+                                    <span class="text-[10px] font-medium text-slate-500 uppercase">{{
+                                        payment.device?.model || 'Sem modelo' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="mode === 'admin'">
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Parceiro</label>
+                        <div class="mt-2 flex items-center gap-3">
+                            <span class="material-icons-outlined text-slate-400">handshake</span>
+                            <span class="text-sm font-bold text-slate-700 dark:text-slate-200">{{ payment.partner?.name
+                                || 'N/A' }}</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Additional Technical Data (Collapsible or in separate section) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 dark:border-slate-800">
+                <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-6">Informações Técnicas</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="space-y-4">
+                        <div
+                            class="bg-slate-50 dark:bg-slate-800/30 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <p class="text-[9px] uppercase font-bold text-slate-500 mb-1">ID Externo</p>
+                            <p class="text-xs font-mono text-slate-700 dark:text-slate-300 break-all">{{
+                                payment.externalId || 'Não informado' }}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div
+                            class="bg-slate-50 dark:bg-slate-800/30 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <p class="text-[9px] uppercase font-bold text-slate-500 mb-1">ID da Transação</p>
+                            <p class="text-xs font-mono text-slate-700 dark:text-slate-300 break-all">{{
+                                payment.transactionId || 'Não disponível' }}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div
+                            class="bg-slate-50 dark:bg-slate-800/30 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <p class="text-[9px] uppercase font-bold text-slate-500 mb-1">Canal de Solicitação</p>
+                            <p
+                                class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase underline decoration-indigo-200">
+                                {{ payment.solicitationChannel || 'Mqtt' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Footer -->
+        <div
+            class="p-6 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end px-10">
+            <button (click)="onClose()"
+                class="bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 px-8 py-3 rounded-2xl font-black text-sm tracking-tight transition-all shadow-sm">
+                FECHAR DETALHES
+            </button>
+        </div>
+    </div>
+</div>

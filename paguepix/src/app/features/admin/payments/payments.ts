@@ -3,25 +3,32 @@ import { CommonModule } from '@angular/common';
 import { ManagementLayoutComponent } from '../../../shared/components/management-layout/management-layout.component';
 import { PaymentService } from '../../../core/services/payment.service';
 import { PaymentListComponent } from '../../../shared/components/payments/payment-list/payment-list.component';
+import { PaymentDetailComponent } from '../../../shared/components/payments/payment-detail/payment-detail.component';
+import { Payment } from '../../../core/models/payment.model';
 
 @Component({
-  selector: 'app-payments-management',
+  selector: 'app-payments',
   standalone: true,
-  imports: [CommonModule, ManagementLayoutComponent, PaymentListComponent],
+  imports: [CommonModule, ManagementLayoutComponent, PaymentListComponent, PaymentDetailComponent],
   templateUrl: './payments.html',
   styleUrl: './payments.scss'
 })
 export class PaymentsManagement implements OnInit {
-  payments = signal<any[]>([]);
-  loading = signal(true);
+  payments = signal<Payment[]>([]);
+  loading = signal(false);
   currentPage = signal(0);
-  totalPages = signal(1);
-  hasData = computed(() => this.payments().length > 0);
+  totalPages = signal(0);
+  hasData = signal(true);
+  selectedPayment = signal<Payment | null>(null);
 
   constructor(private paymentService: PaymentService) { }
 
   ngOnInit() {
     this.loadPayments();
+  }
+
+  onViewPayment(payment: Payment) {
+    this.selectedPayment.set(payment);
   }
 
   loadPayments() {

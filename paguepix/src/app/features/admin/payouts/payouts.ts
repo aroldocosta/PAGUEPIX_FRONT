@@ -3,25 +3,31 @@ import { CommonModule } from '@angular/common';
 import { ManagementLayoutComponent } from '../../../shared/components/management-layout/management-layout.component';
 import { PayoutService } from '../../../core/services/payout.service';
 import { Payout } from '../../../core/models/payout.model';
+import { PayoutDetailComponent } from '../../../shared/components/payouts/payout-detail/payout-detail.component';
 
 @Component({
     selector: 'app-payouts-management',
     standalone: true,
-    imports: [CommonModule, ManagementLayoutComponent],
+    imports: [CommonModule, ManagementLayoutComponent, PayoutDetailComponent],
     templateUrl: './payouts.html',
     styleUrl: './payouts.scss'
 })
 export class PayoutsManagement implements OnInit {
     payouts = signal<Payout[]>([]);
-    loading = signal(true);
+    selectedPayout = signal<Payout | null>(null);
+    loading = signal(false);
     currentPage = signal(0);
-    totalPages = signal(1);
+    totalPages = signal(0);
     hasData = computed(() => this.payouts().length > 0);
 
     constructor(private payoutService: PayoutService) { }
 
     ngOnInit() {
         this.loadPayouts();
+    }
+
+    onViewPayout(payout: Payout) {
+        this.selectedPayout.set(payout);
     }
 
     loadPayouts() {
