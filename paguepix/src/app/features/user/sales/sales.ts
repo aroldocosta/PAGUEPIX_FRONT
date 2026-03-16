@@ -7,10 +7,12 @@ import { Sale } from '../../../core/models/sale.model';
 import { PaymentService } from '../../../core/services/payment.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { PaymentListComponent } from '../../../shared/components/payments/payment-list/payment-list.component';
+import { PaymentDetailComponent } from '../../../shared/components/payments/payment-detail/payment-detail.component';
+import { Payment } from '../../../core/models/payment.model';
 @Component({
     selector: 'app-sales',
     standalone: true,
-    imports: [CommonModule, SidebarComponent, TopbarComponent, FooterComponent, PaymentListComponent],
+    imports: [CommonModule, SidebarComponent, TopbarComponent, FooterComponent, PaymentListComponent, PaymentDetailComponent],
     templateUrl: './sales.html',
     styleUrl: './sales.scss'
 })
@@ -20,13 +22,18 @@ export class SalesComponent implements OnInit {
 
     partnerName = computed(() => this.authService.partnerName());
 
-    sales = signal<Sale[]>([]);
+    sales = signal<Payment[]>([]);
+    selectedPayment = signal<Payment | null>(null);
     loading = signal(false);
     currentPage = signal(0);
     totalPages = signal(1);
 
     ngOnInit() {
         this.loadSales();
+    }
+
+    onViewPayment(payment: Payment) {
+        this.selectedPayment.set(payment);
     }
 
     loadSales() {

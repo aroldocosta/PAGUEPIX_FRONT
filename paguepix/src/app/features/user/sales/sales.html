@@ -77,8 +77,11 @@
                         <p class="text-gray-500 dark:text-slate-400">Nenhuma venda encontrada.</p>
                     </div>
 
-                    <app-payment-list *ngIf="!loading() && sales().length > 0" [payments]="sales()"
-                        mode="user"></app-payment-list>
+                    <app-payment-list *ngIf="!loading() && sales().length > 0" [payments]="sales()" mode="user"
+                        (view)="onViewPayment($event)"></app-payment-list>
+
+                    <app-payment-detail *ngIf="selectedPayment()" [payment]="selectedPayment()!" mode="user"
+                        (close)="selectedPayment.set(null)"></app-payment-detail>
                 </div>
             </div>
 

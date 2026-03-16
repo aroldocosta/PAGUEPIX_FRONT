@@ -35,7 +35,10 @@
             </div>
         </div>
 
-        <app-payment-list [payments]="payments()" mode="admin"></app-payment-list>
+        <app-payment-list [payments]="payments()" mode="admin" (view)="onViewPayment($event)"></app-payment-list>
+
+        <app-payment-detail *ngIf="selectedPayment()" [payment]="selectedPayment()!" mode="admin"
+            (close)="selectedPayment.set(null)"></app-payment-detail>
     </ng-template>
 
 </app-management-layout>

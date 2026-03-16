@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { TopbarComponent } from '../../../shared/components/topbar/topbar.component';
 import { FooterComponent } from '../../../shared/components/footer/footer.component';
+import { PayoutDetailComponent } from '../../../shared/components/payouts/payout-detail/payout-detail.component';
 import { PayoutService } from '../../../core/services/payout.service';
 import { Payout } from '../../../core/models/payout.model';
 import { AuthService } from '../../../core/services/auth.service';
@@ -10,7 +11,7 @@ import { AuthService } from '../../../core/services/auth.service';
 @Component({
     selector: 'app-partner-payouts',
     standalone: true,
-    imports: [CommonModule, SidebarComponent, TopbarComponent, FooterComponent],
+    imports: [CommonModule, SidebarComponent, TopbarComponent, FooterComponent, PayoutDetailComponent],
     templateUrl: './payouts.html',
     styleUrl: './payouts.scss'
 })
@@ -19,7 +20,8 @@ export class PartnerPayouts implements OnInit {
     partnerName = computed(() => this.authService.partnerName());
 
     payouts = signal<Payout[]>([]);
-    loading = signal(true);
+    selectedPayout = signal<Payout | null>(null);
+    loading = signal(false);
     currentPage = signal(0);
     totalPages = signal(1);
 
@@ -27,6 +29,10 @@ export class PartnerPayouts implements OnInit {
 
     ngOnInit() {
         this.loadPayouts();
+    }
+
+    onViewPayout(payout: Payout) {
+        this.selectedPayout.set(payout);
     }
 
     loadPayouts() {
