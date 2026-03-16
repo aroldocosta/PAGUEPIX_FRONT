@@ -6,10 +6,11 @@ import { FooterComponent } from '../../../shared/components/footer/footer.compon
 import { Sale } from '../../../core/models/sale.model';
 import { PaymentService } from '../../../core/services/payment.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { PaymentListComponent } from '../../../shared/components/payments/payment-list/payment-list.component';
 @Component({
     selector: 'app-sales',
     standalone: true,
-    imports: [CommonModule, SidebarComponent, TopbarComponent, FooterComponent],
+    imports: [CommonModule, SidebarComponent, TopbarComponent, FooterComponent, PaymentListComponent],
     templateUrl: './sales.html',
     styleUrl: './sales.scss'
 })

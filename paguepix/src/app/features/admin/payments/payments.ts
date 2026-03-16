@@ -2,11 +2,12 @@ import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ManagementLayoutComponent } from '../../../shared/components/management-layout/management-layout.component';
 import { PaymentService } from '../../../core/services/payment.service';
+import { PaymentListComponent } from '../../../shared/components/payments/payment-list/payment-list.component';
 
 @Component({
   selector: 'app-payments-management',
   standalone: true,
-  imports: [CommonModule, ManagementLayoutComponent],
+  imports: [CommonModule, ManagementLayoutComponent, PaymentListComponent],
   templateUrl: './payments.html',
   styleUrl: './payments.scss'
 })
