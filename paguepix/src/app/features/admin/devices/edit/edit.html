@@ -1,23 +1,14 @@
-<app-management-layout [title]="id() ? 'Editar Dispositivo' : 'Novo Dispositivo'"
-    [subtitle]="id() ? 'Altere as informações do terminal selecionado.' : 'Cadastre um novo terminal no sistema.'"
+<app-management-layout
+    [title]="id() ? (formMode() === 'view' ? 'Detalhes do Dispositivo' : 'Editar Dispositivo') : 'Novo Dispositivo'"
+    [subtitle]="id() ? (formMode() === 'view' ? 'Visualize informações e gerencie operações do seu dispositivo.' : 'Altere as informações do dispositivo selecionado.') : 'Cadastre um novo dispositivo no sistema.'"
     [loading]="loading" [hasData]="hasData">
 
     <ng-template #tableContent>
-        <div class="p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Formulário de Edição -->
-            <app-device-form class="lg:col-span-2" [id]="id()!" [mqttId]="mqttId()" [name]="name()" [model]="model()"
-                [partnerId]="partnerId()" [partners]="partners()" [mode]="formMode()" [loading]="releasing()"
-                [releaseError]="releaseError()" (save)="onSave($event)" (releaseManual)="onReleaseManual($event)"
-                (cancel)="onCancel()">
-            </app-device-form>
-
-            <!-- Card do QR Code -->
-            <div class="space-y-6">
-                <app-device-qr-card *ngIf="id()" [qrUrl]="qrUrl()" [mqttId]="mqttId()" [name]="name()" [model]="model()"
-                    [id]="id()!">
-                </app-device-qr-card>
-            </div>
-        </div>
+        <app-device-detail-layout [id]="id()!" [mqttId]="mqttId()" [name]="name()" [model]="model()"
+            [partnerId]="partnerId()" [partners]="partners()" [qrUrl]="qrUrl()" [mode]="formMode()"
+            [releasing]="releasing()" [releaseError]="releaseError()" (save)="onSave($event)"
+            (releaseManual)="onReleaseManual($event)" (cancel)="onCancel()">
+        </app-device-detail-layout>
     </ng-template>
 
 </app-management-layout>

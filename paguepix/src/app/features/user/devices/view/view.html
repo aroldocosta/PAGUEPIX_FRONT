@@ -1,19 +1,11 @@
 <app-management-layout title="Detalhes do Dispositivo"
-    subtitle="Visualize informações e gerencie operações do seu terminal." [loading]="loading" [hasData]="hasData">
+    subtitle="Visualize informações e gerencie operações do seu dispositivo." [loading]="loading" [hasData]="hasData">
 
     <ng-template #tableContent>
-        <div class="px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Formulário e Detalhes -->
-            <app-device-form class="lg:col-span-2" [id]="id()!" [mqttId]="mqttId()" [name]="name()" [model]="model()"
-                [partnerId]="partnerId()" [partners]="partners()" mode="view" [loading]="releasing()"
-                [releaseError]="releaseError()" (releaseManual)="onReleaseManual($event)" (cancel)="onCancel()">
-            </app-device-form>
-
-            <!-- Card do QR Code -->
-            <app-device-qr-card *ngIf="id()" [qrUrl]="qrUrl()" [mqttId]="mqttId()" [name]="name()" [model]="model()"
-                [id]="id()!">
-            </app-device-qr-card>
-        </div>
+        <app-device-detail-layout [id]="id()!" [mqttId]="mqttId()" [name]="name()" [model]="model()"
+            [partnerId]="partnerId()" [partners]="partners()" [qrUrl]="qrUrl()" mode="view" [releasing]="releasing()"
+            [releaseError]="releaseError()" (releaseManual)="onReleaseManual($event)" (cancel)="onCancel()">
+        </app-device-detail-layout>
     </ng-template>
 
 </app-management-layout>
