@@ -5,14 +5,13 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DeviceService } from '../../../../core/services/device.service';
 import { PartnerService } from '../../../../core/services/partner.service';
 import { ManagementLayoutComponent } from '../../../../shared/components/management-layout/management-layout.component';
-import { DeviceQrCardComponent } from '../../../../shared/components/devices/device-qr-card/device-qr-card.component';
-import { DeviceFormComponent } from '../../../../shared/components/devices/device-form/device-form.component';
+import { DeviceDetailLayoutComponent } from '../../../../shared/components/devices/device-detail-layout/device-detail-layout.component';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
     selector: 'app-device-edit',
     standalone: true,
-    imports: [CommonModule, FormsModule, RouterModule, ManagementLayoutComponent, DeviceQrCardComponent, DeviceFormComponent],
+    imports: [CommonModule, FormsModule, RouterModule, ManagementLayoutComponent, DeviceDetailLayoutComponent],
     templateUrl: './edit.html',
     styleUrl: './edit.scss'
 })
@@ -22,7 +21,7 @@ export class DeviceEdit implements OnInit {
     private deviceService = inject(DeviceService);
     private partnerService = inject(PartnerService);
 
-    @ViewChild(DeviceFormComponent) deviceForm!: DeviceFormComponent;
+    @ViewChild(DeviceDetailLayoutComponent) detailLayout!: DeviceDetailLayoutComponent;
 
     id = signal<string | null>(null);
     formMode = signal<'view' | 'edit'>('edit');
@@ -106,7 +105,7 @@ export class DeviceEdit implements OnInit {
         this.deviceService.releaseManual(event.id, event.minutes).subscribe({
             next: () => {
                 this.releasing.set(false);
-                this.deviceForm.showReleaseModal.set(false);
+                this.detailLayout.deviceForm.showReleaseModal.set(false);
             },
             error: (err) => {
                 console.error('Error releasing device', err);
