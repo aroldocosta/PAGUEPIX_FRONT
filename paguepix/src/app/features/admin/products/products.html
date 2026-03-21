@@ -1,0 +1,11 @@
+<app-management-layout title="Gestão de Produtos"
+    subtitle="Configure os tempos e preços dos banhos disponíveis para venda." searchPlaceholder="Buscar produtos..."
+    addButtonLabel="Novo Produto" addButtonIcon="add" addRoute="/admin/products/new" [loading]="loading"
+    [hasData]="hasData" emptyStateIcon="local_offer" emptyStateMessage="Nenhum produto cadastrado.">
+
+    <ng-template #tableContent>
+        <app-product-list [products]="products()" mode="admin" [loading]="loading()" (view)="onView($event)"
+            (edit)="onEdit($event)" (delete)="onDelete($event)">
+        </app-product-list>
+    </ng-template>
+</app-management-layout>

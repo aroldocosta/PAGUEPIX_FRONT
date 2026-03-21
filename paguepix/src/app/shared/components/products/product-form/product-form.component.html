@@ -1,0 +1,115 @@
+<form (ngSubmit)="onSave()" #productForm="ngForm" class="space-y-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        <!-- Nome do Produto -->
+        <div class="space-y-2">
+            <label class="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Nome do
+                Produto</label>
+            <div class="relative group">
+                <span
+                    class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors">local_offer</span>
+                <input type="text" [(ngModel)]="name" name="name" required [disabled]="mode === 'view'"
+                    [class]="getFieldClasses()" placeholder="Ex: Banho 10 Minutos">
+            </div>
+        </div>
+
+        <!-- Preço -->
+        <div class="space-y-2">
+            <label class="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Preço
+                (R$)</label>
+            <div class="relative group">
+                <span
+                    class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors">payments</span>
+                <input type="number" [(ngModel)]="price" name="price" required [disabled]="mode === 'view'"
+                    [class]="getFieldClasses()" placeholder="0.00" step="0.01">
+            </div>
+        </div>
+
+        <!-- Duração -->
+        <div class="space-y-2">
+            <label
+                class="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Duração</label>
+            <div class="relative group">
+                <span
+                    class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors">timer</span>
+                <input type="number" [(ngModel)]="duration" name="duration" required [disabled]="mode === 'view'"
+                    [class]="getFieldClasses()" placeholder="Ex: 10">
+            </div>
+        </div>
+
+        <!-- Unidade de Duração -->
+        <div class="space-y-2">
+            <label
+                class="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Unidade</label>
+            <div class="relative group">
+                <span
+                    class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors">schedule</span>
+                <select [(ngModel)]="durationUnit" name="durationUnit" required [disabled]="mode === 'view'"
+                    [class]="getFieldClasses(true)">
+                    <option value="SECONDS">Segundos</option>
+                    <option value="MINUTES">Minutos</option>
+                    <option value="HOURS">Horas</option>
+                </select>
+                <span *ngIf="mode === 'edit'"
+                    class="material-icons-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+            </div>
+        </div>
+
+        <!-- Status Ativo -->
+        <div
+            class="md:col-span-2 flex items-center justify-between p-8 bg-slate-50 dark:bg-slate-900/50 rounded-[32px] border border-slate-100 dark:border-slate-800 transition-all hover:border-indigo-100 dark:hover:border-slate-700">
+            <div class="flex items-center gap-4">
+                <div
+                    class="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm border border-slate-100 dark:border-slate-800">
+                    <span class="material-icons-outlined text-indigo-500">toggle_on</span>
+                </div>
+                <div>
+                    <h4 class="text-sm font-black text-slate-900 dark:text-white">Status do Produto</h4>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">Define se o produto está
+                        disponível para venda imediata.</p>
+                </div>
+            </div>
+
+            <label class="relative inline-flex items-center cursor-pointer group">
+                <input type="checkbox" [(ngModel)]="active" name="active" [disabled]="mode === 'view'"
+                    class="sr-only peer">
+
+                <!-- Toggle Background -->
+                <div class="w-16 h-8 bg-slate-200 dark:bg-slate-700 rounded-full transition-all duration-300 
+                            peer-checked:bg-emerald-500 dark:peer-checked:bg-emerald-600
+                            peer-focus:ring-4 peer-focus:ring-emerald-500/20
+                            shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]
+                            dark:shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]
+                            group-active:scale-95"></div>
+
+                <!-- Toggle Knob -->
+                <div
+                    class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full transition-all duration-300 transform
+                            peer-checked:translate-x-8
+                            shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-1px_rgba(0,0,0,0.06)]
+                            flex items-center justify-center
+                            after:content-[''] after:absolute after:inset-0 after:rounded-full after:bg-gradient-to-b after:from-white after:to-slate-50">
+                    <div
+                        class="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-100 opacity-0 peer-checked:opacity-100 transition-opacity">
+                    </div>
+                </div>
+            </label>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center justify-end gap-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+        <button type="button" (click)="onCancel()"
+            class="px-8 py-3 rounded-2xl text-sm font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+            {{ mode === 'edit' ? 'Cancelar' : 'Voltar' }}
+        </button>
+        <button *ngIf="mode === 'edit'" type="submit" [disabled]="!productForm.form.valid || loading"
+            class="px-10 py-3 bg-[#6366f1] hover:bg-indigo-700 text-white rounded-2xl text-sm font-black shadow-lg shadow-indigo-200 dark:shadow-none transition-all flex items-center gap-2 group disabled:opacity-50">
+            <span *ngIf="loading"
+                class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+            {{ loading ? 'Salvando...' : 'Salvar Alterações' }}
+            <span *ngIf="!loading"
+                class="material-icons-outlined text-sm group-hover:translate-x-1 transition-transform">send</span>
+        </button>
+    </div>
+</form>
