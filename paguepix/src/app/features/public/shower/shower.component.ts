@@ -22,13 +22,13 @@ export type PurchaseState = 'VALIDATING' | 'IDLE' | 'PROCESSING' | 'READY' | 'PE
 export type PaymentType = 'PIX' | 'LINK';
 
 @Component({
-    selector: 'app-sales-time',
+    selector: 'app-shower',
     standalone: true,
     imports: [CommonModule],
-    templateUrl: './sales-time.html',
-    styleUrl: './sales-time.scss'
+    templateUrl: './shower.html',
+    styleUrl: './shower.scss'
 })
-export class SalesTimeComponent implements OnDestroy {
+export class ShowerComponent implements OnDestroy {
     selectedDuration = signal<DurationOption | null>(null);
     pixKey = signal('00020126360014BR.GOV.BCB.PIX0114+55119999999995204000053039865802BR5913PaguePix Inc 6009SAO PAULO62070503***6304ABCD');
     paymentLink = signal('');
@@ -196,7 +196,7 @@ twIDAQAB
 
                         this.lastChargeResponse.set(response);
 
-                        // Business Logic: 
+                        // Business Logic:
                         // 1 - If qrCode is null, it's a payment link
                         // 2 - If qrCode is present, it's a PIX payment
                         if (response.qrCode) {
@@ -336,11 +336,6 @@ twIDAQAB
         this.stopPolling();
         this.currentState.set('IDLE');
         this.errorMessage.set('');
-
-        // Previously redirected to /sales/:deviceCode, but now we use temporary sessions.
-        // Redirecting to home or allowing the user to just see the IDLE state for a NEW session.
-        // Since the current session is used, we shouldn't redirect to it.
-        // For now, let's keep them on the page but they'll need to re-scan for a new session if they want another purchase.
     }
 
     copyPixKey() {
@@ -355,7 +350,6 @@ twIDAQAB
     // New method to force close Mercado Pago Modal/Overlay
     private closeMercadoPagoModal() {
         console.log('closeMercadoPagoModal called - Cleaning up DOM');
-        // The MP SDK v2 Checkout Pro modal creates these elements in the DOM
         const selectors = [
             '.mp-checkout-modal',
             '.mp-checkout-iframe-container',
@@ -405,7 +399,6 @@ twIDAQAB
         if (mpInstance && charge && charge.externalId) {
             try {
                 console.log('Attempting to open MP Checkout Pro Modal...');
-                // Correct syntax for SDK v2 Checkout Pro
                 mpInstance.checkout({
                     preference: {
                         id: charge.externalId
@@ -414,10 +407,7 @@ twIDAQAB
                 });
 
                 console.log('MP instance.checkout called with autoOpen: true');
-
-                // Wait for the polling loop to simulate the backend response (SUCCESS/ERROR)
-
-                return; // Stop here if we think it worked
+                return;
             } catch (e) {
                 console.error('Error opening MP checkout modal:', e);
             }
@@ -429,7 +419,6 @@ twIDAQAB
             window.location.href = link;
         } else {
             console.error('No payment link available for redirection');
-            // If we have an externalId but no link, try to guess or show error
             if (charge?.externalId) {
                 const manualLink = `https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=${charge.externalId}`;
                 console.log('Attempting manual link fallback', manualLink);
