@@ -20,10 +20,12 @@
                 <th class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                     Situação
                 </th>
-                <th class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                <th *ngIf="mode === 'admin'"
+                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                     Valor Pago
                 </th>
-                <th class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                <th *ngIf="mode === 'admin'"
+                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                     {{ mode === 'admin' ? 'Comissão' : 'Taxa de Serviço' }}
                 </th>
                 <th class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
@@ -34,7 +36,7 @@
                     Data
                 </th>
                 <th
-                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider text-right">
+                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider text-center">
                     AÇÕES
                 </th>
             </tr>
@@ -93,12 +95,12 @@
                 </td>
 
                 <!-- Valor Pago -->
-                <td class="px-8 py-0.5 text-sm font-bold text-gray-900 dark:text-slate-200">
+                <td *ngIf="mode === 'admin'" class="px-8 py-0.5 text-sm font-bold text-gray-900 dark:text-slate-200">
                     {{ payment.paidValue | currency:'BRL' }}
                 </td>
 
                 <!-- Comissão / Taxa de Serviço -->
-                <td class="px-8 py-0.5 text-sm text-red-500">
+                <td *ngIf="mode === 'admin'" class="px-8 py-0.5 text-sm text-red-500">
                     {{ payment.commissionAmount | currency:'BRL' }}
                 </td>
 
@@ -116,8 +118,8 @@
                 </td>
 
                 <!-- Ações -->
-                <td class="px-8 py-0.5 text-right">
-                    <div class="flex justify-end gap-2">
+                <td class="px-8 py-0.5 text-center">
+                    <div class="flex justify-center gap-2">
                         <button (click)="onView(payment)"
                             class="p-2 text-gray-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-all"
                             title="Ver Detalhes">
