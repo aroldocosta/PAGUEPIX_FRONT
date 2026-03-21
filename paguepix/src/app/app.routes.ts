@@ -13,9 +13,8 @@ import { ScriptEdit } from './features/admin/scripts/edit/edit';
 import { PartnerManagement } from './features/admin/partners/partners';
 import { PartnerEdit } from './features/admin/partners/edit/edit';
 import { UserDashboard } from './features/user/dashboard/dashboard';
-import { TransferRequest } from './features/user/transfer/transfer';
 import { SalesComponent } from './features/user/sales/sales';
-import { SalesTimeComponent } from './features/public/sales-time/sales-time';
+import { ShowerComponent } from './features/public/shower/shower.component';
 import { PayoutsManagement } from './features/admin/payouts/payouts';
 import { PartnerPayouts } from './features/user/payout/payouts';
 import { Statistics } from './features/admin/statistics/statistics';
@@ -27,7 +26,7 @@ import { authGuard } from './core/guards/auth.guard';
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'login', component: Login },
-    { path: 'sales/:token', component: SalesTimeComponent },
+    { path: 'shower/:token', component: ShowerComponent },
 
     { path: 'admin/dashboard', component: Dashboard, canActivate: [authGuard] },
     { path: 'admin/statistics', component: Statistics, canActivate: [authGuard] },
