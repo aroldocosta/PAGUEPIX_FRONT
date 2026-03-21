@@ -1,13 +1,9 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { MenuService } from '../../../core/services/menu.service';
 
-interface MenuItem {
-    label: string;
-    icon: string;
-    route: string;
-}
 
 @Component({
     selector: 'app-sidebar',
@@ -18,33 +14,10 @@ interface MenuItem {
 })
 export class SidebarComponent {
     private authService = inject(AuthService);
+    private menuService = inject(MenuService);
     private router = inject(Router);
 
-
-    userRole = this.authService.role;
-
-    adminMenuItems: MenuItem[] = [
-        { label: 'Dashboard', icon: 'home', route: '/admin/dashboard' },
-        { label: 'Estatísticas', icon: 'query_stats', route: '/admin/statistics' },
-        { label: 'Parceiros', icon: 'handshake', route: '/admin/partners' },
-        { label: 'Pagamentos', icon: 'payments', route: '/admin/payments' },
-        { label: 'Usuários', icon: 'group', route: '/admin/users' },
-        { label: 'Devices', icon: 'devices', route: '/admin/devices' },
-        { label: 'Placas', icon: 'memory', route: '/admin/boards' },
-        { label: 'Scripts', icon: 'code', route: '/admin/scripts' },
-        { label: 'Saques', icon: 'account_balance', route: '/admin/payouts' }
-    ];
-
-    userMenuItems: MenuItem[] = [
-        { label: 'Dashboard', icon: 'home', route: '/user/dashboard' },
-        { label: 'Saques', icon: 'account_balance', route: '/user/payout' },
-        { label: 'Vendas', icon: 'history', route: '/user/sales' },
-        { label: 'Devices', icon: 'devices', route: '/user/devices' },
-    ];
-
-    menuItems = computed(() => {
-        return this.userRole() === 'ADMIN' ? this.adminMenuItems : this.userMenuItems;
-    });
+    menuItems = this.menuService.menuItems;
 
     logout() {
         this.authService.logout();
