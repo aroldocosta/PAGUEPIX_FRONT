@@ -2,7 +2,7 @@
     subtitle="Visualize informações e gerencie operações do seu terminal." [loading]="loading" [hasData]="hasData">
 
     <ng-template #tableContent>
-        <div class="p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Formulário e Detalhes -->
             <app-device-form class="lg:col-span-2" [id]="id()!" [mqttId]="mqttId()" [name]="name()" [model]="model()"
                 [partnerId]="partnerId()" [partners]="partners()" mode="view" [loading]="releasing()"
