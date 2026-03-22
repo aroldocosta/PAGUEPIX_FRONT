@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DeviceService } from '../../../../core/services/device.service';
 import { PartnerService } from '../../../../core/services/partner.service';
+import { ProductService, Product } from '../../../../core/services/product.service';
 import { ManagementLayoutComponent } from '../../../../shared/components/management-layout/management-layout.component';
 import { DeviceDetailLayoutComponent } from '../../../../shared/components/devices/device-detail-layout/device-detail-layout.component';
 import { environment } from '../../../../../environments/environment';
@@ -20,6 +21,7 @@ export class DeviceEdit implements OnInit {
     private router = inject(Router);
     private deviceService = inject(DeviceService);
     private partnerService = inject(PartnerService);
+    private productService = inject(ProductService);
 
     @ViewChild(DeviceDetailLayoutComponent) detailLayout!: DeviceDetailLayoutComponent;
 
@@ -34,6 +36,10 @@ export class DeviceEdit implements OnInit {
     hasData = signal(true);
     releaseError = signal<string | null>(null);
     releasing = signal(false);
+
+    allProducts = signal<Product[]>([]);
+    deviceProducts = signal<Product[]>([]);
+    productLoading = signal(false);
 
     qrUrl = computed(() => {
         const currentId = this.id();
@@ -53,6 +59,16 @@ export class DeviceEdit implements OnInit {
             this.loadDevice(idParam);
         }
         this.loadPartners();
+        this.loadProducts();
+    }
+
+    loadProducts() {
+        this.productService.findAll(0, 100).subscribe({
+            next: (response) => {
+                this.allProducts.set(response.content || response);
+            },
+            error: (err) => console.error('Error loading products', err)
+        });
     }
 
     loadDevice(id: string) {
@@ -64,6 +80,7 @@ export class DeviceEdit implements OnInit {
                 this.name.set(device.name || '');
                 this.model.set(device.model);
                 this.partnerId.set(device.partner?.id || null);
+                this.deviceProducts.set(device.productList || []);
                 this.loading.set(false);
             },
             error: (err) => {
@@ -157,5 +174,43 @@ export class DeviceEdit implements OnInit {
             </html>
         `);
         printWindow.document.close();
+    }
+
+    onAddProduct(productId: string) {
+        const currentId = this.id();
+        if (!currentId) return;
+
+        this.productLoading.set(true);
+        this.deviceService.addProductToDevice(currentId, productId).subscribe({
+            next: () => {
+                this.productLoading.set(false);
+                this.loadDevice(currentId);
+            },
+            error: (err) => {
+                console.error('Error adding product', err);
+                this.productLoading.set(false);
+                alert('Erro ao adicionar produto.');
+            }
+        });
+    }
+
+    onRemoveProduct(productId: string) {
+        const currentId = this.id();
+        if (!currentId) return;
+
+        if (!confirm('Tem certeza que deseja remover este produto do dispositivo?')) return;
+
+        this.productLoading.set(true);
+        this.deviceService.removeProductFromDevice(currentId, productId).subscribe({
+            next: () => {
+                this.productLoading.set(false);
+                this.loadDevice(currentId);
+            },
+            error: (err) => {
+                console.error('Error removing product', err);
+                this.productLoading.set(false);
+                alert('Erro ao remover produto.');
+            }
+        });
     }
 }

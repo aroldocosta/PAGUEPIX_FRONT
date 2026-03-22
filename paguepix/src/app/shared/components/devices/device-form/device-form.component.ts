@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, signal, computed } from '@angul
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { Product } from '../../../../core/services/product.service';
 
 @Component({
     selector: 'app-device-form',
@@ -22,6 +23,7 @@ export class DeviceFormComponent {
     @Input() mode: 'view' | 'edit' = 'view';
     @Input() loading = false;
     @Input() releaseError: string | null = null;
+    @Input() deviceProducts: Product[] = [];
 
     @Output() save = new EventEmitter<any>();
     @Output() releaseManual = new EventEmitter<{ id: string, minutes: number }>();
@@ -68,5 +70,18 @@ export class DeviceFormComponent {
         const readOnly = "opacity-80 cursor-default grayscale-[0.2]";
 
         return `${base} ${this.mode === 'edit' ? editable : readOnly} ${isSelect ? 'appearance-none' : ''}`;
+    }
+
+    formatPrice(price: number): string {
+        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
+    }
+
+    formatUnit(unit: string): string {
+        switch (unit) {
+            case 'SECONDS': return 'Seg';
+            case 'MINUTES': return 'Min';
+            case 'HOURS': return 'Hrs';
+            default: return unit;
+        }
     }
 }

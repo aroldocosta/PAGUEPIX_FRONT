@@ -52,4 +52,12 @@ export class DeviceService {
             params: { minutes: minutes.toString() }
         });
     }
+
+    addProductToDevice(deviceId: string, productId: string): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/${deviceId}/products/${productId}`, {});
+    }
+
+    removeProductFromDevice(deviceId: string, productId: string): Observable<any> {
+        return this.http.delete<any>(`${this.apiUrl}/${deviceId}/products/${productId}`);
+    }
 }
