@@ -29,8 +29,7 @@
         </div>
 
         <!-- Grid Lines & Bars Area -->
-        <div class="flex-1 relative flex items-stretch"
-            [ngClass]="selectedDays === 30 ? 'gap-[3px] md:gap-1' : 'gap-[3px] md:gap-3'">
+        <div class="flex-1 relative flex items-stretch" [style.gap]="'0.2rem'">
 
             <!-- Horizontal Grid Lines -->
             <div class="absolute inset-x-0 inset-y-0 flex flex-col justify-between pointer-events-none pb-8">
@@ -41,25 +40,8 @@
             <!-- Single Column Mapping -->
             <div *ngFor="let item of chartData(); let i = index; let last = last" class="flex-1 relative group">
 
-                <!-- 7 Days or 1 Day Bar Structure -->
-                <div *ngIf="selectedDays === 7 || selectedDays === 1"
-                    class="absolute inset-x-0 md:inset-x-1 rounded-xl transition-all duration-500 hover:brightness-110"
-                    [style.bottom.px]="32" [style.height]="item.rawAmount === 0 ? '3px' : (item.value * 90 / 85) + '%'"
-                    [class.bg-slate-200]="item.rawAmount === 0" [class.dark:bg-slate-700]="item.rawAmount === 0"
-                    [class.bg-indigo-600]="item.rawAmount > 0 && item.value === maxChartValue()"
-                    [class.bg-indigo-400]="item.rawAmount > 0 && item.value < maxChartValue() && item.value >= maxChartValue() * 0.6"
-                    [class.bg-indigo-200]="item.rawAmount > 0 && item.value < maxChartValue() * 0.6">
-
-                    <!-- Tooltip -->
-                    <div
-                        class="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-slate-700 text-white text-[10px] font-bold px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20">
-                        {{ item.tooltipLabel }} - {{ item.rawAmount | currency:'BRL':'symbol':'1.2-2' }}
-                    </div>
-                </div>
-
-                <!-- 30 Days Bar Structure (Like the provided reference image) -->
-                <div *ngIf="selectedDays === 30"
-                    class="absolute inset-x-0 flex flex-col justify-end h-[calc(100%-32px)] group"
+                <!-- Unified Bar Structure -->
+                <div class="absolute inset-x-0 flex flex-col justify-end h-[calc(100%-32px)]"
                     [style.bottom.px]="32">
 
                     <div class="w-full rounded-xl transition-all duration-300 hover:brightness-105"
