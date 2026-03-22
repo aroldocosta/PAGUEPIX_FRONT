@@ -16,15 +16,21 @@ export interface RecentTransaction {
     amount: number;
 }
 
+export interface FinancialValue {
+    gross: number;
+    fee: number;
+    net: number;
+}
+
 export interface DashboardData {
     availableBalance: number;
-    totalTransacted: number;
+    totalTransacted: FinancialValue;
     completedPayouts: number;
-    averageTicket: number;
+    averageTicket: FinancialValue;
     previousAvailableBalance: number;
-    previousTotalTransacted: number;
+    previousTotalTransacted: FinancialValue;
     previousCompletedPayouts: number;
-    previousAverageTicket: number;
+    previousAverageTicket: FinancialValue;
     salesOverview: DailySales[];
     recentTransactions: RecentTransaction[];
 }

@@ -10,6 +10,7 @@
             <select
                 class="appearance-none bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold rounded-2xl pl-4 pr-10 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
                 (change)="onPeriodChange($event)">
+                <option value="1" [selected]="selectedDays === 1">Hoje</option>
                 <option value="7" [selected]="selectedDays === 7">Últimos 7 Dias</option>
                 <option value="30" [selected]="selectedDays === 30">Últimos 30 Dias</option>
             </select>

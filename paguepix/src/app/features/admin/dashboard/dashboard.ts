@@ -25,17 +25,17 @@ export class Dashboard implements OnInit {
 
   // Cards — período atual
   availableBalance = signal(0);
-  totalTransacted = signal(0);
+  totalTransacted = signal({ gross: 0, fee: 0, net: 0 });
   completedPayouts = signal(0);
 
   // Cards — período anterior (retornados pelo backend)
   prevAvailableBalance = signal(0);
-  prevTotalTransacted = signal(0);
+  prevTotalTransacted = signal({ gross: 0, fee: 0, net: 0 });
   prevCompletedPayouts = signal(0);
 
   // Tendências calculadas (cada card com sua própria base de comparação)
   balanceTrend = computed(() => this.calcTrend(this.prevAvailableBalance(), this.availableBalance()));
-  revenueTrend = computed(() => this.calcTrend(this.prevTotalTransacted(), this.totalTransacted()));
+  revenueTrend = computed(() => this.calcTrend(this.prevTotalTransacted().gross, this.totalTransacted().gross));
   payoutsTrend = computed(() => this.calcTrend(this.prevCompletedPayouts(), this.completedPayouts()));
 
   // Dados do gráfico
@@ -94,11 +94,11 @@ export class Dashboard implements OnInit {
     this.dashboardService.getStats(this.selectedDays()).subscribe({
       next: (data: DashboardData) => {
         this.availableBalance.set(data.availableBalance);
-        this.totalTransacted.set(data.totalTransacted);
+        this.totalTransacted.set(data.totalTransacted || { gross: 0, fee: 0, net: 0 });
         this.completedPayouts.set(data.completedPayouts);
 
         this.prevAvailableBalance.set(data.previousAvailableBalance ?? 0);
-        this.prevTotalTransacted.set(data.previousTotalTransacted ?? 0);
+        this.prevTotalTransacted.set(data.previousTotalTransacted || { gross: 0, fee: 0, net: 0 });
         this.prevCompletedPayouts.set(data.previousCompletedPayouts ?? 0);
 
         this.salesOverviewData.set(data.salesOverview);
