@@ -69,7 +69,7 @@
             </div>
             <p class="hidden md:block text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">Em
               caixa</p>
-            <p class="text-xs text-slate-400 font-medium mb-2">Entradas pendentes de repasse ({{ selectedDays() }} dias)
+            <p class="text-xs text-slate-400 font-medium mb-2">Entradas pendentes de repasse ({{ selectedDays() === 1 ? 'Hoje' : selectedDays() + ' dias' }})
             </p>
             <h3 class="text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tight">{{ availableBalance()
               | currency:'BRL':'symbol':'1.2-2' }}</h3>
@@ -99,7 +99,7 @@
               </div>
             </div>
             <p class="hidden md:block text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">Volume Processado</p>
-            <p class="text-xs text-slate-400 font-medium mb-2">Total transacionado nos últimos {{ selectedDays() }} dias</p>
+            <p class="text-xs text-slate-400 font-medium mb-2">Total transacionado {{ selectedDays() === 1 ? 'hoje' : 'nos últimos ' + selectedDays() + ' dias' }}</p>
             <h3 class="text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tight">{{ totalTransacted().gross
               | currency:'BRL':'symbol':'1.2-2' }}</h3>
             <p class="text-sm font-bold text-slate-400 dark:text-slate-500 mt-1">
@@ -132,7 +132,7 @@
             </div>
             <p class="hidden md:block text-slate-400 dark:text-slate-500 font-bold text-sm tracking-wide uppercase">
               Repasses efetuados</p>
-            <p class="text-xs text-slate-400 font-medium mb-2">Volume pago nos últimos {{ selectedDays() }} dias</p>
+            <p class="text-xs text-slate-400 font-medium mb-2">Volume pago {{ selectedDays() === 1 ? 'hoje' : 'nos últimos ' + selectedDays() + ' dias' }}</p>
             <h3 class="text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tight">{{ completedPayouts()
               |
               currency:'BRL':'symbol':'1.2-2' }}</h3>

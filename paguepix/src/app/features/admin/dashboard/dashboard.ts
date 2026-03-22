@@ -47,7 +47,7 @@ export class Dashboard implements OnInit {
     avatarBg: string; date: string; amount: number; status: string;
   }[]>([]);
 
-  selectedDays = signal(7);
+  selectedDays = signal(1);
   loading = signal(false);
 
   private readonly AVATAR_COLORS = [

@@ -58,7 +58,7 @@ export class UserDashboard implements OnInit {
     avatarBg: string; date: string; amount: number; status: string;
   }[]>([]);
 
-  selectedDays = signal(7);
+  selectedDays = signal(1);
   loading = signal(false);
   showWithdrawModal = signal(false);
   apiResponseMessage = signal<string | null>(null);

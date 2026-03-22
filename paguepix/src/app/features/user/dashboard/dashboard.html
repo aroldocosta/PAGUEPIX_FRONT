@@ -13,13 +13,17 @@
             <!-- Partner Logo Card -->
             <div
                 class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[32px] p-6 flex flex-col items-center justify-center shadow-sm">
-                
+
                 <div class="w-full h-full flex flex-1 items-center justify-center">
-                    <img *ngIf="partnerLogo() && !imageError()" [src]="logoUrl()" (error)="imageError.set(true)" alt="Logo do Parceiro" class="w-full h-full object-contain object-center m-auto">
-                    <span *ngIf="!partnerLogo() || imageError()" class="material-icons-outlined text-6xl text-slate-300 dark:text-slate-600 m-auto">store</span>
+                    <img *ngIf="partnerLogo() && !imageError()" [src]="logoUrl()" (error)="imageError.set(true)"
+                        alt="Logo do Parceiro" class="w-full h-full object-contain object-center m-auto">
+                    <span *ngIf="!partnerLogo() || imageError()"
+                        class="material-icons-outlined text-6xl text-slate-300 dark:text-slate-600 m-auto">store</span>
                 </div>
 
-                <h2 *ngIf="!partnerLogo() || imageError()" class="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight text-center">{{ partnerName() ||
+                <h2 *ngIf="!partnerLogo() || imageError()"
+                    class="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight text-center">{{
+                    partnerName() ||
                     'Parceiro' }}</h2>
                 <span *ngIf="!partnerLogo() || imageError()"
                     class="text-[10px] uppercase tracking-widest font-bold text-slate-400 dark:text-slate-500 mt-1">Logo
@@ -73,10 +77,15 @@
                                         class="w-12 h-12 bg-indigo-50 dark:bg-indigo-950/50 text-[#6366f1] dark:text-[#818cf8] rounded-2xl flex items-center justify-center">
                                         <span class="material-icons-outlined">account_balance_wallet</span>
                                     </div>
-                                    <p
-                                        class="text-slate-400 dark:text-slate-500 font-bold text-xs tracking-widest uppercase">
-                                        SALDO
-                                    </p>
+                                    <div class="text-left">
+                                        <p
+                                            class="text-slate-400 dark:text-slate-500 font-bold text-xs tracking-widest uppercase">
+                                            SALDO
+                                        </p>
+                                        <p class="text-[10px] text-slate-400 dark:text-slate-500 font-medium mt-1">
+                                            (Disponível para saque)
+                                        </p>
+                                    </div>
                                 </div>
                                 <div [ngClass]="trendClass(balanceTrend())"
                                     class="flex items-center gap-1 px-3 py-1.5 rounded-full text-[10px] font-black whitespace-nowrap">
@@ -109,7 +118,8 @@
                                             VENDAS
                                         </p>
                                         <p class="text-[10px] text-slate-400 dark:text-slate-500 font-medium mt-1">
-                                            (Últimos {{ selectedDays() }} dias)
+                                            ({{ selectedDays() === 1 ? 'Hoje' : 'Últimos ' + selectedDays() + ' dias'
+                                            }})
                                         </p>
                                     </div>
                                 </div>
@@ -123,7 +133,7 @@
                                 {{ todaySales().gross | currency:'BRL':'symbol':'1.2-2' }}
                             </h3>
                             <p class="text-sm font-bold text-slate-400 dark:text-slate-500 mt-1">
-                                {{ todaySales().net | currency:'BRL':'symbol':'1.2-2' }} líquidos repassados
+                                {{ todaySales().net | currency:'BRL':'symbol':'1.2-2' }} líquidos
                             </p>
                         </div>
                     </div>
@@ -147,7 +157,8 @@
                                             TICKET MÉDIO
                                         </p>
                                         <p class="text-[10px] text-slate-400 dark:text-slate-500 font-medium mt-1">
-                                            (Últimos {{ selectedDays() }} Dias)
+                                            ({{ selectedDays() === 1 ? 'Hoje' : 'Últimos ' + selectedDays() + ' dias'
+                                            }})
                                         </p>
                                     </div>
                                 </div>
