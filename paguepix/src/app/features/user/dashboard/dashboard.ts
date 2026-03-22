@@ -8,6 +8,7 @@ import { SalesChartComponent, DailySales } from '../../../shared/components/sale
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { TopbarComponent } from '../../../shared/components/topbar/topbar.component';
 import { FooterComponent } from '../../../shared/components/footer/footer.component';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -24,6 +25,14 @@ export class UserDashboard implements OnInit {
 
   userName = computed(() => this.authService.name());
   partnerName = computed(() => this.authService.partnerName());
+  partnerLogo = computed(() => this.authService.partnerLogo());
+  imageError = signal(false);
+  
+  logoUrl = computed(() => {
+    const logo = this.partnerLogo();
+    if (!logo) return null;
+    return `${environment.apiUrl}/partners/${this.authService.partnerId()}/logo`;
+  });
 
   // Cards — período atual
   balance = signal(0);
@@ -158,11 +167,11 @@ export class UserDashboard implements OnInit {
       next: (res: any) => {
         this.loading.set(false);
         this.apiResponseCode.set(200);
-        
+
         // Prioriza o campo statusMessage que vem do PayoutResponse do backend
         const msg = typeof res === 'string' ? res : (res?.statusMessage || res?.message || 'Transferência realizada com sucesso!');
         this.apiResponseMessage.set(msg);
-        
+
         // Sucesso real: aguarda os 10 segundos
         setTimeout(() => {
           this.showWithdrawModal.set(false);
@@ -171,17 +180,17 @@ export class UserDashboard implements OnInit {
       },
       error: (err) => {
         this.loading.set(false);
-        
+
         // O backend agora retorna 400/500, então caímos aqui naturalmente
         const status = err?.status || 400;
         this.apiResponseCode.set(status);
-        
+
         console.error('Erro ao realizar saque:', err);
-        
+
         // Tenta extrair a mensagem do corpo do erro (PayoutResponse ou erro genérico)
         const errorData = err?.error;
         const msg = errorData?.statusMessage || errorData?.message || errorData || err?.message || 'Erro inesperado na API do Mercado Pago';
-        
+
         this.apiResponseMessage.set(`ERRO: ${msg}`);
       }
     });

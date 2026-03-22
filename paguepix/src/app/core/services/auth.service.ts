@@ -24,6 +24,7 @@ export class AuthService {
     name = computed(() => this.sessionSignal()?.name ?? '');
     partnerId = computed(() => this.sessionSignal()?.partnerId);
     partnerName = computed(() => this.sessionSignal()?.partnerName ?? '');
+    partnerLogo = computed(() => this.sessionSignal()?.partnerLogo);
 
     isTokenExpired(token: string): boolean {
         try {

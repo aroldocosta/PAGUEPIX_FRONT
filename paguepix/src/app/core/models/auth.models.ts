@@ -5,6 +5,7 @@ export interface LoginResponse {
     name: string;
     partnerId?: string | number;
     partnerName?: string;
+    partnerLogo?: string;
 }
 
 export interface UserSession {
@@ -14,5 +15,6 @@ export interface UserSession {
     name: string;
     partnerId?: string | number;
     partnerName?: string;
+    partnerLogo?: string;
 }
 

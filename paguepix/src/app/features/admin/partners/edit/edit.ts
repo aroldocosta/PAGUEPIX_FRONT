@@ -25,6 +25,7 @@ export class PartnerEdit implements OnInit {
   pixKey = signal('');
   commissionRate = signal<number | null>(null);
   logo = signal<string | null>(null);
+  imageError = signal(false);
 
   selectedFile: File | null = null;
 
@@ -48,7 +49,13 @@ export class PartnerEdit implements OnInit {
         this.bankProvider.set(partner.bankProvider || '');
         this.pixKey.set(partner.pixKey || '');
         this.commissionRate.set(partner.commissionRate || null);
-        this.logo.set(partner.logo || null);
+        
+        if (partner.logo) {
+          this.logo.set(`${environment.apiUrl}/partners/${partner.id}/logo`);
+        } else {
+          this.logo.set(null);
+        }
+        
         this.loading.set(false);
       },
       error: (err) => {

@@ -13,7 +13,13 @@
             <!-- Partner Logo Card -->
             <div
                 class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[32px] p-6 flex flex-col items-center justify-center shadow-sm">
-                <h2 class="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight">{{ partnerName() ||
+                
+                <div class="w-20 h-20 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center overflow-hidden mb-4">
+                    <img *ngIf="partnerLogo() && !imageError()" [src]="logoUrl()" (error)="imageError.set(true)" alt="Logo do Parceiro" class="w-full h-full object-contain">
+                    <span *ngIf="!partnerLogo() || imageError()" class="material-icons-outlined text-4xl text-slate-300 dark:text-slate-600">store</span>
+                </div>
+
+                <h2 class="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight text-center">{{ partnerName() ||
                     'Parceiro' }}</h2>
                 <span
                     class="text-[10px] uppercase tracking-widest font-bold text-slate-400 dark:text-slate-500 mt-1">Logo
