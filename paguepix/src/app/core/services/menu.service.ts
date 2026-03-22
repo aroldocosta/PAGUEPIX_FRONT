@@ -14,6 +14,7 @@ export class MenuService {
     readonly adminMenuItems: MenuItem[] = [
         { label: 'Dashboard', icon: 'home', route: '/admin/dashboard' },
         { label: 'Estatísticas', icon: 'query_stats', route: '/admin/statistics' },
+        { label: 'Produtos', icon: 'local_offer', route: '/admin/products' },
         { label: 'Parceiros', icon: 'handshake', route: '/admin/partners' },
         { label: 'Pagamentos', icon: 'payments', route: '/admin/payments' },
         { label: 'Usuários', icon: 'group', route: '/admin/users' },

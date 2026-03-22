@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DeviceService } from '../../../../core/services/device.service';
 import { AuthService } from '../../../../core/services/auth.service';
+import { Product } from '../../../../core/services/product.service';
 import { ManagementLayoutComponent } from '../../../../shared/components/management-layout/management-layout.component';
 import { DeviceDetailLayoutComponent } from '../../../../shared/components/devices/device-detail-layout/device-detail-layout.component';
 import { environment } from '../../../../../environments/environment';
@@ -32,6 +33,7 @@ export class UserDeviceView implements OnInit {
     hasData = signal(true);
     releasing = signal(false);
     releaseError = signal<string | null>(null);
+    deviceProducts = signal<Product[]>([]);
     partnerName = computed(() => this.authService.partnerName());
 
     qrUrl = computed(() => {
@@ -58,6 +60,7 @@ export class UserDeviceView implements OnInit {
                 if (device.partner) {
                     this.partners.set([device.partner]);
                 }
+                this.deviceProducts.set(device.productList || []);
                 this.loading.set(false);
             },
             error: (err) => {

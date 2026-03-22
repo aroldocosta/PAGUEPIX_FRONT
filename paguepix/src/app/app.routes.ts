@@ -20,6 +20,8 @@ import { PartnerPayouts } from './features/user/payout/payouts';
 import { Statistics } from './features/admin/statistics/statistics';
 import { UserDeviceManagement } from './features/user/devices/devices';
 import { UserDeviceView } from './features/user/devices/view/view';
+import { ProductManagement } from './features/admin/products/products';
+import { ProductEdit } from './features/admin/products/edit/edit';
 
 import { authGuard } from './core/guards/auth.guard';
 
@@ -47,6 +49,9 @@ export const routes: Routes = [
     { path: 'admin/partners', component: PartnerManagement, canActivate: [authGuard] },
     { path: 'admin/partners/new', component: PartnerEdit, canActivate: [authGuard] },
     { path: 'admin/partners/edit/:id', component: PartnerEdit, canActivate: [authGuard] },
+    { path: 'admin/products', component: ProductManagement, canActivate: [authGuard] },
+    { path: 'admin/products/new', component: ProductEdit, canActivate: [authGuard] },
+    { path: 'admin/products/edit/:id', component: ProductEdit, canActivate: [authGuard] },
     { path: 'user/dashboard', component: UserDashboard, canActivate: [authGuard] },
     { path: 'user/payout', component: PartnerPayouts, canActivate: [authGuard] },
     { path: 'user/sales', component: SalesComponent, canActivate: [authGuard] },

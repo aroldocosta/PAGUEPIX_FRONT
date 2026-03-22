@@ -7,6 +7,8 @@
         <app-device-detail-layout [id]="id()!" [mqttId]="mqttId()" [name]="name()" [model]="model()"
             [partnerId]="partnerId()" [partners]="partners()" [qrUrl]="qrUrl()" [mode]="formMode()"
             [releasing]="releasing()" [releaseError]="releaseError()" (save)="onSave($event)"
+            [allProducts]="allProducts()" [deviceProducts]="deviceProducts()" [productLoading]="productLoading()"
+            (addProduct)="onAddProduct($event)" (removeProduct)="onRemoveProduct($event)"
             (releaseManual)="onReleaseManual($event)" (cancel)="onCancel()">
         </app-device-detail-layout>
     </ng-template>
