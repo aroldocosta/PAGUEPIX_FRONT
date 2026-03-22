@@ -46,7 +46,10 @@
                     <app-product-form *ngIf="!loading() || productData() || !id()" [id]="id()"
                         [name]="productData()?.name || ''" [duration]="productData()?.duration || 0"
                         [durationUnit]="productData()?.durationUnit || 'MINUTES'" [price]="productData()?.price || 0"
-                        [active]="productData()?.active ?? true" [mode]="mode()" [loading]="loading()"
+                        [active]="productData()?.active ?? true" 
+                        [subtitle]="productData()?.subtitle || ''"
+                        [description]="productData()?.description || ''"
+                        [mode]="mode()" [loading]="loading()"
                         (save)="onSave($event)" (cancel)="onCancel()">
                     </app-product-form>
                 </div>

@@ -142,7 +142,7 @@ export class ShowerComponent implements OnDestroy {
                         .map((p: any) => ({
                             minutes: p.durationMinutes,
                             label: p.name,
-                            description: p.description || this.getFallbackDescription(p.durationMinutes),
+                            description: p.subtitle || this.getFallbackDescription(p.durationMinutes),
                             price: p.price,
                             icon: 'timer'
                         }))

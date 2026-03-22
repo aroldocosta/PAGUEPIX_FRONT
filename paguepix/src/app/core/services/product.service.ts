@@ -10,6 +10,8 @@ export interface Product {
     durationUnit: 'SECONDS' | 'MINUTES' | 'HOURS';
     price: number;
     active: boolean;
+    subtitle?: string;
+    description?: string;
 }
 
 @Injectable({
