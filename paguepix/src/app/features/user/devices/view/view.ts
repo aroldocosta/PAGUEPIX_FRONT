@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DeviceService } from '../../../../core/services/device.service';
 import { AuthService } from '../../../../core/services/auth.service';
-import { Product } from '../../../../core/services/product.service';
+import { Product, ProductService } from '../../../../core/services/product.service';
+
 import { ManagementLayoutComponent } from '../../../../shared/components/management-layout/management-layout.component';
 import { DeviceDetailLayoutComponent } from '../../../../shared/components/devices/device-detail-layout/device-detail-layout.component';
 import { environment } from '../../../../../environments/environment';
@@ -20,6 +21,8 @@ export class UserDeviceView implements OnInit {
     private router = inject(Router);
     private deviceService = inject(DeviceService);
     private authService = inject(AuthService);
+    private productService = inject(ProductService);
+
 
     @ViewChild(DeviceDetailLayoutComponent) detailLayout!: DeviceDetailLayoutComponent;
 
@@ -88,6 +91,27 @@ export class UserDeviceView implements OnInit {
             }
         });
     }
+
+    onProductUpdated(product: Product) {
+        if (!product.id) return;
+        
+        this.loading.set(true);
+        this.productService.update(product.id, product).subscribe({
+            next: (updated) => {
+                // Update local list
+                this.deviceProducts.update(products => 
+                    products.map(p => p.id === updated.id ? updated : p)
+                );
+                this.loading.set(false);
+            },
+            error: (err) => {
+                console.error('Error updating product', err);
+                this.loading.set(false);
+                alert('Erro ao atualizar produto.');
+            }
+        });
+    }
+
 
     onCancel() {
         this.router.navigate(['/user/devices']);

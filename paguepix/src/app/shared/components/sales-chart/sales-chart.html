@@ -3,13 +3,14 @@
     <div class="flex items-center justify-between mb-4 relative z-10">
         <div>
             <h3 class="text-xl font-black text-slate-900 dark:text-slate-100 tracking-tight">{{ title }}</h3>
-            <p class="text-slate-400 dark:text-slate-500 text-sm font-bold mt-1">Volume de transações {{ selectedDays === 1 ? 'hoje' : 'nos últimos ' + selectedDays + ' dias' }}</p>
+            <p class="text-slate-400 dark:text-slate-500 text-sm font-bold mt-1">Volume de transações {{ selectedDays
+                === 1 ? 'hoje' : 'nos últimos ' + selectedDays + ' dias' }}</p>
         </div>
         <div class="relative">
             <select
                 class="appearance-none bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold rounded-2xl pl-4 pr-10 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
                 (change)="onPeriodChange($event)">
-                <option value="1" [selected]="selectedDays === 1">Hoje</option>
+                <option value="1" [selected]="selectedDays === 1">Vendas de Hoje</option>
                 <option value="7" [selected]="selectedDays === 7">Últimos 7 Dias</option>
                 <option value="30" [selected]="selectedDays === 30">Últimos 30 Dias</option>
             </select>
@@ -41,8 +42,7 @@
             <div *ngFor="let item of chartData(); let i = index; let last = last" class="flex-1 relative group">
 
                 <!-- Unified Bar Structure -->
-                <div class="absolute inset-x-0 flex flex-col justify-end h-[calc(100%-32px)]"
-                    [style.bottom.px]="32">
+                <div class="absolute inset-x-0 flex flex-col justify-end h-[calc(100%-32px)]" [style.bottom.px]="32">
 
                     <div class="w-full rounded-xl transition-all duration-300 hover:brightness-105"
                         [style.height]="item.rawAmount === 0 ? '3px' : (item.value * 90 / 85) + '%'"

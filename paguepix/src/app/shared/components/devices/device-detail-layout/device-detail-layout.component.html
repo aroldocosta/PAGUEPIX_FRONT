@@ -12,8 +12,9 @@
         <div *ngIf="id() && (mode() === 'edit' || deviceProducts().length > 0)">
             <app-device-product-manager [availableProducts]="allProducts()" [deviceProducts]="deviceProducts()"
                 [loading]="productLoading()" [viewOnly]="mode() === 'view'" (add)="addProduct.emit($event)"
-                (remove)="removeProduct.emit($event)">
+                (remove)="removeProduct.emit($event)" (edit)="editProduct.emit($event)">
             </app-device-product-manager>
+
         </div>
     </div>
 
