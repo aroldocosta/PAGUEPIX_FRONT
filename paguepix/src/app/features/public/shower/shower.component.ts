@@ -55,16 +55,9 @@ export class ShowerComponent implements OnDestroy {
     private router = inject(Router);
     private route = inject(ActivatedRoute);
 
-    durationOptions: DurationOption[] = [
-        { minutes: 1, label: '1 minuto', description: 'Banho ultra-rápido', price: 1.0, icon: 'timer' },
-        { minutes: 3, label: '3 minutos', description: 'O mais popular', price: 3.0, icon: 'timer' },
-        { minutes: 5, label: '5 minutos', description: 'Banho completo', price: 5.0, icon: 'timer' },
-        { minutes: 10, label: '10 minutos', description: 'Banho relaxante', price: 10.0, icon: 'timer' }
-    ];
+    durationOptions: DurationOption[] = [];
 
     constructor() {
-        this.selectedDuration.set(this.durationOptions[1]); // Default to 3 minutes (index 1)
-
         this.route.paramMap.subscribe(params => {
             const token = params.get('token');
             console.log("====================", token);
@@ -127,11 +120,41 @@ export class ShowerComponent implements OnDestroy {
         }
     }
 
+    private getFallbackDescription(minutes: number): string {
+        switch (minutes) {
+            case 1: return 'Banho ultra-rápido';
+            case 3: return 'O mais popular';
+            case 5: return 'Banho completo';
+            case 10: return 'Para toda a familia';
+            default: return `Tempo de banho`;
+        }
+    }
+
     private validateDevice(token: string) {
         this.currentState.set('VALIDATING');
         this.deviceService.getInfoByToken(token).subscribe({
             next: (info) => {
                 this.deviceInfo.set(info);
+                
+                if (info.productList && info.productList.length > 0) {
+                    const mappedOptions = info.productList
+                        .filter((p: any) => p.active !== false)
+                        .map((p: any) => ({
+                            minutes: p.durationMinutes,
+                            label: p.name,
+                            description: p.subtitle || this.getFallbackDescription(p.durationMinutes),
+                            price: p.price,
+                            icon: 'timer'
+                        }))
+                        .sort((a: any, b: any) => a.price - b.price);
+                    
+                    this.durationOptions = mappedOptions;
+                    
+                    if (this.durationOptions.length > 0) {
+                        this.selectedDuration.set(this.durationOptions[0]);
+                    }
+                }
+                
                 // If we were validating and everything is fine, go to IDLE
                 if (this.currentState() === 'VALIDATING') {
                     this.currentState.set('IDLE');

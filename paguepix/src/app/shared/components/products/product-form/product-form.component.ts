@@ -20,6 +20,8 @@ export class ProductFormComponent implements OnInit {
     @Input() durationUnit: 'SECONDS' | 'MINUTES' | 'HOURS' = 'MINUTES';
     @Input() price: number = 0;
     @Input() active = true;
+    @Input() subtitle = '';
+    @Input() description = '';
     @Input() mode: 'view' | 'edit' = 'view';
     @Input() loading = false;
 
@@ -37,7 +39,9 @@ export class ProductFormComponent implements OnInit {
             duration: this.duration,
             durationUnit: this.durationUnit,
             price: this.price,
-            active: this.active
+            active: this.active,
+            subtitle: this.subtitle,
+            description: this.description
         });
     }
 

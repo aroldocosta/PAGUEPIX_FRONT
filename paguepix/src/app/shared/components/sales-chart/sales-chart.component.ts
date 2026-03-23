@@ -14,7 +14,7 @@ export interface DailySales {
 })
 export class SalesChartComponent {
     @Input() title: string = 'Desempenho de Vendas';
-    @Input() selectedDays: number = 7;
+    @Input() selectedDays: number = 1;
 
     @Input() set salesData(data: DailySales[]) {
         this._rawData.set(data);
@@ -41,46 +41,57 @@ export class SalesChartComponent {
 
         // 1. Generate baseline and merge
         const baseline: { day: string, rawAmount: number, tooltipLabel: string }[] = [];
-        for (let i = daysCount - 1; i >= 0; i--) {
-            const d = new Date();
-            d.setDate(now.getDate() - i);
 
-            // Search label to match backend data: 
-            // 7 days -> Day name (SAB, DOM...), 30 days -> Day number (07, 08...)
-            const searchLabel = daysCount === 7
-                ? dayNames[d.getDay()]
-                : d.getDate().toString().padStart(2, '0');
-
-
-            // Display label (rules: 30 days -> only every 5 steps, 7 days -> always name)
-            let displayLabel = '';
-            if (daysCount === 30) {
-                // User wants labels every 5 days counting back from today (i=0)
-                // e.g. 7 (today), 2, 25, 20...
-                displayLabel = (i % 5 === 0) ? d.getDate().toString() : '';
-            } else {
-                displayLabel = dayNames[d.getDay()];
+        if (daysCount === 1) {
+            // Generate 24 hours (00 to 23)
+            for (let i = 0; i < 24; i++) {
+                const hourStr = i.toString().padStart(2, '0');
+                const apiHour = data.find(s => s.date === hourStr);
+                
+                // Show label every 4 hours for readability: 00h, 04h, 08h, 12h, 16h, 20h
+                const isLabelHour = i % 4 === 0;
+                
+                baseline.push({
+                    day: isLabelHour ? `${hourStr}h` : '',
+                    rawAmount: apiHour ? apiHour.amount : 0,
+                    tooltipLabel: `${hourStr}:00`
+                });
             }
+        } else {
+            // Generate days backwards (7 or 30)
+            for (let i = daysCount - 1; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(now.getDate() - i);
 
-            // Busca o dia correspondente nos dados vindos do API
-            // Agora que o backend envia a data completa (yyyy-MM-dd), comparamos diretamente
-            const apiDay = data.find(s => {
-                const year = d.getFullYear();
-                const month = (d.getMonth() + 1).toString().padStart(2, '0');
+                // Display label (rules: 30 days -> only every 5 steps, 7 days -> always name)
+                let displayLabel = '';
+                if (daysCount === 30) {
+                    // User wants labels every 5 days counting back from today (i=0)
+                    // e.g. 7 (today), 2, 25, 20...
+                    displayLabel = (i % 5 === 0) ? d.getDate().toString() : '';
+                } else {
+                    displayLabel = dayNames[d.getDay()];
+                }
+
+                // Busca o dia correspondente nos dados vindos do API
+                const apiDay = data.find(s => {
+                    const year = d.getFullYear();
+                    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+                    const day = d.getDate().toString().padStart(2, '0');
+                    const searchDate = `${year}-${month}-${day}`;
+                    return s.date === searchDate;
+                });
+
                 const day = d.getDate().toString().padStart(2, '0');
-                const searchDate = `${year}-${month}-${day}`;
-                return s.date === searchDate;
-            });
+                const month = monthNames[d.getMonth()];
+                const tooltipLabel = `${day}/${month}`;
 
-            const day = d.getDate().toString().padStart(2, '0');
-            const month = monthNames[d.getMonth()];
-            const tooltipLabel = `${day}/${month}`;
-
-            baseline.push({
-                day: displayLabel,
-                rawAmount: apiDay ? apiDay.amount : 0,
-                tooltipLabel
-            });
+                baseline.push({
+                    day: displayLabel,
+                    rawAmount: apiDay ? apiDay.amount : 0,
+                    tooltipLabel
+                });
+            }
         }
 
 

@@ -40,6 +40,8 @@ export class DeviceDetailLayoutComponent {
 
     addProduct = output<string>();
     removeProduct = output<string>();
+    editProduct = output<Product>();
+
 
     /** Exposto para que o componente pai possa controlar o modal de liberação */
     @ViewChild(DeviceFormComponent) deviceForm!: DeviceFormComponent;

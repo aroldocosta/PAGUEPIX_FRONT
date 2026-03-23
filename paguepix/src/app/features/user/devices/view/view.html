@@ -5,8 +5,9 @@
         <app-device-detail-layout [id]="id()!" [mqttId]="mqttId()" [name]="name()" [model]="model()"
             [partnerId]="partnerId()" [partners]="partners()" [qrUrl]="qrUrl()" mode="view" [releasing]="releasing()"
             [deviceProducts]="deviceProducts()" [releaseError]="releaseError()"
-            (releaseManual)="onReleaseManual($event)" (cancel)="onCancel()">
+            (releaseManual)="onReleaseManual($event)" (editProduct)="onProductUpdated($event)" (cancel)="onCancel()">
         </app-device-detail-layout>
+
     </ng-template>
 
 </app-management-layout>

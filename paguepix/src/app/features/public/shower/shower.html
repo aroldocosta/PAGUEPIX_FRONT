@@ -61,15 +61,9 @@
                                 'bg-[#0d7ff2] text-white': selectedDuration()?.minutes === option.minutes,
                                 'bg-[#ebf5ff] text-[#0d7ff2]': selectedDuration()?.minutes !== option.minutes
                             }"
-                                class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg transition-colors overflow-hidden">
-                                <ng-container [ngSwitch]="option.minutes">
-                                    <span *ngSwitchCase="1" class="material-icons-outlined text-2xl relative">
-                                        timer
-                                        <span
-                                            class="absolute inset-0 flex items-center justify-center text-[8px] font-black pt-1">10</span>
-                                    </span>
-                                    <span *ngSwitchDefault>{{ option.minutes }}</span>
-                                </ng-container>
+                                class="w-12 h-12 rounded-full flex flex-col items-center justify-center font-bold text-lg transition-colors overflow-hidden">
+                                <span class="material-icons-outlined text-xl leading-none">timer</span>
+                                <span class="text-[10px] leading-none mt-0.5">{{ option.minutes }}'</span>
                             </div>
                             <div class="flex flex-col">
                                 <h3 class="font-bold text-[#0f172a] text-[15px]">{{ option.label }}</h3>

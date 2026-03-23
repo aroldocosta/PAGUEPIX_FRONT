@@ -28,6 +28,7 @@ import { authGuard } from './core/guards/auth.guard';
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'login', component: Login },
+    { path: 'auth/demo-login', loadComponent: () => import('./features/auth/demo-login/demo-login').then(m => m.DemoLogin) },
     { path: 'shower/:token', component: ShowerComponent },
 
     { path: 'admin/dashboard', component: Dashboard, canActivate: [authGuard] },

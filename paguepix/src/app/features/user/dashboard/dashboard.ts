@@ -8,6 +8,7 @@ import { SalesChartComponent, DailySales } from '../../../shared/components/sale
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { TopbarComponent } from '../../../shared/components/topbar/topbar.component';
 import { FooterComponent } from '../../../shared/components/footer/footer.component';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -24,20 +25,29 @@ export class UserDashboard implements OnInit {
 
   userName = computed(() => this.authService.name());
   partnerName = computed(() => this.authService.partnerName());
+  partnerLogo = computed(() => this.authService.partnerLogo());
+  imageError = signal(false);
+  
+  logoUrl = computed(() => {
+    const logo = this.partnerLogo();
+    if (!logo) return null;
+    return `${environment.apiUrl}/partners/${this.authService.partnerId()}/logo`;
+  });
 
   // Cards — período atual
   balance = signal(0);
-  todaySales = signal(0);
-  averageTicket = signal(0);
+  todaySales = signal({ gross: 0, fee: 0, net: 0 });
+  averageTicket = signal({ gross: 0, fee: 0, net: 0 });
 
   // Cards — período anterior
-  prevTodaySales = signal(0);
-  prevAverageTicket = signal(0);
+  prevBalance = signal(0);
+  prevTodaySales = signal({ gross: 0, fee: 0, net: 0 });
+  prevAverageTicket = signal({ gross: 0, fee: 0, net: 0 });
 
   // Tendências calculadas
-  balanceTrend = computed(() => this.calcTrend(this.prevTodaySales(), this.todaySales()));
-  salesTrend = computed(() => this.calcTrend(this.prevTodaySales(), this.todaySales()));
-  ticketTrend = computed(() => this.calcTrend(this.prevAverageTicket(), this.averageTicket()));
+  balanceTrend = computed(() => this.calcTrend(this.prevBalance(), this.balance()));
+  salesTrend = computed(() => this.calcTrend(this.prevTodaySales().gross, this.todaySales().gross));
+  ticketTrend = computed(() => this.calcTrend(this.prevAverageTicket().gross, this.averageTicket().gross));
 
   // Dados do gráfico
   salesOverviewData = signal<DailySales[]>([]);
@@ -48,7 +58,7 @@ export class UserDashboard implements OnInit {
     avatarBg: string; date: string; amount: number; status: string;
   }[]>([]);
 
-  selectedDays = signal(7);
+  selectedDays = signal(1);
   loading = signal(false);
   showWithdrawModal = signal(false);
   apiResponseMessage = signal<string | null>(null);
@@ -107,11 +117,12 @@ export class UserDashboard implements OnInit {
     this.dashboardService.getStats(this.selectedDays()).subscribe({
       next: (data: DashboardData) => {
         this.balance.set(data.availableBalance);
-        this.todaySales.set(data.totalTransacted);
-        this.averageTicket.set(data.averageTicket);
+        this.todaySales.set(data.totalTransacted || { gross: 0, fee: 0, net: 0 });
+        this.averageTicket.set(data.averageTicket || { gross: 0, fee: 0, net: 0 });
 
-        this.prevTodaySales.set(data.previousTotalTransacted ?? 0);
-        this.prevAverageTicket.set(data.previousAverageTicket ?? 0);
+        this.prevBalance.set(data.previousAvailableBalance ?? 0);
+        this.prevTodaySales.set(data.previousTotalTransacted || { gross: 0, fee: 0, net: 0 });
+        this.prevAverageTicket.set(data.previousAverageTicket || { gross: 0, fee: 0, net: 0 });
 
         this.salesOverviewData.set(data.salesOverview);
 
@@ -158,11 +169,11 @@ export class UserDashboard implements OnInit {
       next: (res: any) => {
         this.loading.set(false);
         this.apiResponseCode.set(200);
-        
+
         // Prioriza o campo statusMessage que vem do PayoutResponse do backend
         const msg = typeof res === 'string' ? res : (res?.statusMessage || res?.message || 'Transferência realizada com sucesso!');
         this.apiResponseMessage.set(msg);
-        
+
         // Sucesso real: aguarda os 10 segundos
         setTimeout(() => {
           this.showWithdrawModal.set(false);
@@ -171,17 +182,17 @@ export class UserDashboard implements OnInit {
       },
       error: (err) => {
         this.loading.set(false);
-        
+
         // O backend agora retorna 400/500, então caímos aqui naturalmente
         const status = err?.status || 400;
         this.apiResponseCode.set(status);
-        
+
         console.error('Erro ao realizar saque:', err);
-        
+
         // Tenta extrair a mensagem do corpo do erro (PayoutResponse ou erro genérico)
         const errorData = err?.error;
         const msg = errorData?.statusMessage || errorData?.message || errorData || err?.message || 'Erro inesperado na API do Mercado Pago';
-        
+
         this.apiResponseMessage.set(`ERRO: ${msg}`);
       }
     });

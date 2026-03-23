@@ -36,9 +36,27 @@ export class DeviceProductManagerComponent {
 
     add = output<string>();
     remove = output<string>();
+    edit = output<Product>();
+
 
     selectedProductId = signal<string>('');
     showList = signal<boolean>(false);
+
+    // Edit Product Modal state
+    showEditModal = signal<boolean>(false);
+    editingProduct = signal<Product | null>(null);
+
+    // Form fields for editing
+    editName = signal('');
+    editPrice = signal(0);
+    editPriceDisplay = signal('');
+    editDuration = signal(0);
+
+    editDurationUnit = signal<Product['durationUnit']>('MINUTES');
+    editSubtitle = signal('');
+    editDescription = signal('');
+
+
 
     toggleList() {
         this.showList.update(v => !v);
@@ -54,6 +72,66 @@ export class DeviceProductManagerComponent {
     onRemove(productId: string) {
         this.remove.emit(productId);
     }
+
+    onEdit(product: Product) {
+        this.editingProduct.set(product);
+        this.editName.set(product.name);
+        this.editPrice.set(product.price);
+        this.editPriceDisplay.set(product.price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+        this.editDuration.set(product.duration);
+
+        this.editDurationUnit.set(product.durationUnit);
+        this.editSubtitle.set(product.subtitle || '');
+        this.editDescription.set(product.description || '');
+        this.showEditModal.set(true);
+    }
+
+
+    cancelEdit() {
+        this.showEditModal.set(false);
+        this.editingProduct.set(null);
+    }
+
+    saveEdit() {
+        const current = this.editingProduct();
+        if (current) {
+            const updatedProduct: Product = {
+                ...current,
+                name: this.editName(),
+                price: this.editPrice(),
+                duration: this.editDuration(),
+                durationUnit: this.editDurationUnit(),
+                subtitle: this.editSubtitle(),
+                description: this.editDescription()
+            };
+
+            this.edit.emit(updatedProduct);
+            this.showEditModal.set(false);
+            this.editingProduct.set(null);
+        }
+    }
+
+    onPriceInput(event: Event) {
+        const input = event.target as HTMLInputElement;
+        const value = input.value.replace(/[^\d,]/g, ''); // Allow only digits and comma
+        this.editPriceDisplay.set(value);
+        
+        const numericValue = parseFloat(value.replace(',', '.'));
+        if (!isNaN(numericValue)) {
+            this.editPrice.set(numericValue);
+        }
+    }
+
+    onPriceBlur() {
+        // Force 2 decimal places on blur
+        const formatted = this.editPrice().toLocaleString('pt-BR', { 
+            minimumFractionDigits: 2, 
+            maximumFractionDigits: 2 
+        });
+        this.editPriceDisplay.set(formatted);
+    }
+
+
 
     formatPrice(price: number): string {
         return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);

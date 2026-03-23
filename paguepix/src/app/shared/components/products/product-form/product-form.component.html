@@ -25,6 +25,26 @@
             </div>
         </div>
 
+        <!-- Subtítulo -->
+        <div class="space-y-2 md:col-span-2">
+            <label class="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Subtítulo</label>
+            <div class="relative group">
+                <span class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors">subtitles</span>
+                <input type="text" [(ngModel)]="subtitle" name="subtitle" [disabled]="mode === 'view'"
+                    [class]="getFieldClasses()" placeholder="Ex: Banho rápido">
+            </div>
+        </div>
+
+        <!-- Descrição -->
+        <div class="space-y-2 md:col-span-2">
+            <label class="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Descrição</label>
+            <div class="relative group">
+                <span class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors">description</span>
+                <input type="text" [(ngModel)]="description" name="description" [disabled]="mode === 'view'"
+                    [class]="getFieldClasses()" placeholder="Ex: Tempo de chuveiro">
+            </div>
+        </div>
+
         <!-- Duração -->
         <div class="space-y-2">
             <label

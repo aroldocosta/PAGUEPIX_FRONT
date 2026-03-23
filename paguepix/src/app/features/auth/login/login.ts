@@ -42,7 +42,8 @@ export class Login implements OnInit {
             role: response.role,
             name: response.name,
             partnerId: response.partnerId,
-            partnerName: response.partnerName
+            partnerName: response.partnerName,
+            partnerLogo: response.partnerLogo
           });
 
           this.authService.navigateToDashboard();
