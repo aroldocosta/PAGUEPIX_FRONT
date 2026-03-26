@@ -65,10 +65,16 @@ export class PartnerEdit implements OnInit {
     });
   }
 
+  triggerFileInput(input: HTMLInputElement) {
+    console.log('Triggering file input click');
+    input.click();
+  }
+
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
     if (file) {
       this.selectedFile = file;
+      this.imageError.set(false); // Reset error state for new preview
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.logo.set(e.target.result); // preview
@@ -94,20 +100,31 @@ export class PartnerEdit implements OnInit {
 
     saveObservable.subscribe({
       next: (savedPartner) => {
+        console.log('Partner saved successfully:', savedPartner);
+        
+        // Ensure we have an ID to associate with the logo
+        const partnerId = savedPartner?.id || this.id();
+        
         // If a new file was selected, upload it now
-        if (this.selectedFile && savedPartner.id) {
-          this.partnerService.uploadLogo(savedPartner.id, this.selectedFile).subscribe({
-            next: () => {
+        if (this.selectedFile && partnerId) {
+          console.log('Uploading logo for partner:', partnerId);
+          this.partnerService.uploadLogo(partnerId, this.selectedFile).subscribe({
+            next: (updatedPartner) => {
+              console.log('Logo uploaded successfully:', updatedPartner);
               this.loading.set(false);
               this.router.navigate(['/admin/partners']);
             },
             error: (err) => {
-              console.error('Error uploading logo', err);
+              console.error('Error uploading logo:', err);
               this.loading.set(false);
               this.router.navigate(['/admin/partners']);
             }
           });
         } else {
+          console.log('No logo to upload or missing partner ID.', { 
+            hasFile: !!this.selectedFile, 
+            partnerId: partnerId 
+          });
           this.loading.set(false);
           this.router.navigate(['/admin/partners']);
         }

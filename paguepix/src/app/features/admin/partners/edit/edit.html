@@ -99,15 +99,15 @@
                             <span *ngIf="!logo() || imageError()"
                                 class="material-icons-outlined text-4xl text-slate-300 dark:text-slate-600">store</span>
                             <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
-                                onclick="document.getElementById('logoInput').click()">
+                                (click)="triggerFileInput(logoInput)">
                                 <span class="material-icons-outlined text-white text-3xl">upload</span>
                             </div>
                         </div>
                     </div>
 
-                    <input type="file" id="logoInput" class="hidden" accept="image/*" (change)="onFileSelected($event)">
+                    <input #logoInput type="file" id="logoInput" class="opacity-0 absolute inset-0 pointer-events-none w-px h-px overflow-hidden -z-10" accept="image/*" (change)="onFileSelected($event)">
 
-                    <button type="button" onclick="document.getElementById('logoInput').click()"
+                    <button type="button" (click)="triggerFileInput(logoInput)"
                         class="w-full flex items-center justify-center gap-3 py-4 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 font-bold hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-all">
                         <span class="material-icons-outlined">image</span>
                         Selecionar Imagem
