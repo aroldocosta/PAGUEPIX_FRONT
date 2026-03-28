@@ -26,8 +26,7 @@ export class BoardEdit implements OnInit {
   clientId = signal('');
   model = signal('');
   description = signal('');
-  scriptId = signal<string | number>('');
-  deviceId = signal<string | number>('');
+  scriptId = signal<string | number | null>(null);
 
   scripts = signal<any[]>([]);
   devices = signal<any[]>([]);
@@ -66,8 +65,7 @@ export class BoardEdit implements OnInit {
         this.clientId.set(board.clientId || '');
         this.model.set(board.model || '');
         this.description.set(board.description || '');
-        this.scriptId.set(board.script?.id || '');
-        this.deviceId.set(board.device?.id || '');
+        this.scriptId.set(board.script?.id || null);
         this.loading.set(false);
       },
       error: (err) => {
@@ -83,8 +81,7 @@ export class BoardEdit implements OnInit {
       clientId: this.clientId(),
       model: this.model(),
       description: this.description(),
-      scriptId: this.scriptId(),
-      deviceId: this.deviceId() || undefined
+      scriptId: this.scriptId()!
     };
 
     this.loading.set(true);

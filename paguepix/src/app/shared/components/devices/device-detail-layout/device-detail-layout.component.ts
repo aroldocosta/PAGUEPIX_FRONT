@@ -4,6 +4,7 @@ import { DeviceFormComponent } from '../device-form/device-form.component';
 import { DeviceQrCardComponent } from '../device-qr-card/device-qr-card.component';
 import { DeviceProductManagerComponent } from '../device-product-manager/device-product-manager.component';
 import { Product } from '../../../../core/services/product.service';
+import { Board } from '../../../../core/models/board.model';
 
 @Component({
     selector: 'app-device-detail-layout',
@@ -21,6 +22,8 @@ export class DeviceDetailLayoutComponent {
     partnerId = input<string | null>(null);
     partners = input<any[]>([]);
     qrUrl = input.required<string>();
+    boards = input<Board[]>([]);
+    boardId = input<string | number | null>(null);
 
     // Behaviour inputs
     mode = input<'view' | 'edit'>('view');

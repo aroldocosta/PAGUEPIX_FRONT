@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Product } from '../../../../core/services/product.service';
+import { Board } from '../../../../core/models/board.model';
 
 @Component({
     selector: 'app-device-form',
@@ -23,6 +24,8 @@ export class DeviceFormComponent {
     @Input() loading = false;
     @Input() releaseError: string | null = null;
     @Input() deviceProducts: Product[] = [];
+    @Input() boards: Board[] = [];
+    @Input() boardId: string | number | null = null;
 
     @Output() save = new EventEmitter<any>();
     @Output() releaseManual = new EventEmitter<{ id: string, minutes: number }>();
@@ -36,7 +39,8 @@ export class DeviceFormComponent {
         this.save.emit({
             name: this.name,
             model: this.model,
-            partnerId: this.partnerId
+            partnerId: this.partnerId,
+            boardId: this.boardId
         });
     }
 

@@ -15,7 +15,6 @@ export interface Board {
 export interface BoardRequest {
     id?: string | number;
     scriptId: string | number;
-    deviceId?: string | number;
     clientId: string;
     model: string;
     description: string;

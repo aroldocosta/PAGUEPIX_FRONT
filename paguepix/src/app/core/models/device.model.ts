@@ -9,4 +9,5 @@ export interface Device {
     name: string;
     partner?: Partner;
     board?: Board;
+    boardId?: number;
 }

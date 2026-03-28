@@ -11,14 +11,15 @@
                     <span class="material-icons-outlined text-lg">{{ category.icon }}</span>
                     {{ category.label }}
                 </span>
-                <span class="material-icons-outlined text-sm transition-transform duration-300"
-                    [class.rotate-180]="expandedCategories().has(category.label)">
+                <span class="material-icons-outlined text-sm transition-transform duration-500"
+                    [class.rotate-180]="activeCategory() === category.label">
                     expand_more
                 </span>
             </button>
 
-            <!-- Menu Items -->
-            <div *ngIf="expandedCategories().has(category.label)" class="space-y-1 pl-6">
+            <!-- Menu Items (Animated) -->
+            <div [@accordion]="activeCategory() === category.label ? 'open' : 'closed'"
+                class="space-y-1 pl-6 overflow-hidden">
                 <a *ngFor="let item of category.items" [routerLink]="item.disabled ? null : item.route"
                     [class.bg-indigo-50]="isActive(item.route) && !item.disabled"
                     [class.dark:bg-indigo-950/40]="isActive(item.route) && !item.disabled"

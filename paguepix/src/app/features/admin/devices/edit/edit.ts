@@ -5,6 +5,8 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DeviceService } from '../../../../core/services/device.service';
 import { PartnerService } from '../../../../core/services/partner.service';
 import { ProductService, Product } from '../../../../core/services/product.service';
+import { BoardService } from '../../../../core/services/board.service';
+import { Board } from '../../../../core/models/board.model';
 import { ManagementLayoutComponent } from '../../../../shared/components/management-layout/management-layout.component';
 import { DeviceDetailLayoutComponent } from '../../../../shared/components/devices/device-detail-layout/device-detail-layout.component';
 import { environment } from '../../../../../environments/environment';
@@ -22,6 +24,7 @@ export class DeviceEdit implements OnInit {
     private deviceService = inject(DeviceService);
     private partnerService = inject(PartnerService);
     private productService = inject(ProductService);
+    private boardService = inject(BoardService);
 
     @ViewChild(DeviceDetailLayoutComponent) detailLayout!: DeviceDetailLayoutComponent;
 
@@ -31,6 +34,8 @@ export class DeviceEdit implements OnInit {
     model = signal('');
     partnerId = signal<string | null>(null);
     partners = signal<any[]>([]);
+    boards = signal<Board[]>([]);
+    boardId = signal<string | number | null>(null);
     loading = signal(false);
     hasData = signal(true);
     releaseError = signal<string | null>(null);
@@ -65,6 +70,16 @@ export class DeviceEdit implements OnInit {
         }
         this.loadPartners();
         this.loadProducts();
+        this.loadBoards();
+    }
+
+    loadBoards() {
+        this.boardService.findAll(undefined, undefined, 0, 100).subscribe({
+            next: (response) => {
+                this.boards.set(response.content || response);
+            },
+            error: (err) => console.error('Error loading boards', err)
+        });
     }
 
     loadProducts() {
@@ -84,6 +99,7 @@ export class DeviceEdit implements OnInit {
                 this.name.set(device.name || '');
                 this.model.set(device.model);
                 this.partnerId.set(device.partner?.id || null);
+                this.boardId.set(device.board?.id || null);
                 this.deviceProducts.set(device.productList || []);
                 this.loading.set(false);
             },
