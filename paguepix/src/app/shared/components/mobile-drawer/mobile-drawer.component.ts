@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -31,7 +31,34 @@ export class MobileDrawerComponent {
         return role || '';
     });
 
-    menuItems = this.menuService.menuItems;
+    menuCategories = this.menuService.menuCategories;
+    expandedCategories = signal<Set<string>>(new Set());
+
+    constructor() {
+        // Inicializa categorias expandidas com base na rota atual
+        const currentRoute = this.router.url;
+        this.menuCategories().forEach(cat => {
+            if (cat.items.some(item => item.route === currentRoute)) {
+                this.expandedCategories.update(set => {
+                    const newSet = new Set(set);
+                    newSet.add(cat.label);
+                    return newSet;
+                });
+            }
+        });
+    }
+
+    toggleCategory(label: string) {
+        this.expandedCategories.update(set => {
+            const newSet = new Set(set);
+            if (newSet.has(label)) {
+                newSet.delete(label);
+            } else {
+                newSet.add(label);
+            }
+            return newSet;
+        });
+    }
 
     isActive(route: string): boolean {
         return this.router.url === route;

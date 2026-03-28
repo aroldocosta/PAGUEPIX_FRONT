@@ -2,20 +2,42 @@
     class="w-72 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 hidden lg:flex flex-col transition-colors duration-300">
     <!-- Header Removed for new Layout -->
 
-    <nav class="flex-1 px-6 pt-6 space-y-2">
-        <a *ngFor="let item of menuItems()" [routerLink]="item.route" [class.bg-indigo-50]="isActive(item.route)"
-            [class.dark:bg-indigo-950/40]="isActive(item.route)" [class.text-[#6366f1]]="isActive(item.route)"
-            [class.dark:text-[#818cf8]]="isActive(item.route)" [class.border-l-4]="isActive(item.route)"
-            [class.border-[#6366f1]]="isActive(item.route)" [class.dark:border-[#818cf8]]="isActive(item.route)"
-            class="flex items-center gap-4 px-4 py-3 text-sm font-bold rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-[#6366f1] dark:hover:text-[#818cf8] transition-all group">
-            <span class="material-icons-outlined text-xl" [class.text-[#6366f1]]="isActive(item.route)"
-                [class.dark:text-[#818cf8]]="isActive(item.route)">
-                {{ item.icon }}
-            </span>
-            {{ item.label }}
-        </a>
+    <nav class="flex-1 px-6 pt-6 space-y-6 overflow-y-auto custom-scrollbar">
+        <div *ngFor="let category of menuCategories()" class="space-y-2">
+            <!-- Category Header (Toggle) -->
+            <button (click)="toggleCategory(category.label)"
+                class="w-full px-4 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.15em] flex items-center justify-between gap-2 mb-3 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
+                <span class="flex items-center gap-2">
+                    <span class="material-icons-outlined text-lg">{{ category.icon }}</span>
+                    {{ category.label }}
+                </span>
+                <span class="material-icons-outlined text-sm transition-transform duration-300"
+                    [class.rotate-180]="expandedCategories().has(category.label)">
+                    expand_more
+                </span>
+            </button>
 
-
+            <!-- Menu Items -->
+            <div *ngIf="expandedCategories().has(category.label)" class="space-y-1 pl-6">
+                <a *ngFor="let item of category.items" [routerLink]="item.disabled ? null : item.route"
+                    [class.bg-indigo-50]="isActive(item.route) && !item.disabled"
+                    [class.dark:bg-indigo-950/40]="isActive(item.route) && !item.disabled"
+                    [class.text-[#6366f1]]="isActive(item.route) && !item.disabled"
+                    [class.dark:text-[#818cf8]]="isActive(item.route) && !item.disabled"
+                    [class.border-l-4]="isActive(item.route) && !item.disabled"
+                    [class.border-[#6366f1]]="isActive(item.route) && !item.disabled"
+                    [class.dark:border-[#818cf8]]="isActive(item.route) && !item.disabled"
+                    [class.opacity-50]="item.disabled" [class.cursor-not-allowed]="item.disabled"
+                    class="flex items-center gap-4 px-4 py-2.5 text-sm font-bold rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-[#6366f1] dark:hover:text-[#818cf8] transition-all group">
+                    <span class="material-icons-outlined text-xl"
+                        [class.text-[#6366f1]]="isActive(item.route) && !item.disabled"
+                        [class.dark:text-[#818cf8]]="isActive(item.route) && !item.disabled">
+                        {{ item.icon }}
+                    </span>
+                    {{ item.label }}
+                </a>
+            </div>
+        </div>
     </nav>
 
     <div class="p-6 border-t border-slate-100 dark:border-slate-800">

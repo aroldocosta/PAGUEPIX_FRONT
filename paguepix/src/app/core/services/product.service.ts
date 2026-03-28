@@ -3,6 +3,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 
+import { Partner } from '../models/partner.model';
+
 export interface Product {
     id?: string;
     name: string;
@@ -12,6 +14,7 @@ export interface Product {
     active: boolean;
     subtitle?: string;
     description?: string;
+    partner?: Partner;
 }
 
 @Injectable({
