@@ -15,7 +15,6 @@ import { Product } from '../../../../core/services/product.service';
 })
 export class DeviceFormComponent {
     @Input({ required: true }) id!: string;
-    @Input() mqttId = '';
     @Input() name = '';
     @Input() model = '';
     @Input() partnerId: string | null = null;
@@ -35,7 +34,6 @@ export class DeviceFormComponent {
     onSave() {
         if (this.mode === 'view') return;
         this.save.emit({
-            mqttId: this.mqttId,
             name: this.name,
             model: this.model,
             partnerId: this.partnerId

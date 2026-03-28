@@ -27,7 +27,6 @@ export class UserDeviceView implements OnInit {
     @ViewChild(DeviceDetailLayoutComponent) detailLayout!: DeviceDetailLayoutComponent;
 
     id = signal<string | null>(null);
-    mqttId = signal('');
     name = signal('');
     model = signal('');
     partnerId = signal<string | null>(null);
@@ -56,7 +55,6 @@ export class UserDeviceView implements OnInit {
         this.loading.set(true);
         this.deviceService.findById(id).subscribe({
             next: (device) => {
-                this.mqttId.set(device.mqttId);
                 this.name.set(device.name || '');
                 this.model.set(device.model);
                 this.partnerId.set(device.partner?.id || null);

@@ -1,4 +1,5 @@
 import { Partner } from './partner.model';
+import { Board } from './board.model';
 
 export interface Device {
     id: number;
@@ -7,4 +8,5 @@ export interface Device {
     type: string;
     name: string;
     partner?: Partner;
+    board?: Board;
 }

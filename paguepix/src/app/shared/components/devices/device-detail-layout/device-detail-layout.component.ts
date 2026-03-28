@@ -16,7 +16,6 @@ export class DeviceDetailLayoutComponent {
 
     // Data inputs
     id = input<string | null>(null);
-    mqttId = input.required<string>();
     name = input.required<string>();
     model = input.required<string>();
     partnerId = input<string | null>(null);

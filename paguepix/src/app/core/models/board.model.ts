@@ -1,12 +1,15 @@
 import { Device } from './device.model';
+import { Script } from './script.model';
+import { Partner } from './partner.model';
 
 export interface Board {
     id: string | number;
     clientId: string;
     model: string;
     description: string;
-    script?: { id: string | number, code: string };
+    script?: Script;
     device?: Device;
+    partner?: Partner;
 }
 
 export interface BoardRequest {

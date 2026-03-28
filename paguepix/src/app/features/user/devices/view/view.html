@@ -2,7 +2,7 @@
     subtitle="Visualize informações e gerencie operações do seu dispositivo." [loading]="loading" [hasData]="hasData">
 
     <ng-template #tableContent>
-        <app-device-detail-layout [id]="id()!" [mqttId]="mqttId()" [name]="name()" [model]="model()"
+        <app-device-detail-layout [id]="id()!" [name]="name()" [model]="model()"
             [partnerId]="partnerId()" [partners]="partners()" [qrUrl]="qrUrl()" mode="view" [releasing]="releasing()"
             [deviceProducts]="deviceProducts()" [releaseError]="releaseError()"
             (releaseManual)="onReleaseManual($event)" (editProduct)="onProductUpdated($event)" (cancel)="onCancel()">
