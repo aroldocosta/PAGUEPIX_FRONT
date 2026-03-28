@@ -1,0 +1,61 @@
+<div class="space-y-6">
+    <!-- Form Content -->
+    <form (ngSubmit)="onSave()" #leadForm="ngForm" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- Name -->
+            <div class="space-y-2">
+                <label class="text-xs font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Nome Completo</label>
+                <div class="relative group">
+                    <span class="material-icons-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">person</span>
+                    <input type="text" [(ngModel)]="name" name="name" [disabled]="mode === 'view'" required
+                        [class]="getFieldClasses()" placeholder="Ex: João Silva">
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="space-y-2">
+                <label class="text-xs font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">E-mail</label>
+                <div class="relative group">
+                    <span class="material-icons-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">email</span>
+                    <input type="email" [(ngModel)]="email" name="email" [disabled]="mode === 'view'" required
+                        [class]="getFieldClasses()" placeholder="Ex: joao@email.com">
+                </div>
+            </div>
+
+            <!-- WhatsApp -->
+            <div class="space-y-2">
+                <label class="text-xs font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">WhatsApp</label>
+                <div class="relative group">
+                    <span class="material-icons-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">phone</span>
+                    <input type="text" [(ngModel)]="whatsapp" name="whatsapp" [disabled]="mode === 'view'"
+                        [class]="getFieldClasses()" placeholder="Ex: (11) 99999-9999">
+                </div>
+            </div>
+
+            <!-- Barraca -->
+            <div class="space-y-2">
+                <label class="text-xs font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Barraca / Ponto</label>
+                <div class="relative group">
+                    <span class="material-icons-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">storefront</span>
+                    <input type="text" [(ngModel)]="barraca" name="barraca" [disabled]="mode === 'view'"
+                        [class]="getFieldClasses()" placeholder="Ex: Barraca do Zé">
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex items-center justify-end gap-4 pt-6 mt-6 border-t border-gray-100 dark:border-slate-800">
+            <button type="button" (click)="onCancel()"
+                class="px-6 py-3 text-sm font-bold text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200 transition-colors uppercase tracking-wider">
+                Cancelar
+            </button>
+            <button *ngIf="mode === 'edit'" type="submit" [disabled]="!leadForm.form.valid || loading"
+                class="px-8 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-slate-800 disabled:text-gray-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-200 dark:shadow-none transition-all flex items-center gap-2 uppercase tracking-wider">
+                <span *ngIf="loading" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                {{ loading ? 'Salvando...' : 'Salvar Lead' }}
+            </button>
+        </div>
+    </form>
+</div>

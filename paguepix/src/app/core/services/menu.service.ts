@@ -21,6 +21,7 @@ export class MenuService {
         { label: 'Devices', icon: 'devices', route: '/admin/devices' },
         { label: 'Placas', icon: 'memory', route: '/admin/boards' },
         { label: 'Scripts', icon: 'code', route: '/admin/scripts' },
+        { label: 'Leads', icon: 'person_add', route: '/admin/leads' },
         { label: 'Saques', icon: 'account_balance', route: '/admin/payouts' },
     ];
 
