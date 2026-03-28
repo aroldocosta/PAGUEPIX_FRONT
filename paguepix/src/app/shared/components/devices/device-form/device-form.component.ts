@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Product } from '../../../../core/services/product.service';
+import { Board } from '../../../../core/models/board.model';
 
 @Component({
     selector: 'app-device-form',
@@ -15,7 +16,6 @@ import { Product } from '../../../../core/services/product.service';
 })
 export class DeviceFormComponent {
     @Input({ required: true }) id!: string;
-    @Input() mqttId = '';
     @Input() name = '';
     @Input() model = '';
     @Input() partnerId: string | null = null;
@@ -24,6 +24,8 @@ export class DeviceFormComponent {
     @Input() loading = false;
     @Input() releaseError: string | null = null;
     @Input() deviceProducts: Product[] = [];
+    @Input() boards: Board[] = [];
+    @Input() boardId: string | number | null = null;
 
     @Output() save = new EventEmitter<any>();
     @Output() releaseManual = new EventEmitter<{ id: string, minutes: number }>();
@@ -35,10 +37,10 @@ export class DeviceFormComponent {
     onSave() {
         if (this.mode === 'view') return;
         this.save.emit({
-            mqttId: this.mqttId,
             name: this.name,
             model: this.model,
-            partnerId: this.partnerId
+            partnerId: this.partnerId,
+            boardId: this.boardId
         });
     }
 

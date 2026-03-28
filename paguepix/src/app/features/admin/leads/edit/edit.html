@@ -1,0 +1,57 @@
+<app-management-layout [title]="id() ? 'Editar Lead' : 'Novo Lead'"
+    [subtitle]="id() ? 'Altere as informações de contato do lead.' : 'Cadastre um novo lead interessado em seus serviços.'"
+    [loading]="loading" [hasData]="hasData">
+
+    <ng-template #tableContent>
+        <div class="p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Formulário de Edição -->
+            <div class="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-[32px] shadow-sm h-fit">
+                <app-lead-form
+                    [id]="id()"
+                    [name]="lead().name || ''"
+                    [email]="lead().email || ''"
+                    [whatsapp]="lead().whatsapp || ''"
+                    [barraca]="lead().barraca || ''"
+                    [mode]="formMode()"
+                    [loading]="loading()"
+                    (save)="onSave($event)"
+                    (cancel)="onCancel()">
+                </app-lead-form>
+            </div>
+
+            <!-- Guide Card -->
+            <div class="space-y-6">
+                <div class="bg-indigo-50 dark:bg-indigo-900/20 p-8 rounded-[32px] border border-indigo-100 dark:border-indigo-900/30 font-sans">
+                    <div class="flex gap-4 text-indigo-700 dark:text-indigo-400 mb-6 font-black uppercase tracking-tight items-center">
+                        <span class="material-icons-outlined text-2xl">info</span>
+                        <h4 class="text-lg">Dicas de Cadastro</h4>
+                    </div>
+
+                    <ul class="space-y-6">
+                        <li class="flex gap-4">
+                            <span class="material-icons-outlined text-sm mt-1 text-indigo-500">check_circle</span>
+                            <div class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                                <strong class="text-slate-900 dark:text-slate-200 block mb-1">Dados de Contato:</strong>
+                                Certifique-se de inserir um WhatsApp válido para facilitar a comunicação futura.
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <span class="material-icons-outlined text-sm mt-1 text-indigo-500">check_circle</span>
+                            <div class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                                <strong class="text-slate-900 dark:text-slate-200 block mb-1">Identificação:</strong>
+                                O campo "Barraca / Ponto" ajuda a identificar a localização ou o negócio do lead.
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <span class="material-icons-outlined text-sm mt-1 text-indigo-500">check_circle</span>
+                            <div class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                                <strong class="text-slate-900 dark:text-slate-200 block mb-1">Atualização:</strong>
+                                Se este lead já foi convertido em parceiro, as informações aqui servem como histórico.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</app-management-layout>

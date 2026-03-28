@@ -4,10 +4,11 @@
     [loading]="loading" [hasData]="hasData">
 
     <ng-template #tableContent>
-        <app-device-detail-layout [id]="id()!" [mqttId]="mqttId()" [name]="name()" [model]="model()"
+        <app-device-detail-layout [id]="id()!" [name]="name()" [model]="model()"
             [partnerId]="partnerId()" [partners]="partners()" [qrUrl]="qrUrl()" [mode]="formMode()"
             [releasing]="releasing()" [releaseError]="releaseError()" (save)="onSave($event)"
             [allProducts]="allProducts()" [deviceProducts]="deviceProducts()" [productLoading]="productLoading()"
+            [boards]="boards()" [boardId]="boardId()"
             (addProduct)="onAddProduct($event)" (removeProduct)="onRemoveProduct($event)"
             (releaseManual)="onReleaseManual($event)" (cancel)="onCancel()">
         </app-device-detail-layout>

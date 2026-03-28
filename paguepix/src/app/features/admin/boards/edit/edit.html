@@ -80,29 +80,6 @@
                             </div>
                         </div>
 
-                        <!-- Device Selection -->
-                        <div class="space-y-2">
-                            <label for="deviceId" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
-                                Dispositivo (Hospedeiro)
-                            </label>
-                            <div class="relative group">
-                                <span
-                                    class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors">qr_code_2</span>
-                                <select id="deviceId" name="deviceId" [ngModel]="deviceId()"
-                                    (ngModelChange)="deviceId.set($event)"
-                                    class="w-full pl-10 pr-10 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white appearance-none">
-                                    <option [value]="''"
-                                        class="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">Nenhum (Placa
-                                        Avulsa)</option>
-                                    <option *ngFor="let device of devices()" [value]="device.id"
-                                        class="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">
-                                        {{ device.name || device.code }} - {{ device.model }}
-                                    </option>
-                                </select>
-                                <span
-                                    class="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">expand_more</span>
-                            </div>
-                        </div>
                     </div>
                 </div>
 

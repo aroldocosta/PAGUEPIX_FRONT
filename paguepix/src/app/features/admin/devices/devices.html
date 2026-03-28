@@ -1,6 +1,6 @@
 <app-management-layout title="Gestão de Dispositivos"
     subtitle="Monitore e gerencie os dispositivos habilitados para pagamento."
-    searchPlaceholder="Buscar dispositivos..." addButtonLabel="Provisionar Dispositivo" addButtonIcon="add_to_queue"
+    searchPlaceholder="Buscar dispositivos..." addButtonLabel="Adicionar Dispositivo" addButtonIcon="add_to_queue"
     addRoute="/admin/devices/new" [loading]="loading" [hasData]="hasData" emptyStateIcon="no_sim"
     emptyStateMessage="Nenhum dispositivo encontrado.">
 
@@ -10,3 +10,6 @@
         </app-device-list>
     </ng-template>
 </app-management-layout>
+
+<app-device-detail *ngIf="selectedDevice()" [device]="selectedDevice()!" (close)="onCloseDetail()">
+</app-device-detail>

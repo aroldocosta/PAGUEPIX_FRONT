@@ -13,7 +13,6 @@ import { NgxKjuaComponent } from 'ngx-kjua';
 })
 export class DeviceQrCardComponent {
     @Input({ required: true }) qrUrl!: string;
-    @Input({ required: true }) mqttId!: string;
     @Input({ required: true }) name!: string;
     @Input({ required: true }) model!: string;
     @Input({ required: true }) id!: string;
@@ -40,7 +39,7 @@ export class DeviceQrCardComponent {
         printWindow.document.write(`
             <html>
                 <head>
-                    <title>Impressão QR Code - ${this.mqttId}</title>
+                    <title>Impressão QR Code - ${this.name}</title>
                     <style>
                         body { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; font-family: sans-serif; }
                         .container { text-align: center; border: 2px dashed #ccc; padding: 20px; border-radius: 10px; }

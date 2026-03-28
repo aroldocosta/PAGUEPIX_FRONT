@@ -5,6 +5,8 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DeviceService } from '../../../../core/services/device.service';
 import { PartnerService } from '../../../../core/services/partner.service';
 import { ProductService, Product } from '../../../../core/services/product.service';
+import { BoardService } from '../../../../core/services/board.service';
+import { Board } from '../../../../core/models/board.model';
 import { ManagementLayoutComponent } from '../../../../shared/components/management-layout/management-layout.component';
 import { DeviceDetailLayoutComponent } from '../../../../shared/components/devices/device-detail-layout/device-detail-layout.component';
 import { environment } from '../../../../../environments/environment';
@@ -22,22 +24,30 @@ export class DeviceEdit implements OnInit {
     private deviceService = inject(DeviceService);
     private partnerService = inject(PartnerService);
     private productService = inject(ProductService);
+    private boardService = inject(BoardService);
 
     @ViewChild(DeviceDetailLayoutComponent) detailLayout!: DeviceDetailLayoutComponent;
 
     id = signal<string | null>(null);
     formMode = signal<'view' | 'edit'>('edit');
-    mqttId = signal('');
     name = signal('');
     model = signal('');
     partnerId = signal<string | null>(null);
     partners = signal<any[]>([]);
+    boards = signal<Board[]>([]);
+    boardId = signal<string | number | null>(null);
     loading = signal(false);
     hasData = signal(true);
     releaseError = signal<string | null>(null);
     releasing = signal(false);
 
-    allProducts = signal<Product[]>([]);
+    allProductsRaw = signal<Product[]>([]);
+    allProducts = computed(() => {
+        const pid = this.partnerId();
+        if (!pid) return [];
+        return this.allProductsRaw().filter(p => p.partner?.id === pid);
+    });
+
     deviceProducts = signal<Product[]>([]);
     productLoading = signal(false);
 
@@ -60,12 +70,22 @@ export class DeviceEdit implements OnInit {
         }
         this.loadPartners();
         this.loadProducts();
+        this.loadBoards();
+    }
+
+    loadBoards() {
+        this.boardService.findAll(undefined, undefined, 0, 100).subscribe({
+            next: (response) => {
+                this.boards.set(response.content || response);
+            },
+            error: (err) => console.error('Error loading boards', err)
+        });
     }
 
     loadProducts() {
         this.productService.findAll(0, 100).subscribe({
             next: (response) => {
-                this.allProducts.set(response.content || response);
+                this.allProductsRaw.set(response.content || response);
             },
             error: (err) => console.error('Error loading products', err)
         });
@@ -76,10 +96,10 @@ export class DeviceEdit implements OnInit {
         this.deviceService.findById(id).subscribe({
             next: (device) => {
                 console.log('Device loaded:', device);
-                this.mqttId.set(device.mqttId);
                 this.name.set(device.name || '');
                 this.model.set(device.model);
                 this.partnerId.set(device.partner?.id || null);
+                this.boardId.set(device.board?.id || null);
                 this.deviceProducts.set(device.productList || []);
                 this.loading.set(false);
             },
@@ -151,7 +171,7 @@ export class DeviceEdit implements OnInit {
         printWindow.document.write(`
             <html>
                 <head>
-                    <title>Impressão QR Code - ${this.mqttId()}</title>
+                    <title>Impressão QR Code - ${this.name()}</title>
                     <style>
                         body { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; font-family: sans-serif; }
                         .container { text-align: center; border: 2px dashed #ccc; padding: 20px; border-radius: 10px; }

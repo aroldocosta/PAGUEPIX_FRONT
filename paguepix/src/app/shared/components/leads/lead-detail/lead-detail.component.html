@@ -1,0 +1,95 @@
+<div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+    <div
+        class="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-[32px] shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-300">
+
+        <!-- Header -->
+        <div
+            class="p-8 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/30">
+            <div class="flex items-center gap-5">
+                <div
+                    class="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shadow-sm ring-1 ring-indigo-100 dark:ring-indigo-500/20">
+                    <span class="material-icons-outlined text-3xl">person</span>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                        Detalhes do Lead
+                    </h2>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mt-0.5">
+                        ID #{{ lead.id }}
+                    </p>
+                </div>
+            </div>
+            <button (click)="onClose()"
+                class="p-2.5 rounded-2xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 transition-all">
+                <span class="material-icons-outlined text-2xl">close</span>
+            </button>
+        </div>
+
+        <div class="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Info Column -->
+                <div class="space-y-6">
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Nome Completo</label>
+                        <div class="mt-2 text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                             <span class="material-icons-outlined text-slate-400 text-lg">badge</span>
+                             {{ lead.name }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">E-mail</label>
+                        <div class="mt-2 text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                             <span class="material-icons-outlined text-slate-400 text-lg">email</span>
+                             {{ lead.email }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">WhatsApp / Telefone</label>
+                        <div class="mt-2 text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                             <span class="material-icons-outlined text-slate-400 text-lg">phone</span>
+                             {{ lead.whatsapp }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Secondary Column -->
+                <div class="space-y-6">
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Barraca / Ponto</label>
+                        <div class="mt-2 text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                             <span class="material-icons-outlined text-slate-400 text-lg">storefront</span>
+                             {{ lead.barraca }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Data de Cadastro</label>
+                        <div class="mt-2 flex items-center gap-3">
+                            <span class="material-icons-outlined text-slate-400 text-lg">calendar_today</span>
+                            <div class="flex flex-col">
+                                <span class="text-sm font-bold text-slate-700 dark:text-slate-200">{{
+                                    lead.createdAt | date:'dd/MM/yyyy' }}</span>
+                                <span class="text-[10px] font-medium text-slate-400">{{ lead.createdAt |
+                                    date:'HH:mm:ss' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div
+            class="p-6 bg-slate-50/50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end px-10">
+            <button (click)="onClose()"
+                class="bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 px-8 py-3 rounded-2xl font-black text-sm tracking-tight transition-all shadow-sm">
+                FECHAR DETALHES
+            </button>
+        </div>
+    </div>
+</div>

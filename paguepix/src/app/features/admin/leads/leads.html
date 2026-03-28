@@ -1,0 +1,24 @@
+<app-management-layout
+    title="Gerenciamento de Leads"
+    subtitle="Visualize e gerencie os leads interessados em seus serviços."
+    addButtonLabel="Novo Lead"
+    addRoute="/admin/leads/new"
+    [loading]="loading"
+    [hasData]="hasData">
+
+    <ng-template #tableContent>
+        <app-lead-list
+            [leads]="leads()"
+            [loading]="loading()"
+            (view)="onView($event)"
+            (edit)="onEdit($event)"
+            (remove)="onDelete($event)">
+        </app-lead-list>
+
+        <app-lead-detail *ngIf="selectedLead()"
+            [lead]="selectedLead()!"
+            (close)="selectedLead.set(null)">
+        </app-lead-detail>
+    </ng-template>
+
+</app-management-layout>

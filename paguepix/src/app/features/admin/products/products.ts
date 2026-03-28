@@ -3,24 +3,45 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { ManagementLayoutComponent } from '../../../shared/components/management-layout/management-layout.component';
 import { ProductService, Product } from '../../../core/services/product.service';
+import { PartnerService } from '../../../core/services/partner.service';
+import { Partner } from '../../../core/models/partner.model';
 import { ProductListComponent } from '../../../shared/components/products/product-list/product-list.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-product-management',
     standalone: true,
-    imports: [CommonModule, RouterModule, ManagementLayoutComponent, ProductListComponent],
+    imports: [CommonModule, RouterModule, ManagementLayoutComponent, ProductListComponent, FormsModule],
     templateUrl: './products.html'
 })
 export class ProductManagement implements OnInit {
     private router = inject(Router);
     private productService = inject(ProductService);
+    private partnerService = inject(PartnerService);
 
     products = signal<Product[]>([]);
-    hasData = computed(() => this.products().length > 0);
+    partners = signal<Partner[]>([]);
+    selectedPartnerId = signal<string | number>('all');
+
+    filteredProducts = computed(() => {
+        const pId = this.selectedPartnerId();
+        if (pId === 'all') return this.products();
+        return this.products().filter(p => p.partner?.id?.toString() === pId.toString());
+    });
+
+    hasData = computed(() => this.filteredProducts().length > 0);
     loading = signal(true);
 
     ngOnInit() {
+        this.loadPartners();
         this.loadProducts();
+    }
+
+    loadPartners() {
+        this.partnerService.getAll(0, 100).subscribe({
+            next: (resp) => this.partners.set(resp.content || resp),
+            error: (err) => console.error('Error loading partners', err)
+        });
     }
 
     loadProducts() {

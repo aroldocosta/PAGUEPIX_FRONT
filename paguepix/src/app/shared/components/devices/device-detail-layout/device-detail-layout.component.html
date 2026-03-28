@@ -2,9 +2,11 @@
     <!-- Coluna da Esquerda (Formulário + Produtos) -->
     <div class="lg:col-span-2 space-y-8">
         <!-- Formulário -->
-        <app-device-form [id]="id() ?? ''" [mqttId]="mqttId()" [name]="name()" [model]="model()"
+        <app-device-form [id]="id() ?? ''" [name]="name()" [model]="model()"
             [partnerId]="partnerId()" [partners]="partners()" [mode]="mode()" [loading]="releasing()"
-            [deviceProducts]="deviceProducts()" [releaseError]="releaseError()" (save)="save.emit($event)"
+            [deviceProducts]="deviceProducts()" [releaseError]="releaseError()" 
+            [boards]="boards()" [boardId]="boardId()"
+            (save)="save.emit($event)"
             (releaseManual)="releaseManual.emit($event)" (cancel)="cancel.emit()">
         </app-device-form>
 
@@ -20,7 +22,7 @@
 
     <!-- Coluna da Direita (Card do QR Code) -->
     <div class="space-y-6">
-        <app-device-qr-card *ngIf="id()" [qrUrl]="qrUrl()" [mqttId]="mqttId()" [name]="name()" [model]="model()"
+        <app-device-qr-card *ngIf="id()" [qrUrl]="qrUrl()" [name]="name()" [model]="model()"
             [id]="id()!">
         </app-device-qr-card>
     </div>

@@ -4,18 +4,21 @@ import { RouterModule } from '@angular/router';
 import { ManagementLayoutComponent } from '../../../shared/components/management-layout/management-layout.component';
 import { DeviceService } from '../../../core/services/device.service';
 import { DeviceListComponent } from '../../../shared/components/devices/device-list/device-list.component';
+import { DeviceDetailComponent } from '../../../shared/components/devices/device-detail/device-detail.component';
+import { Device } from '../../../core/models/device.model';
 import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-device-management',
     standalone: true,
-    imports: [CommonModule, RouterModule, ManagementLayoutComponent, DeviceListComponent],
+    imports: [CommonModule, RouterModule, ManagementLayoutComponent, DeviceListComponent, DeviceDetailComponent],
     templateUrl: './devices.html',
     styleUrl: './devices.scss'
 })
 export class DeviceManagement implements OnInit {
     private router = inject(Router);
-    devices = signal<any[]>([]);
+    devices = signal<Device[]>([]);
+    selectedDevice = signal<Device | null>(null);
     hasData = computed(() => this.devices().length > 0);
     loading = signal(true);
 
@@ -40,7 +43,14 @@ export class DeviceManagement implements OnInit {
     }
 
     onView(id: string) {
-        this.router.navigate(['/admin/devices/edit', id], { queryParams: { mode: 'view' } });
+        const device = this.devices().find(d => d.id.toString() === id);
+        if (device) {
+            this.selectedDevice.set(device);
+        }
+    }
+
+    onCloseDetail() {
+        this.selectedDevice.set(null);
     }
 
     onEdit(id: string) {
