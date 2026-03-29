@@ -140,9 +140,9 @@ export class ShowerComponent implements OnDestroy {
                     const mappedOptions = info.productList
                         .filter((p: any) => p.active !== false)
                         .map((p: any) => ({
-                            minutes: p.durationMinutes,
+                            minutes: p.duration,
                             label: p.name,
-                            description: p.subtitle || this.getFallbackDescription(p.durationMinutes),
+                            description: p.subtitle || this.getFallbackDescription(p.duration),
                             price: p.price,
                             icon: 'timer'
                         }))
