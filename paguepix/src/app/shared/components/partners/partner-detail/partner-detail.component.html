@@ -6,10 +6,9 @@
         <!-- Header -->
         <div
             class="p-8 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/30">
-            <div class="flex items-center gap-5">
-                <div
-                    class="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shadow-sm ring-1 ring-indigo-100 dark:ring-indigo-500/20">
-                    <span class="material-icons-outlined text-3xl">handshake</span>
+            <div class="flex items-center gap-6">
+                <div class="h-14 flex items-center">
+                    <img [src]="getLogoUrl()" class="h-full w-auto object-contain" alt="Logo">
                 </div>
                 <div>
                     <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">

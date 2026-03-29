@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Partner } from '../../../../core/models/partner.model';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
     selector: 'app-partner-detail',
@@ -24,6 +25,13 @@ import { Partner } from '../../../../core/models/partner.model';
 export class PartnerDetailComponent {
     @Input({ required: true }) partner!: Partner;
     @Output() close = new EventEmitter<void>();
+
+    getLogoUrl(): string | null {
+        if (this.partner?.logo) {
+            return `${environment.apiUrl}/partners/${this.partner.id}/logo`;
+        }
+        return null;
+    }
 
     onClose() {
         this.close.emit();
