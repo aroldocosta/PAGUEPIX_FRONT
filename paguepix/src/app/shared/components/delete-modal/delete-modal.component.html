@@ -1,0 +1,59 @@
+<div class="fixed inset-0 z-[1000] flex items-center justify-center p-4 sm:p-6 overflow-x-hidden overflow-y-auto">
+    <!-- Backdrop -->
+    <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" (click)="onCancel()"></div>
+
+    <!-- Modal Content -->
+    <div
+        class="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-[40px] shadow-2xl border border-slate-100 dark:border-slate-800 p-8 sm:p-12 transform transition-all scale-100 opacity-100 flex flex-col items-center text-center">
+
+        <!-- Close Button -->
+        <button (click)="onCancel()"
+            class="absolute top-8 right-8 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 transition-colors">
+            <span class="material-icons-outlined">close</span>
+        </button>
+
+        <!-- Warning Icon Area -->
+        <div
+            class="w-20 h-20 bg-rose-50 dark:bg-rose-500/10 text-rose-500 dark:text-rose-400 rounded-[32px] flex items-center justify-center mb-8 ring-8 ring-rose-50/50 dark:ring-rose-500/5">
+            <span class="material-icons-outlined text-4xl">delete_forever</span>
+        </div>
+
+        <!-- Text Content -->
+        <h3 class="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight mb-3">
+            Confirmar Exclusão
+        </h3>
+        <p class="text-slate-500 dark:text-slate-400 font-medium text-sm leading-relaxed mb-8">
+            Você tem certeza que deseja remover <strong class="text-slate-900 dark:text-slate-100 font-black">"{{
+                objectName }}"</strong>? Esta ação não poderá ser desfeita.
+        </p>
+
+        <!-- Alert Message Panel -->
+        <div *ngIf="alertMessage"
+            class="w-full flex items-start gap-4 p-5 bg-amber-50/50 dark:bg-amber-900/10 border border-amber-100/50 dark:border-amber-900/20 rounded-3xl mb-10 text-left">
+            <div class="p-2 bg-amber-100/50 dark:bg-amber-500/20 rounded-xl text-amber-600 dark:text-amber-400">
+                <span class="material-icons-outlined text-lg block">warning_amber</span>
+            </div>
+            <div class="flex-1">
+                <p class="text-[10px] uppercase tracking-widest font-black text-amber-600 dark:text-amber-500 mb-1">Impacto da Remoção</p>
+                <p class="text-xs text-amber-700 dark:text-amber-400 leading-relaxed font-bold">
+                    {{ alertMessage }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="w-full flex flex-col gap-4">
+            <button (click)="onConfirm()" [disabled]="loading"
+                class="w-full h-16 bg-rose-500 hover:bg-rose-600 text-white dark:text-rose-50 shadow-lg shadow-rose-200 dark:shadow-rose-950/40 rounded-2xl font-black text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-3 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none">
+                <span *ngIf="loading"
+                    class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                <span>{{ loading ? 'Removendo...' : 'Confirmar e Remover' }}</span>
+            </button>
+
+            <button (click)="onCancel()" [disabled]="loading"
+                class="w-full h-16 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-2xl font-black text-sm uppercase tracking-wider transition-all active:scale-[0.98] disabled:opacity-50">
+                Manter este item
+            </button>
+        </div>
+    </div>
+</div>

@@ -22,3 +22,8 @@
 
 <app-device-detail *ngIf="selectedDevice()" [device]="selectedDevice()!" (close)="onCloseDetail()">
 </app-device-detail>
+
+<app-delete-modal *ngIf="showDeleteModal()" [objectName]="deviceToDelete()?.name || ''"
+    alertMessage="O dispositivo deixará de processar vendas e precisará ser reconfigurado manualmente se for reativado."
+    [loading]="isDeleting()" (confirm)="confirmDelete()" (cancel)="closeDeleteModal()">
+</app-delete-modal>

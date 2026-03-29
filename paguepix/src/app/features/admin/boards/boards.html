@@ -82,3 +82,8 @@
 
 <app-board-detail *ngIf="selectedBoard()" [board]="selectedBoard()!" (close)="selectedBoard.set(null)">
 </app-board-detail>
+
+<app-delete-modal *ngIf="showDeleteModal()" [objectName]="boardToDelete()?.clientId || ''"
+    alertMessage="Todas as configurações de hardware e vínculos com dispositivos serão removidos."
+    [loading]="isDeleting()" (confirm)="confirmDelete()" (cancel)="closeDeleteModal()">
+</app-delete-modal>

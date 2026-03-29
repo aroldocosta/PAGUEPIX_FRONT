@@ -2,6 +2,7 @@ import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ManagementLayoutComponent } from '../../../shared/components/management-layout/management-layout.component';
 import { UserDetailComponent } from '../../../shared/components/users/user-detail/user-detail.component';
+import { DeleteModalComponent } from '../../../shared/components/delete-modal/delete-modal.component';
 import { UserService } from '../../../core/services/user.service';
 import { PartnerService } from '../../../core/services/partner.service';
 import { User } from '../../../core/models/user.model';
@@ -13,7 +14,7 @@ import { RouterModule } from '@angular/router';
 @Component({
     selector: 'app-user-management',
     standalone: true,
-    imports: [CommonModule, RouterModule, ManagementLayoutComponent, UserDetailComponent, FormsModule],
+    imports: [CommonModule, RouterModule, ManagementLayoutComponent, UserDetailComponent, FormsModule, DeleteModalComponent],
     templateUrl: './users.html',
     styleUrl: './users.scss'
 })
@@ -23,6 +24,11 @@ export class UserManagement implements OnInit {
     selectedPartnerId = signal<string | number>('all');
     selectedUser = signal<User | null>(null);
     loading = signal(true);
+
+    // Modal de Exclusão
+    showDeleteModal = signal(false);
+    isDeleting = signal(false);
+    userToDelete = signal<User | null>(null);
 
     filteredUsers = computed(() => {
         const pId = this.selectedPartnerId();
@@ -70,11 +76,34 @@ export class UserManagement implements OnInit {
     }
 
     onDelete(id: string | number) {
-        if (confirm('Deseja realmente excluir este usuário?')) {
-            this.userService.delete(id).subscribe({
-                next: () => this.loadUsers(),
-                error: (err) => alert('Erro ao excluir usuário.')
-            });
+        const user = this.users().find(u => u.id === id);
+        if (user) {
+            this.userToDelete.set(user);
+            this.showDeleteModal.set(true);
         }
+    }
+
+    confirmDelete() {
+        const user = this.userToDelete();
+        if (!user) return;
+
+        this.isDeleting.set(true);
+        this.userService.delete(user.id).subscribe({
+            next: () => {
+                this.loadUsers();
+                this.closeDeleteModal();
+            },
+            error: (err) => {
+                console.error('Erro ao excluir usuário:', err);
+                this.isDeleting.set(false);
+                alert('Erro ao excluir usuário.');
+            }
+        });
+    }
+
+    closeDeleteModal() {
+        this.showDeleteModal.set(false);
+        this.userToDelete.set(null);
+        this.isDeleting.set(false);
     }
 }

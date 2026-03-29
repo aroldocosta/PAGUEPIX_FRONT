@@ -9,6 +9,11 @@
 
         <app-lead-detail *ngIf="selectedLead()" [lead]="selectedLead()!" (close)="selectedLead.set(null)">
         </app-lead-detail>
+
+        <app-delete-modal *ngIf="showDeleteModal()" [objectName]="leadToDelete()?.name || ''"
+            alertMessage="Ao excluir este lead, todos os dados de contato e histórico de interações serão perdidos permanentemente."
+            [loading]="isDeleting()" (confirm)="confirmDelete()" (cancel)="closeDeleteModal()">
+        </app-delete-modal>
     </ng-template>
 
 </app-management-layout>

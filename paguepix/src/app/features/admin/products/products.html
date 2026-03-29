@@ -22,3 +22,8 @@
 
 <app-product-detail *ngIf="selectedProduct()" [product]="selectedProduct()!" (close)="selectedProduct.set(null)">
 </app-product-detail>
+
+<app-delete-modal *ngIf="showDeleteModal()" [objectName]="productToDelete()?.name || ''"
+    alertMessage="Remover este produto irá desativá-lo para todos os parceiros que o utilizam."
+    [loading]="isDeleting()" (confirm)="confirmDelete()" (cancel)="closeDeleteModal()">
+</app-delete-modal>

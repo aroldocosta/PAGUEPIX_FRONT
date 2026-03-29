@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ManagementLayoutComponent } from '../../../shared/components/management-layout/management-layout.component';
 import { ScriptService } from '../../../core/services/script.service';
 import { ScriptDetailComponent } from '../../../shared/components/scripts/script-detail/script-detail.component';
+import { DeleteModalComponent } from '../../../shared/components/delete-modal/delete-modal.component';
 import { Script } from '../../../core/models/script.model';
 
 import { RouterModule, Router } from '@angular/router';
@@ -11,7 +12,7 @@ import { inject } from '@angular/core';
 @Component({
     selector: 'app-scripts-management',
     standalone: true,
-    imports: [CommonModule, RouterModule, ManagementLayoutComponent, ScriptDetailComponent],
+    imports: [CommonModule, RouterModule, ManagementLayoutComponent, ScriptDetailComponent, DeleteModalComponent],
     templateUrl: './scripts.html',
     styleUrl: './scripts.scss'
 })
@@ -22,6 +23,11 @@ export class ScriptsManagement implements OnInit {
     selectedScript = signal<Script | null>(null);
     hasData = computed(() => this.scripts().length > 0);
     loading = signal(true);
+
+    // Modal de Exclusão
+    showDeleteModal = signal(false);
+    isDeleting = signal(false);
+    scriptToDelete = signal<Script | null>(null);
 
     constructor() { }
 
@@ -52,11 +58,34 @@ export class ScriptsManagement implements OnInit {
     }
 
     onDelete(id: string | number) {
-        if (confirm('Deseja realmente excluir este script?')) {
-            this.scriptService.delete(id).subscribe({
-                next: () => this.loadScripts(),
-                error: (err) => alert('Erro ao excluir script.')
-            });
+        const script = this.scripts().find(s => s.id.toString() === id.toString());
+        if (script) {
+            this.scriptToDelete.set(script);
+            this.showDeleteModal.set(true);
         }
+    }
+
+    confirmDelete() {
+        const script = this.scriptToDelete();
+        if (!script) return;
+
+        this.isDeleting.set(true);
+        this.scriptService.delete(script.id).subscribe({
+            next: () => {
+                this.loadScripts();
+                this.closeDeleteModal();
+            },
+            error: (err) => {
+                console.error('Erro ao excluir script:', err);
+                this.isDeleting.set(false);
+                alert('Erro ao excluir script.');
+            }
+        });
+    }
+
+    closeDeleteModal() {
+        this.showDeleteModal.set(false);
+        this.scriptToDelete.set(null);
+        this.isDeleting.set(false);
     }
 }

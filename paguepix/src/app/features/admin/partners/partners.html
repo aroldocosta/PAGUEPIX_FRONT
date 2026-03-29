@@ -74,3 +74,8 @@
 
 <app-partner-detail *ngIf="selectedPartner()" [partner]="selectedPartner()!" (close)="onCloseDetail()">
 </app-partner-detail>
+
+<app-delete-modal *ngIf="showDeleteModal()" [objectName]="partnerToDelete()?.name || ''"
+    alertMessage="Excluir um parceiro removerá todos os usuários, dispositivos e vendas associados a ele. Esta ação é irreversível."
+    [loading]="isDeleting()" (confirm)="confirmDelete()" (cancel)="closeDeleteModal()">
+</app-delete-modal>
