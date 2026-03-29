@@ -10,7 +10,7 @@ import { Device } from '../../../core/models/device.model';
 import { Partner } from '../../../core/models/partner.model';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-
+//Teste
 @Component({
     selector: 'app-device-management',
     standalone: true,

@@ -5,6 +5,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 import { TopbarComponent } from '../topbar/topbar.component';
 import { FooterComponent } from '../footer/footer.component';
 import { AuthService } from '../../../core/services/auth.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
     selector: 'app-management-layout',
@@ -15,6 +16,14 @@ import { AuthService } from '../../../core/services/auth.service';
 export class ManagementLayoutComponent {
     private authService = inject(AuthService);
     partnerName = computed(() => this.authService.partnerName());
+    partnerLogo = computed(() => this.authService.partnerLogo());
+    imageError = signal(false);
+
+    logoUrl = computed(() => {
+        const logo = this.partnerLogo();
+        if (!logo) return null;
+        return `${environment.apiUrl}/partners/${this.authService.partnerId()}/logo`;
+    });
     @Input() title: string = '';
     @Input() subtitle: string = '';
     @Input() searchPlaceholder: string = 'Buscar...';

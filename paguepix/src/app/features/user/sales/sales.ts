@@ -9,6 +9,8 @@ import { AuthService } from '../../../core/services/auth.service';
 import { PaymentListComponent } from '../../../shared/components/payments/payment-list/payment-list.component';
 import { PaymentDetailComponent } from '../../../shared/components/payments/payment-detail/payment-detail.component';
 import { Payment } from '../../../core/models/payment.model';
+import { environment } from '../../../../environments/environment';
+
 @Component({
     selector: 'app-sales',
     standalone: true,
@@ -21,6 +23,14 @@ export class SalesComponent implements OnInit {
     private authService = inject(AuthService);
 
     partnerName = computed(() => this.authService.partnerName());
+    partnerLogo = computed(() => this.authService.partnerLogo());
+    imageError = signal(false);
+
+    logoUrl = computed(() => {
+        const logo = this.partnerLogo();
+        if (!logo) return null;
+        return `${environment.apiUrl}/partners/${this.authService.partnerId()}/logo`;
+    });
 
     sales = signal<Payment[]>([]);
     selectedPayment = signal<Payment | null>(null);
