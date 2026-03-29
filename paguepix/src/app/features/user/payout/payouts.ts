@@ -7,6 +7,7 @@ import { PayoutDetailComponent } from '../../../shared/components/payouts/payout
 import { PayoutService } from '../../../core/services/payout.service';
 import { Payout } from '../../../core/models/payout.model';
 import { AuthService } from '../../../core/services/auth.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
     selector: 'app-partner-payouts',
@@ -18,6 +19,14 @@ import { AuthService } from '../../../core/services/auth.service';
 export class PartnerPayouts implements OnInit {
     private authService = inject(AuthService);
     partnerName = computed(() => this.authService.partnerName());
+    partnerLogo = computed(() => this.authService.partnerLogo());
+    imageError = signal(false);
+
+    logoUrl = computed(() => {
+        const logo = this.partnerLogo();
+        if (!logo) return null;
+        return `${environment.apiUrl}/partners/${this.authService.partnerId()}/logo`;
+    });
 
     payouts = signal<Payout[]>([]);
     selectedPayout = signal<Payout | null>(null);
