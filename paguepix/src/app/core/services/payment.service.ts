@@ -11,7 +11,7 @@ export class PaymentService {
 
     constructor(private http: HttpClient) { }
 
-    getAll(partnerId?: number, page: number = 0, size: number = 10) {
+    getAll(partnerId?: string | number, page: number = 0, size: number = 10) {
         let params = new HttpParams()
             .set('page', page.toString())
             .set('size', size.toString());
@@ -23,7 +23,7 @@ export class PaymentService {
         return this.http.get<any>(this.apiUrl, { params });
     }
 
-    getById(id: number) {
+    getById(id: string | number) {
         return this.http.get<Payment>(`${this.apiUrl}/${id}`);
     }
 

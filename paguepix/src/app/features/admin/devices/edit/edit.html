@@ -1,15 +1,14 @@
 <app-management-layout
-    [title]="id() ? (formMode() === 'view' ? 'Detalhes do Dispositivo' : 'Editar Dispositivo') : 'Novo Dispositivo'"
+    [title]="id() ? (formMode() === 'view' ? 'Detalhes do Dispositivo' : 'Editar Dispositivo') : 'Adicionar Dispositivo'"
     [subtitle]="id() ? (formMode() === 'view' ? 'Visualize informações e gerencie operações do seu dispositivo.' : 'Altere as informações do dispositivo selecionado.') : 'Cadastre um novo dispositivo no sistema.'"
     [loading]="loading" [hasData]="hasData">
 
     <ng-template #tableContent>
-        <app-device-detail-layout [id]="id()!" [name]="name()" [model]="model()"
-            [partnerId]="partnerId()" [partners]="partners()" [qrUrl]="qrUrl()" [mode]="formMode()"
-            [releasing]="releasing()" [releaseError]="releaseError()" (save)="onSave($event)"
-            [allProducts]="allProducts()" [deviceProducts]="deviceProducts()" [productLoading]="productLoading()"
-            [boards]="boards()" [boardId]="boardId()"
-            (addProduct)="onAddProduct($event)" (removeProduct)="onRemoveProduct($event)"
+        <app-device-detail-layout [id]="id()!" [name]="name()" [model]="model()" [partnerId]="partnerId()"
+            [partners]="partners()" [qrUrl]="qrUrl()" [mode]="formMode()" [releasing]="releasing()"
+            [releaseError]="releaseError()" (save)="onSave($event)" [allProducts]="allProducts()"
+            [deviceProducts]="deviceProducts()" [productLoading]="productLoading()" [boards]="boards()"
+            [boardId]="boardId()" (addProduct)="onAddProduct($event)" (removeProduct)="onRemoveProduct($event)"
             (releaseManual)="onReleaseManual($event)" (cancel)="onCancel()">
         </app-device-detail-layout>
     </ng-template>

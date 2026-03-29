@@ -6,12 +6,13 @@ import { ProductService, Product } from '../../../core/services/product.service'
 import { PartnerService } from '../../../core/services/partner.service';
 import { Partner } from '../../../core/models/partner.model';
 import { ProductListComponent } from '../../../shared/components/products/product-list/product-list.component';
+import { ProductDetailComponent } from '../../../shared/components/products/product-detail/product-detail.component';
 import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-product-management',
     standalone: true,
-    imports: [CommonModule, RouterModule, ManagementLayoutComponent, ProductListComponent, FormsModule],
+    imports: [CommonModule, RouterModule, ManagementLayoutComponent, ProductListComponent, FormsModule, ProductDetailComponent],
     templateUrl: './products.html'
 })
 export class ProductManagement implements OnInit {
@@ -22,6 +23,7 @@ export class ProductManagement implements OnInit {
     products = signal<Product[]>([]);
     partners = signal<Partner[]>([]);
     selectedPartnerId = signal<string | number>('all');
+    selectedProduct = signal<Product | null>(null);
 
     filteredProducts = computed(() => {
         const pId = this.selectedPartnerId();
@@ -59,8 +61,8 @@ export class ProductManagement implements OnInit {
         });
     }
 
-    onView(id: string) {
-        this.router.navigate(['/admin/products/edit', id], { queryParams: { mode: 'view' } });
+    onView(product: Product) {
+        this.selectedProduct.set(product);
     }
 
     onEdit(id: string) {

@@ -3,6 +3,15 @@
     addRoute="/admin/users/new" [loading]="loading" [hasData]="hasData" emptyStateIcon="person_off"
     emptyStateMessage="Nenhum usuário encontrado.">
 
+    <div headerActions class="flex items-center gap-2">
+        <label for="partnerFilter" class="text-xs font-bold text-slate-400 uppercase tracking-widest hidden lg:block">Filtrar:</label>
+        <select id="partnerFilter" [(ngModel)]="selectedPartnerId" 
+            class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none">
+            <option value="all">Todos os Parceiros</option>
+            <option *ngFor="let p of partners()" [value]="p.id">{{ p.name }}</option>
+        </select>
+    </div>
+
     <ng-template #tableHeader>
         <th class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
             Usuário
@@ -21,7 +30,7 @@
     </ng-template>
 
     <ng-template #tableRow>
-        <tr *ngFor="let user of users()" class="hover:bg-gray-50/80 dark:hover:bg-slate-800/50 transition-colors group">
+        <tr *ngFor="let user of filteredUsers()" class="hover:bg-gray-50/80 dark:hover:bg-slate-800/50 transition-colors group">
             <td class="px-8 py-0.5">
                 <div class="flex items-center gap-4">
                     <div

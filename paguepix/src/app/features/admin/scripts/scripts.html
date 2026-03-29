@@ -1,5 +1,5 @@
 <app-management-layout title="Gestão de Scripts" subtitle="Gerencie os scripts de automação."
-    searchPlaceholder="Buscar scripts..." addButtonLabel="Novo Script" addButtonIcon="add_box"
+    searchPlaceholder="Buscar scripts..." addButtonLabel="Adicionar Script" addButtonIcon="add_box"
     addRoute="/admin/scripts/new" [loading]="loading" [hasData]="hasData" emptyStateIcon="code_off"
     emptyStateMessage="Nenhum script encontrado.">
 
@@ -45,16 +45,26 @@
             </td>
             <td class="px-8 py-0.5 text-center">
                 <div class="flex items-center justify-center gap-2">
-                    <button
-                        class="p-2 text-gray-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all border-none">
-                        <span class="material-icons-outlined text-lg">play_arrow</span>
+                    <button (click)="onView(script)"
+                        class="p-2 text-gray-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-all"
+                        title="Ver Detalhes">
+                        <span class="material-icons-outlined text-lg">visibility</span>
                     </button>
-                    <button [routerLink]="['/admin/scripts/edit', script.id.toString()]"
-                        class="p-2 text-gray-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all">
+                    <button (click)="onEdit(script.id)"
+                        class="p-2 text-gray-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all"
+                        title="Editar">
                         <span class="material-symbols-outlined text-lg">edit_square</span>
+                    </button>
+                    <button (click)="onDelete(script.id)"
+                        class="p-2 text-gray-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-all"
+                        title="Excluir">
+                        <span class="material-icons-outlined text-lg">delete</span>
                     </button>
                 </div>
             </td>
         </tr>
     </ng-template>
 </app-management-layout>
+
+<app-script-detail *ngIf="selectedScript()" [script]="selectedScript()!" (close)="selectedScript.set(null)">
+</app-script-detail>

@@ -3,29 +3,50 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ManagementLayoutComponent } from '../../../shared/components/management-layout/management-layout.component';
 import { DeviceService } from '../../../core/services/device.service';
+import { PartnerService } from '../../../core/services/partner.service';
 import { DeviceListComponent } from '../../../shared/components/devices/device-list/device-list.component';
 import { DeviceDetailComponent } from '../../../shared/components/devices/device-detail/device-detail.component';
 import { Device } from '../../../core/models/device.model';
+import { Partner } from '../../../core/models/partner.model';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-device-management',
     standalone: true,
-    imports: [CommonModule, RouterModule, ManagementLayoutComponent, DeviceListComponent, DeviceDetailComponent],
+    imports: [CommonModule, RouterModule, ManagementLayoutComponent, DeviceListComponent, DeviceDetailComponent, FormsModule],
     templateUrl: './devices.html',
     styleUrl: './devices.scss'
 })
 export class DeviceManagement implements OnInit {
     private router = inject(Router);
     devices = signal<Device[]>([]);
+    partners = signal<Partner[]>([]);
+    selectedPartnerId = signal<string | number>('all');
     selectedDevice = signal<Device | null>(null);
-    hasData = computed(() => this.devices().length > 0);
+
+    filteredDevices = computed(() => {
+        const pId = this.selectedPartnerId();
+        if (pId === 'all') return this.devices();
+        return this.devices().filter(d => d.partner?.id?.toString() === pId.toString());
+    });
+
+    hasData = computed(() => this.filteredDevices().length > 0);
     loading = signal(true);
 
     private deviceService = inject(DeviceService);
+    private partnerService = inject(PartnerService);
 
     ngOnInit() {
+        this.loadPartners();
         this.loadDevices();
+    }
+
+    loadPartners() {
+        this.partnerService.getAll(0, 100).subscribe({
+            next: (resp) => this.partners.set(resp.content || resp),
+            error: (err) => console.error('Error loading partners', err)
+        });
     }
 
     loadDevices() {

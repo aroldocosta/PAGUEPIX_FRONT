@@ -17,19 +17,9 @@
                 <th class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                     Dispositivo
                 </th>
-                <th class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                    Situação
-                </th>
                 <th *ngIf="mode === 'admin'"
                     class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                     Valor Pago
-                </th>
-                <th *ngIf="mode === 'admin'"
-                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                    {{ mode === 'admin' ? 'Comissão' : 'Taxa de Serviço' }}
-                </th>
-                <th class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                    {{ mode === 'admin' ? 'Vl. Líquido' : 'A RECEBER' }}
                 </th>
                 <th *ngIf="mode === 'admin'"
                     class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
@@ -78,36 +68,12 @@
                     </div>
                 </td>
 
-                <!-- Situação / Status -->
-                <td class="px-8 py-0.5">
-                    <span [ngClass]="{
-                        'bg-green-50 text-green-700 ring-1 ring-green-600/10 dark:bg-green-900/30 dark:text-green-400': payment.state === 'APPROVED' || payment.state === 'CONSUMED' || payment.state === 'PAID_OUT',
-                        'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-600/10 dark:bg-amber-900/30 dark:text-amber-400': payment.state === 'PENDING' || payment.state === 'WAITING_PAYMENT' || payment.state === 'PENDING_BANK',
-                        'bg-red-50 text-red-700 ring-1 ring-red-600/10 dark:bg-rose-900/30 dark:text-rose-400': payment.state === 'EXPIRED' || payment.state === 'CANCELED' || payment.state === 'CANCELLED' || payment.state === 'FAILED' || payment.state === 'REFUNDED'
-                    }" class="px-2.5 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1">
-                        <span class="w-1 h-1 rounded-full" [ngClass]="{
-                            'bg-green-600': payment.state === 'APPROVED' || payment.state === 'CONSUMED' || payment.state === 'PAID_OUT',
-                            'bg-yellow-600': payment.state === 'PENDING' || payment.state === 'WAITING_PAYMENT' || payment.state === 'PENDING_BANK',
-                            'bg-red-600': payment.state === 'EXPIRED' || payment.state === 'CANCELED' || payment.state === 'CANCELLED' || payment.state === 'FAILED' || payment.state === 'REFUNDED'
-                        }"></span>
-                        {{ payment.state }}
-                    </span>
-                </td>
-
                 <!-- Valor Pago -->
                 <td *ngIf="mode === 'admin'" class="px-8 py-0.5 text-sm font-bold text-gray-900 dark:text-slate-200">
                     {{ payment.paidValue | currency:'BRL' }}
                 </td>
 
-                <!-- Comissão / Taxa de Serviço -->
-                <td *ngIf="mode === 'admin'" class="px-8 py-0.5 text-sm text-red-500">
-                    {{ payment.commissionAmount | currency:'BRL' }}
-                </td>
-
                 <!-- Vl. Líquido / A RECEBER -->
-                <td class="px-8 py-0.5 text-sm font-bold text-green-600">
-                    {{ payment.netAmount | currency:'BRL' }}
-                </td>
 
                 <!-- Data (Admin Mode) -->
                 <td *ngIf="mode === 'admin'" class="px-8 py-0.5 text-sm text-slate-500 dark:text-slate-400">

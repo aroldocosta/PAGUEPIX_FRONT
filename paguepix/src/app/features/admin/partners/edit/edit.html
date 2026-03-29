@@ -1,4 +1,4 @@
-<app-management-layout [title]="id() ? 'Editar Parceiro' : 'Novo Parceiro'"
+<app-management-layout [title]="id() ? 'Editar Parceiro' : 'Adicionar Parceiro'"
     [subtitle]="id() ? 'Altere as informações da empresa selecionada.' : 'Cadastre uma nova empresa na plataforma.'"
     [loading]="loading" [hasData]="hasData">
 
@@ -95,7 +95,8 @@
                     <div class="flex justify-center mb-6">
                         <div
                             class="w-40 h-40 rounded-3xl border-2 border-dashed border-slate-300 dark:border-slate-700 flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-800/50 relative group">
-                            <img *ngIf="logo() && !imageError()" [src]="logo()" class="w-full h-full object-cover" (error)="imageError.set(true)">
+                            <img *ngIf="logo() && !imageError()" [src]="logo()" class="w-full h-full object-cover"
+                                (error)="imageError.set(true)">
                             <span *ngIf="!logo() || imageError()"
                                 class="material-icons-outlined text-4xl text-slate-300 dark:text-slate-600">store</span>
                             <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
@@ -105,7 +106,9 @@
                         </div>
                     </div>
 
-                    <input #logoInput type="file" id="logoInput" class="opacity-0 absolute inset-0 pointer-events-none w-px h-px overflow-hidden -z-10" accept="image/*" (change)="onFileSelected($event)">
+                    <input #logoInput type="file" id="logoInput"
+                        class="opacity-0 absolute inset-0 pointer-events-none w-px h-px overflow-hidden -z-10"
+                        accept="image/*" (change)="onFileSelected($event)">
 
                     <button type="button" (click)="triggerFileInput(logoInput)"
                         class="w-full flex items-center justify-center gap-3 py-4 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 font-bold hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-all">

@@ -1,28 +1,24 @@
-<app-management-layout [title]="id() ? 'Editar Lead' : 'Novo Lead'"
+<app-management-layout [title]="id() ? 'Editar Lead' : 'Adicionar Lead'"
     [subtitle]="id() ? 'Altere as informações de contato do lead.' : 'Cadastre um novo lead interessado em seus serviços.'"
     [loading]="loading" [hasData]="hasData">
 
     <ng-template #tableContent>
         <div class="p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Formulário de Edição -->
-            <div class="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-[32px] shadow-sm h-fit">
-                <app-lead-form
-                    [id]="id()"
-                    [name]="lead().name || ''"
-                    [email]="lead().email || ''"
-                    [whatsapp]="lead().whatsapp || ''"
-                    [barraca]="lead().barraca || ''"
-                    [mode]="formMode()"
-                    [loading]="loading()"
-                    (save)="onSave($event)"
-                    (cancel)="onCancel()">
+            <div
+                class="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-[32px] shadow-sm h-fit">
+                <app-lead-form [id]="id()" [name]="lead().name || ''" [email]="lead().email || ''"
+                    [whatsapp]="lead().whatsapp || ''" [barraca]="lead().barraca || ''" [mode]="formMode()"
+                    [loading]="loading()" (save)="onSave($event)" (cancel)="onCancel()">
                 </app-lead-form>
             </div>
 
             <!-- Guide Card -->
             <div class="space-y-6">
-                <div class="bg-indigo-50 dark:bg-indigo-900/20 p-8 rounded-[32px] border border-indigo-100 dark:border-indigo-900/30 font-sans">
-                    <div class="flex gap-4 text-indigo-700 dark:text-indigo-400 mb-6 font-black uppercase tracking-tight items-center">
+                <div
+                    class="bg-indigo-50 dark:bg-indigo-900/20 p-8 rounded-[32px] border border-indigo-100 dark:border-indigo-900/30 font-sans">
+                    <div
+                        class="flex gap-4 text-indigo-700 dark:text-indigo-400 mb-6 font-black uppercase tracking-tight items-center">
                         <span class="material-icons-outlined text-2xl">info</span>
                         <h4 class="text-lg">Dicas de Cadastro</h4>
                     </div>
