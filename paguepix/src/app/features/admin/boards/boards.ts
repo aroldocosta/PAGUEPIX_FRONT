@@ -4,6 +4,7 @@ import { ManagementLayoutComponent } from '../../../shared/components/management
 import { BoardService } from '../../../core/services/board.service';
 import { PartnerService } from '../../../core/services/partner.service';
 import { BoardDetailComponent } from '../../../shared/components/boards/board-detail/board-detail.component';
+import { DeleteModalComponent } from '../../../shared/components/delete-modal/delete-modal.component';
 import { Board } from '../../../core/models/board.model';
 import { Partner } from '../../../core/models/partner.model';
 import { FormsModule } from '@angular/forms';
@@ -14,7 +15,7 @@ import { RouterModule, Router } from '@angular/router';
 @Component({
     selector: 'app-board-management',
     standalone: true,
-    imports: [CommonModule, RouterModule, ManagementLayoutComponent, BoardDetailComponent, FormsModule],
+    imports: [CommonModule, RouterModule, ManagementLayoutComponent, BoardDetailComponent, FormsModule, DeleteModalComponent],
     templateUrl: './boards.html',
     styleUrl: './boards.scss'
 })
@@ -26,6 +27,11 @@ export class BoardManagement implements OnInit {
     partners = signal<Partner[]>([]);
     selectedPartnerId = signal<string | number>('all');
     selectedBoard = signal<Board | null>(null);
+
+    // Modal de Exclusão
+    showDeleteModal = signal(false);
+    isDeleting = signal(false);
+    boardToDelete = signal<Board | null>(null);
 
     filteredBoards = computed(() => {
         const pId = this.selectedPartnerId();
@@ -73,11 +79,34 @@ export class BoardManagement implements OnInit {
     }
 
     onDelete(id: string | number) {
-        if (confirm('Deseja realmente excluir esta placa?')) {
-            this.boardService.delete(id).subscribe({
-                next: () => this.loadBoards(),
-                error: (err) => alert('Erro ao excluir placa.')
-            });
+        const board = this.boards().find(b => b.id.toString() === id.toString());
+        if (board) {
+            this.boardToDelete.set(board);
+            this.showDeleteModal.set(true);
         }
+    }
+
+    confirmDelete() {
+        const board = this.boardToDelete();
+        if (!board) return;
+
+        this.isDeleting.set(true);
+        this.boardService.delete(board.id.toString()).subscribe({
+            next: () => {
+                this.loadBoards();
+                this.closeDeleteModal();
+            },
+            error: (err) => {
+                console.error('Erro ao excluir placa:', err);
+                this.isDeleting.set(false);
+                alert('Erro ao excluir placa.');
+            }
+        });
+    }
+
+    closeDeleteModal() {
+        this.showDeleteModal.set(false);
+        this.boardToDelete.set(null);
+        this.isDeleting.set(false);
     }
 }

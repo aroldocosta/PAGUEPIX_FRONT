@@ -7,12 +7,13 @@ import { PartnerService } from '../../../core/services/partner.service';
 import { Partner } from '../../../core/models/partner.model';
 import { ProductListComponent } from '../../../shared/components/products/product-list/product-list.component';
 import { ProductDetailComponent } from '../../../shared/components/products/product-detail/product-detail.component';
+import { DeleteModalComponent } from '../../../shared/components/delete-modal/delete-modal.component';
 import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-product-management',
     standalone: true,
-    imports: [CommonModule, RouterModule, ManagementLayoutComponent, ProductListComponent, FormsModule, ProductDetailComponent],
+    imports: [CommonModule, RouterModule, ManagementLayoutComponent, ProductListComponent, FormsModule, ProductDetailComponent, DeleteModalComponent],
     templateUrl: './products.html'
 })
 export class ProductManagement implements OnInit {
@@ -24,6 +25,11 @@ export class ProductManagement implements OnInit {
     partners = signal<Partner[]>([]);
     selectedPartnerId = signal<string | number>('all');
     selectedProduct = signal<Product | null>(null);
+
+    // Modal de Exclusão
+    showDeleteModal = signal(false);
+    isDeleting = signal(false);
+    productToDelete = signal<Product | null>(null);
 
     filteredProducts = computed(() => {
         const pId = this.selectedPartnerId();
@@ -70,11 +76,34 @@ export class ProductManagement implements OnInit {
     }
 
     onDelete(id: string) {
-        if (confirm('Deseja realmente excluir este produto?')) {
-            this.productService.delete(id).subscribe({
-                next: () => this.loadProducts(),
-                error: (err) => alert('Erro ao excluir produto.')
-            });
+        const product = this.products().find(p => p.id === id);
+        if (product) {
+            this.productToDelete.set(product);
+            this.showDeleteModal.set(true);
         }
+    }
+
+    confirmDelete() {
+        const product = this.productToDelete();
+        if (!product || !product.id) return;
+
+        this.isDeleting.set(true);
+        this.productService.delete(product.id).subscribe({
+            next: () => {
+                this.loadProducts();
+                this.closeDeleteModal();
+            },
+            error: (err) => {
+                console.error('Erro ao excluir produto:', err);
+                this.isDeleting.set(false);
+                alert('Erro ao excluir produto.');
+            }
+        });
+    }
+
+    closeDeleteModal() {
+        this.showDeleteModal.set(false);
+        this.productToDelete.set(null);
+        this.isDeleting.set(false);
     }
 }

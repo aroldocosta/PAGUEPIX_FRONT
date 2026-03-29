@@ -84,3 +84,8 @@
 
 <app-user-detail *ngIf="selectedUser()" [user]="selectedUser()!" (close)="onCloseDetail()">
 </app-user-detail>
+
+<app-delete-modal *ngIf="showDeleteModal()" [objectName]="userToDelete()?.name || ''"
+    alertMessage="O usuário perderá acesso imediato à plataforma." [loading]="isDeleting()" (confirm)="confirmDelete()"
+    (cancel)="closeDeleteModal()">
+</app-delete-modal>

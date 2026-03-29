@@ -68,3 +68,8 @@
 
 <app-script-detail *ngIf="selectedScript()" [script]="selectedScript()!" (close)="selectedScript.set(null)">
 </app-script-detail>
+
+<app-delete-modal *ngIf="showDeleteModal()" [objectName]="scriptToDelete()?.name || ''"
+    alertMessage="Scripts removidos não poderão ser recuperados pelos dispositivos que dependem deles."
+    [loading]="isDeleting()" (confirm)="confirmDelete()" (cancel)="closeDeleteModal()">
+</app-delete-modal>

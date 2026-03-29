@@ -1,7 +1,8 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ManagementLayoutComponent } from '../../../shared/components/management-layout/management-layout.component';
 import { PartnerDetailComponent } from '../../../shared/components/partners/partner-detail/partner-detail.component';
+import { DeleteModalComponent } from '../../../shared/components/delete-modal/delete-modal.component';
 import { PartnerService } from '../../../core/services/partner.service';
 import { Partner } from '../../../core/models/partner.model';
 
@@ -10,17 +11,23 @@ import { RouterModule } from '@angular/router';
 @Component({
     selector: 'app-partner-management',
     standalone: true,
-    imports: [CommonModule, RouterModule, ManagementLayoutComponent, PartnerDetailComponent],
+    imports: [CommonModule, RouterModule, ManagementLayoutComponent, PartnerDetailComponent, DeleteModalComponent],
     templateUrl: './partners.html',
     styleUrl: './partners.scss'
 })
 export class PartnerManagement implements OnInit {
+    private partnerService = inject(PartnerService);
     partners = signal<Partner[]>([]);
     selectedPartner = signal<Partner | null>(null);
     hasData = computed(() => this.partners().length > 0);
     loading = signal(true);
 
-    constructor(private partnerService: PartnerService) { }
+    // Modal de Exclusão
+    showDeleteModal = signal(false);
+    isDeleting = signal(false);
+    partnerToDelete = signal<Partner | null>(null);
+
+    constructor() { }
 
     ngOnInit() {
         this.loadPartners();
@@ -50,11 +57,34 @@ export class PartnerManagement implements OnInit {
     }
 
     onDelete(id: string | number) {
-        if (confirm('Deseja realmente excluir este parceiro?')) {
-            this.partnerService.delete(id).subscribe({
-                next: () => this.loadPartners(),
-                error: (err) => alert('Erro ao excluir parceiro.')
-            });
+        const partner = this.partners().find(p => p.id === id);
+        if (partner) {
+            this.partnerToDelete.set(partner);
+            this.showDeleteModal.set(true);
         }
+    }
+
+    confirmDelete() {
+        const partner = this.partnerToDelete();
+        if (!partner) return;
+
+        this.isDeleting.set(true);
+        this.partnerService.delete(partner.id).subscribe({
+            next: () => {
+                this.loadPartners();
+                this.closeDeleteModal();
+            },
+            error: (err) => {
+                console.error('Erro ao excluir parceiro:', err);
+                this.isDeleting.set(false);
+                alert('Erro ao excluir parceiro.');
+            }
+        });
+    }
+
+    closeDeleteModal() {
+        this.showDeleteModal.set(false);
+        this.partnerToDelete.set(null);
+        this.isDeleting.set(false);
     }
 }

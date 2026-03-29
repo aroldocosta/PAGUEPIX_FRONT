@@ -6,15 +6,16 @@ import { DeviceService } from '../../../core/services/device.service';
 import { PartnerService } from '../../../core/services/partner.service';
 import { DeviceListComponent } from '../../../shared/components/devices/device-list/device-list.component';
 import { DeviceDetailComponent } from '../../../shared/components/devices/device-detail/device-detail.component';
+import { DeleteModalComponent } from '../../../shared/components/delete-modal/delete-modal.component';
 import { Device } from '../../../core/models/device.model';
 import { Partner } from '../../../core/models/partner.model';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-//Teste
+
 @Component({
     selector: 'app-device-management',
     standalone: true,
-    imports: [CommonModule, RouterModule, ManagementLayoutComponent, DeviceListComponent, DeviceDetailComponent, FormsModule],
+    imports: [CommonModule, RouterModule, ManagementLayoutComponent, DeviceListComponent, DeviceDetailComponent, FormsModule, DeleteModalComponent],
     templateUrl: './devices.html',
     styleUrl: './devices.scss'
 })
@@ -24,6 +25,11 @@ export class DeviceManagement implements OnInit {
     partners = signal<Partner[]>([]);
     selectedPartnerId = signal<string | number>('all');
     selectedDevice = signal<Device | null>(null);
+
+    // Modal de Exclusão
+    showDeleteModal = signal(false);
+    isDeleting = signal(false);
+    deviceToDelete = signal<Device | null>(null);
 
     filteredDevices = computed(() => {
         const pId = this.selectedPartnerId();
@@ -79,11 +85,34 @@ export class DeviceManagement implements OnInit {
     }
 
     onDelete(id: string) {
-        if (confirm('Deseja realmente excluir este dispositivo?')) {
-            this.deviceService.delete(id).subscribe({
-                next: () => this.loadDevices(),
-                error: (err) => alert('Erro ao excluir dispositivo.')
-            });
+        const device = this.devices().find(d => d.id.toString() === id);
+        if (device) {
+            this.deviceToDelete.set(device);
+            this.showDeleteModal.set(true);
         }
+    }
+
+    confirmDelete() {
+        const device = this.deviceToDelete();
+        if (!device) return;
+
+        this.isDeleting.set(true);
+        this.deviceService.delete(device.id.toString()).subscribe({
+            next: () => {
+                this.loadDevices();
+                this.closeDeleteModal();
+            },
+            error: (err) => {
+                console.error('Erro ao excluir dispositivo:', err);
+                this.isDeleting.set(false);
+                alert('Erro ao excluir dispositivo.');
+            }
+        });
+    }
+
+    closeDeleteModal() {
+        this.showDeleteModal.set(false);
+        this.deviceToDelete.set(null);
+        this.isDeleting.set(false);
     }
 }
