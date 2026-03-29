@@ -1,11 +1,12 @@
 <app-management-layout title="Gestão de Produtos"
     subtitle="Configure os tempos e preços dos banhos disponíveis para venda." searchPlaceholder="Buscar produtos..."
-    addButtonLabel="Novo Produto" addButtonIcon="add" addRoute="/admin/products/new" [loading]="loading"
+    addButtonLabel="Adicionar Produto" addButtonIcon="add" addRoute="/admin/products/new" [loading]="loading"
     [hasData]="hasData" emptyStateIcon="local_offer" emptyStateMessage="Nenhum produto cadastrado.">
 
     <div headerActions class="flex items-center gap-2">
-        <label for="partnerFilter" class="text-xs font-bold text-slate-400 uppercase tracking-widest hidden lg:block">Filtrar:</label>
-        <select id="partnerFilter" [(ngModel)]="selectedPartnerId" 
+        <label for="partnerFilter"
+            class="text-xs font-bold text-slate-400 uppercase tracking-widest hidden lg:block">Filtrar:</label>
+        <select id="partnerFilter" [(ngModel)]="selectedPartnerId"
             class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none">
             <option value="all">Todos os Parceiros</option>
             <option *ngFor="let p of partners()" [value]="p.id">{{ p.name }}</option>
@@ -18,3 +19,6 @@
         </app-product-list>
     </ng-template>
 </app-management-layout>
+
+<app-product-detail *ngIf="selectedProduct()" [product]="selectedProduct()!" (close)="selectedProduct.set(null)">
+</app-product-detail>

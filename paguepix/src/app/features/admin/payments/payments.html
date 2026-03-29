@@ -2,18 +2,19 @@
     searchPlaceholder="Buscar pagamentos..." [loading]="loading" [hasData]="hasData" emptyStateIcon="history_toggle_off"
     emptyStateMessage="Nenhum pagamento encontrado.">
 
+    <div headerActions class="flex items-center gap-2">
+        <label for="partnerFilter" class="text-xs font-bold text-slate-400 uppercase tracking-widest hidden lg:block">Filtrar:</label>
+        <select id="partnerFilter" [(ngModel)]="selectedPartnerId" (change)="onPartnerChange()"
+            class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none">
+            <option value="all">Todos os Parceiros</option>
+            <option *ngFor="let p of partners()" [value]="p.id">{{ p.name }}</option>
+        </select>
+    </div>
+
     <ng-template #tableContent>
         <div
             class="flex items-center gap-4 mb-6 px-8 py-4 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
-            <button
-                class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 px-5 py-2 rounded-xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center gap-2 shadow-sm">
-                <span class="material-icons-outlined text-sm">filter_list</span> Filtros
-            </button>
-            <button
-                class="bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 px-6 py-2 rounded-xl text-sm font-bold shadow-sm transition-all flex items-center gap-2">
-                <span class="material-icons-outlined text-sm">file_download</span> Exportar
-            </button>
-
+            
             <div
                 class="ml-auto flex items-center gap-4 text-sm bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-slate-700 rounded-xl px-2 py-1">
                 <ng-container *ngIf="totalPages() > 1">

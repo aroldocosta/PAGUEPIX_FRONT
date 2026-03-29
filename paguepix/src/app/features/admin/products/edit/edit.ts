@@ -1,16 +1,14 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TopbarComponent } from '../../../../shared/components/topbar/topbar.component';
-import { SidebarComponent } from '../../../../shared/components/sidebar/sidebar.component';
-import { FooterComponent } from '../../../../shared/components/footer/footer.component';
+import { ManagementLayoutComponent } from '../../../../shared/components/management-layout/management-layout.component';
 import { ProductService, Product } from '../../../../core/services/product.service';
 import { ProductFormComponent } from '../../../../shared/components/products/product-form/product-form.component';
 
 @Component({
     selector: 'app-product-edit',
     standalone: true,
-    imports: [CommonModule, ProductFormComponent, TopbarComponent, SidebarComponent, FooterComponent],
+    imports: [CommonModule, ProductFormComponent, ManagementLayoutComponent],
     templateUrl: './edit.html'
 })
 export class ProductEdit implements OnInit {
@@ -22,6 +20,8 @@ export class ProductEdit implements OnInit {
     mode = signal<'view' | 'edit'>('edit');
     loading = signal(false);
     productData = signal<Product | null>(null);
+
+    hasData = computed(() => !!this.productData() || !this.id());
 
     ngOnInit() {
         const idParam = this.route.snapshot.paramMap.get('id');

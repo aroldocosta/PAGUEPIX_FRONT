@@ -1,6 +1,8 @@
+import { Partner } from './partner.model';
+
 export interface Payout {
     id: string;
-    partnerId: string;
+    partner?: Partner;
     amount: number;
     status: 'AVAILABLE' | 'PAID_OUT' | 'FAILED' | string;
     createdAt: string;

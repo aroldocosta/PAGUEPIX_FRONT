@@ -17,12 +17,12 @@ export class ProductListComponent {
     @Input() mode: 'admin' | 'user' = 'user';
     @Input() loading: boolean = false;
 
-    @Output() view = new EventEmitter<string>();
+    @Output() view = new EventEmitter<Product>();
     @Output() edit = new EventEmitter<string>();
     @Output() delete = new EventEmitter<string>();
 
-    onView(id: string) {
-        this.view.emit(id);
+    onView(product: Product) {
+        this.view.emit(product);
     }
 
     onEdit(id: string) {
