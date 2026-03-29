@@ -34,26 +34,32 @@
                 <!-- Info Column -->
                 <div class="space-y-6">
                     <div>
-                        <label class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Razão Social / Nome</label>
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Razão
+                            Social / Nome</label>
                         <div class="mt-2 text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                             <span class="material-icons-outlined text-slate-400 text-lg">badge</span>
-                             {{ partner.name }}
+                            <span class="material-icons-outlined text-slate-400 text-lg">badge</span>
+                            {{ partner.name }}
                         </div>
                     </div>
 
                     <div>
-                        <label class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Banco / Provedor</label>
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Banco
+                            / Provedor</label>
                         <div class="mt-2 text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                             <span class="material-icons-outlined text-slate-400 text-lg">account_balance</span>
-                             {{ partner.bankProvider || 'Não configurado' }}
+                            <span class="material-icons-outlined text-slate-400 text-lg">account_balance</span>
+                            {{ partner.bankProvider || 'Não configurado' }}
                         </div>
                     </div>
 
                     <div>
-                        <label class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Chave Pix</label>
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Chave
+                            Pix</label>
                         <div class="mt-2 text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                             <span class="material-icons-outlined text-slate-400 text-lg">qr_code</span>
-                             {{ partner.pixKey || 'N/A' }}
+                            <span class="material-icons-outlined text-slate-400 text-lg">qr_code</span>
+                            {{ partner.pixKey || 'N/A' }}
                         </div>
                     </div>
                 </div>
@@ -61,17 +67,19 @@
                 <!-- Secondary Column -->
                 <div class="space-y-6">
                     <div>
-                        <label class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Taxa de Comissão (Admin)</label>
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Taxa
+                            de Comissão (Admin)</label>
                         <div class="mt-2 text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                             <span class="material-icons-outlined text-slate-400 text-lg">percent</span>
-                             {{ (partner.commissionRate || 0) | number:'1.2-2' }}%
+                            {{ (partner.commissionRate || 0) | number:'1.2-2' }}%
                         </div>
                     </div>
 
                     <div *ngIf="partner.description">
-                        <label class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Descrição</label>
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Descrição</label>
                         <div class="mt-2 text-sm font-medium text-slate-600 dark:text-slate-400">
-                             {{ partner.description }}
+                            {{ partner.description }}
                         </div>
                     </div>
                 </div>
