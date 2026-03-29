@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Partner } from '../../../../core/models/partner.model';
 import { environment } from '../../../../../environments/environment';
@@ -25,6 +25,8 @@ import { environment } from '../../../../../environments/environment';
 export class PartnerDetailComponent {
     @Input({ required: true }) partner!: Partner;
     @Output() close = new EventEmitter<void>();
+
+    imageError = signal(false);
 
     getLogoUrl(): string | null {
         if (this.partner?.logo) {
