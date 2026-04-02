@@ -8,6 +8,7 @@ import { ChargeResponse, Payment } from '../../../core/models/payment.model';
 import { SealedPaymentRequest, SealedStatusRequest } from '../../../core/models/sealed-payment.model';
 import { OnDestroy } from '@angular/core';
 
+// MercadoPago type declaration
 declare var MercadoPago: any;
 
 interface DurationOption {
@@ -299,14 +300,17 @@ twIDAQAB
             this.cryptoService.encrypt(statusRequest, publicKeyPem).then(encryptedPayload => {
                 this.paymentService.getPaymentStatusRsa({ payload: encryptedPayload }).subscribe({
                     next: (response) => {
-                        // Check if modal was closed manually by user (element removed from DOM)
-                        const modalExists = !!document.querySelector('.mp-mercadopago-checkout-wrapper') ||
-                            !!document.querySelector('#mercadopago-checkout');
+                        // If Mercado Pago, check if modal was closed manually by user (element removed from DOM)
+                        const provider = this.deviceInfo()?.partner?.bankProvider || response.provider;
+                        if (provider === 'MERCADO_PAGO') {
+                            const modalExists = !!document.querySelector('.mp-mercadopago-checkout-wrapper') ||
+                                !!document.querySelector('#mercadopago-checkout');
 
-                        // If we were READY (modal open) and now it's gone, move to PENDING
-                        if (!modalExists && this.currentState() === 'READY') {
-                            console.log('Modal closed manually or by SDK - moving to PENDING');
-                            this.currentState.set('PENDING');
+                            // If we were READY (modal open) and now it's gone, move to PENDING
+                            if (!modalExists && this.currentState() === 'READY') {
+                                console.log('Modal closed manually or by SDK - moving to PENDING');
+                                this.currentState.set('PENDING');
+                            }
                         }
 
                         // Check for success using 'paid' boolean flag from backend ChargeStatus
@@ -370,6 +374,28 @@ twIDAQAB
         });
     }
 
+    private loadMercadoPagoSDK(): Promise<void> {
+        return new Promise((resolve, reject) => {
+            if ((window as any).MercadoPago) {
+                resolve();
+                return;
+            }
+            console.log('Loading Mercado Pago SDK dynamically...');
+            const script = document.createElement('script');
+            script.src = 'https://sdk.mercadopago.com/js/v2';
+            script.async = true;
+            script.onload = () => {
+                console.log('Mercado Pago SDK loaded successfully');
+                resolve();
+            };
+            script.onerror = (e) => {
+                console.error('Failed to load Mercado Pago SDK', e);
+                reject(e);
+            };
+            document.head.appendChild(script);
+        });
+    }
+
     // New method to force close Mercado Pago Modal/Overlay
     private closeMercadoPagoModal() {
         console.log('closeMercadoPagoModal called - Cleaning up DOM');
@@ -393,9 +419,10 @@ twIDAQAB
         document.body.style.overflow = 'auto';
     }
 
-    private getMpInstance() {
+    private async getMpInstance() {
         if (this.mp) return this.mp;
         try {
+            await this.loadMercadoPagoSDK();
             const mpGlobal = (window as any).MercadoPago;
             if (typeof mpGlobal !== 'undefined') {
                 console.log('Initializing MercadoPago with Public Key');
@@ -404,7 +431,7 @@ twIDAQAB
                 });
                 return this.mp;
             } else {
-                console.warn('MercadoPago global object not found');
+                console.warn('MercadoPago global object not found after loading script');
             }
         } catch (e) {
             console.error('MercadoPago SDK initialization failed:', e);
@@ -412,41 +439,44 @@ twIDAQAB
         return null;
     }
 
-    openPaymentLink() {
+    async openPaymentLink() {
         const charge = this.lastChargeResponse();
         const link = this.paymentLink();
-        const mpInstance = this.getMpInstance();
+        const provider = this.deviceInfo()?.partner?.bankProvider || charge?.provider;
 
-        console.log('openPaymentLink called', { hasMp: !!mpInstance, externalId: charge?.externalId, link });
+        console.log('openPaymentLink called', { provider, externalId: charge?.externalId, link });
 
-        if (mpInstance && charge && charge.externalId) {
-            try {
-                console.log('Attempting to open MP Checkout Pro Modal...');
-                mpInstance.checkout({
-                    preference: {
-                        id: charge.externalId
-                    },
-                    autoOpen: true
-                });
+        if (provider === 'MERCADO_PAGO') {
+            const mpInstance = await this.getMpInstance();
+            if (mpInstance && charge && charge.externalId) {
+                try {
+                    console.log('Attempting to open MP Checkout Pro Modal...');
+                    mpInstance.checkout({
+                        preference: {
+                            id: charge.externalId
+                        },
+                        autoOpen: true
+                    });
 
-                console.log('MP instance.checkout called with autoOpen: true');
-                return;
-            } catch (e) {
-                console.error('Error opening MP checkout modal:', e);
+                    console.log('MP instance.checkout called with autoOpen: true');
+                    return;
+                } catch (e) {
+                    console.error('Error opening MP checkout modal:', e);
+                }
             }
         }
 
-        // Final Fallback: use current window to avoid popup blockers
+        // For PAGARME or other providers, or if MP modal fails, use direct redirection
         if (link) {
-            console.log('Falling back to direct redirection', link);
+            console.log('Redirecting to payment link:', link);
             window.location.href = link;
+        } else if (provider === 'MERCADO_PAGO' && charge?.externalId) {
+            // Final Fallback for Mercado Pago
+            const manualLink = `https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=${charge.externalId}`;
+            console.log('Attempting manual link fallback for Mercado Pago', manualLink);
+            window.location.href = manualLink;
         } else {
             console.error('No payment link available for redirection');
-            if (charge?.externalId) {
-                const manualLink = `https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=${charge.externalId}`;
-                console.log('Attempting manual link fallback', manualLink);
-                window.location.href = manualLink;
-            }
         }
     }
 }
