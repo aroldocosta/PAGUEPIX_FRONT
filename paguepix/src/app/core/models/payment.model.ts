@@ -47,6 +47,7 @@ export interface ChargeResponse {
         id: string;
         name: string;
     };
+    provider?: string;
 }
 
 export interface ChargeStatus {
@@ -57,4 +58,5 @@ export interface ChargeStatus {
     externalReference: string;
     qrCode?: string;
     totalPaidAmount?: number;
+    provider?: string;
 }

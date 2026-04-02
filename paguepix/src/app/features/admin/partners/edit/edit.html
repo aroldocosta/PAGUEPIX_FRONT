@@ -94,8 +94,8 @@
 
                     <div class="flex justify-center mb-6">
                         <div
-                            class="w-40 h-40 rounded-3xl border-2 border-dashed border-slate-300 dark:border-slate-700 flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-800/50 relative group">
-                            <img *ngIf="logo() && !imageError()" [src]="logo()" class="w-full h-full object-cover"
+                            class="w-full h-40 p-4 rounded-3xl border-2 border-dashed border-slate-300 dark:border-slate-700 flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-800/50 relative group">
+                            <img *ngIf="logo() && !imageError()" [src]="logo()" class="w-full h-full object-contain"
                                 (error)="imageError.set(true)">
                             <span *ngIf="!logo() || imageError()"
                                 class="material-icons-outlined text-4xl text-slate-300 dark:text-slate-600">store</span>
@@ -122,8 +122,8 @@
                     <div class="flex gap-3 text-indigo-700 dark:text-indigo-400">
                         <span class="material-icons-outlined text-xl">info</span>
                         <div class="text-sm leading-relaxed">
-                            <strong>Dica PaguePix:</strong> Para melhores resultados, utilize imagens quadradas (1:1)
-                            com fundo transparente (.PNG).
+                            <strong>Dica PaguePix:</strong> Para melhores resultados, utilize imagens retangulares
+                            (proporção 3:1, ex: 300x100px) com fundo transparente (.PNG).
                         </div>
                     </div>
                 </div>
