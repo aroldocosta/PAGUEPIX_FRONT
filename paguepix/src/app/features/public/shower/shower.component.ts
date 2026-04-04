@@ -136,7 +136,7 @@ export class ShowerComponent implements OnDestroy {
         this.deviceService.getInfoByToken(token).subscribe({
             next: (info) => {
                 this.deviceInfo.set(info);
-                
+
                 if (info.productList && info.productList.length > 0) {
                     const mappedOptions = info.productList
                         .filter((p: any) => p.active !== false)
@@ -148,14 +148,14 @@ export class ShowerComponent implements OnDestroy {
                             icon: 'timer'
                         }))
                         .sort((a: any, b: any) => a.price - b.price);
-                    
+
                     this.durationOptions = mappedOptions;
-                    
+
                     if (this.durationOptions.length > 0) {
                         this.selectedDuration.set(this.durationOptions[0]);
                     }
                 }
-                
+
                 // If we were validating and everything is fine, go to IDLE
                 if (this.currentState() === 'VALIDATING') {
                     this.currentState.set('IDLE');
@@ -265,7 +265,9 @@ twIDAQAB
         this.pollingStartTime = Date.now();
 
         this.pollingInterval = setInterval(() => {
-            const elapsedSeconds = Math.floor((Date.now() - this.pollingStartTime) / 1000);
+            const elapsedSeconds = Math.floor((Date.now() - this.pollingStartTime) / 5000);
+
+            console.log('Elapsed seconds:', elapsedSeconds);
 
             // Check for timeout (2 minutes = 120 seconds)
             if (elapsedSeconds >= 300) {
