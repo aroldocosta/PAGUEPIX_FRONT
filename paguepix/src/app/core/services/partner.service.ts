@@ -11,6 +11,10 @@ export class PartnerService {
 
     constructor(private http: HttpClient) { }
 
+    getGateways() {
+        return this.http.get<any[]>(`${environment.apiUrl}/bank/gateways`);
+    }
+
     getAll(page: number = 0, size: number = 10) {
         const params = new HttpParams()
             .set('page', page.toString())

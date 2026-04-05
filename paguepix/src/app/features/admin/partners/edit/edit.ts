@@ -21,11 +21,12 @@ export class PartnerEdit implements OnInit {
   id = signal<string | number | null>(null);
   name = signal('');
   description = signal('');
-  bankProvider = signal('');
+  gateway = signal('');
   pixKey = signal('');
   commissionRate = signal<number | null>(null);
   logo = signal<string | null>(null);
   imageError = signal(false);
+  gateways = signal<any[]>([]);
 
   selectedFile: File | null = null;
 
@@ -33,6 +34,11 @@ export class PartnerEdit implements OnInit {
   hasData = signal(true);
 
   ngOnInit() {
+    this.partnerService.getGateways().subscribe({
+      next: (g) => this.gateways.set(g),
+      error: (e) => console.error('Error fetching gateways', e)
+    });
+
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam && idParam !== 'new') {
       this.id.set(idParam);
@@ -46,7 +52,13 @@ export class PartnerEdit implements OnInit {
       next: (partner) => {
         this.name.set(partner.name || '');
         this.description.set(partner.description || '');
-        this.bankProvider.set(partner.bankProvider || '');
+        
+        let initialGateway = '';
+        if (partner.gateway) {
+          initialGateway = typeof partner.gateway === 'object' ? partner.gateway.code || partner.gateway.name : partner.gateway;
+        }
+        this.gateway.set(initialGateway);
+        
         this.pixKey.set(partner.pixKey || '');
         this.commissionRate.set(partner.commissionRate || null);
         
@@ -88,7 +100,7 @@ export class PartnerEdit implements OnInit {
       id: this.id() ? this.id() : undefined,
       name: this.name(),
       description: this.description(),
-      bankProvider: this.bankProvider(),
+      gateway: this.gateway(),
       pixKey: this.pixKey(),
       commissionRate: this.commissionRate()
     };

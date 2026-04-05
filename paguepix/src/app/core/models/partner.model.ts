@@ -7,7 +7,7 @@ export interface Partner {
     name: string;
     logo?: string;
     description?: string;
-    bankProvider?: string;
+    gateway?: any;
     pixKey?: string;
     commissionRate?: number;
     userList?: User[];
