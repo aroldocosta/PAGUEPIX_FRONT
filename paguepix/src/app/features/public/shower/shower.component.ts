@@ -12,6 +12,7 @@ import { OnDestroy } from '@angular/core';
 declare var MercadoPago: any;
 
 interface DurationOption {
+    id: number;
     minutes: number;
     label: string;
     description: string;
@@ -141,6 +142,7 @@ export class ShowerComponent implements OnDestroy {
                     const mappedOptions = info.productList
                         .filter((p: any) => p.active !== false)
                         .map((p: any) => ({
+                            id: p.id,
                             minutes: p.duration,
                             label: p.name,
                             description: p.subtitle || this.getFallbackDescription(p.duration),
@@ -192,9 +194,11 @@ export class ShowerComponent implements OnDestroy {
             // Secure Sealed Envelope Flow
             const sealedRequest: SealedPaymentRequest = {
                 deviceToken: deviceToken || '',
+                productId: duration?.id || 0,
                 duration: duration?.minutes || 0,
                 timestamp: new Date().toISOString()
             };
+            console.log('--- SEALED REQUEST ---', sealedRequest);
 
             // Using a real Public Key
             const publicKeyPem = `-----BEGIN PUBLIC KEY-----
