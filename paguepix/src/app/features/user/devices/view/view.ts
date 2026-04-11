@@ -31,6 +31,8 @@ export class UserDeviceView implements OnInit {
     model = signal('');
     partnerId = signal<string | null>(null);
     partners = signal<any[]>([]);
+    boardId = signal<string | number | null>(null);
+    boards = signal<any[]>([]);
     loading = signal(false);
     hasData = signal(true);
     releasing = signal(false);
@@ -60,6 +62,12 @@ export class UserDeviceView implements OnInit {
                 this.partnerId.set(device.partner?.id || null);
                 if (device.partner) {
                     this.partners.set([device.partner]);
+                }
+                this.boardId.set(device.board?.id || null);
+                if (device.board) {
+                    this.boards.set([device.board]);
+                } else {
+                    this.boards.set([]);
                 }
                 this.deviceProducts.set(device.productList || []);
                 this.loading.set(false);

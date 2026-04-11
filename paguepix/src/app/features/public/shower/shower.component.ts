@@ -102,7 +102,7 @@ export class ShowerComponent implements OnDestroy {
                         status: status || 'pending',
                         externalReference: queryParams.get('external_reference') || ''
                     });
-                    setTimeout(() => this.startStatusPolling(), 500);
+                    setTimeout(() => this.startStatusPolling(), 10000);
                 } else {
                     this.lastChargeResponse.set({
                         externalId: paymentId || preferenceId || '',
@@ -113,7 +113,7 @@ export class ShowerComponent implements OnDestroy {
                     });
 
                     // Start polling automatically
-                    setTimeout(() => this.startStatusPolling(), 500);
+                    setTimeout(() => this.startStatusPolling(), 10000);
                 }
             }
         } else {
@@ -265,6 +265,8 @@ twIDAQAB
 
     startStatusPolling() {
         if (this.pollingInterval) return;
+
+        console.log('Starting status polling...');
 
         this.pollingStartTime = Date.now();
 
