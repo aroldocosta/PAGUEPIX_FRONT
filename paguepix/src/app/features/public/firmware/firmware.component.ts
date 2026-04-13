@@ -301,7 +301,7 @@ twIDAQAB
                 console.error('Encryption failed:', err);
                 this.stopPolling();
             });
-        }, 3000);
+        }, 5000);
     }
 
     stopPolling() {
