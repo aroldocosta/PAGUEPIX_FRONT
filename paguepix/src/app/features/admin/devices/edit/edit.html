@@ -8,7 +8,9 @@
             [partners]="partners()" [qrUrl]="qrUrl()" [mode]="formMode()" [releasing]="releasing()"
             [releaseError]="releaseError()" (save)="onSave($event)" [allProducts]="allProducts()"
             [deviceProducts]="deviceProducts()" [productLoading]="productLoading()" [boards]="boards()"
-            [boardId]="boardId()" (addProduct)="onAddProduct($event)" (removeProduct)="onRemoveProduct($event)"
+            [boardId]="boardId()" [type]="type()" [types]="deviceTypes()"
+            (addProduct)="onAddProduct($event)" (removeProduct)="onRemoveProduct($event)"
+            (editProduct)="onEditProduct($event)"
             (releaseManual)="onReleaseManual($event)" (cancel)="onCancel()">
         </app-device-detail-layout>
     </ng-template>
