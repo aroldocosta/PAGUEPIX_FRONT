@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ManagementLayoutComponent } from '../../../../shared/components/management-layout/management-layout.component';
 import { ProductService, Product } from '../../../../core/services/product.service';
+import { PartnerService } from '../../../../core/services/partner.service';
 import { ProductFormComponent } from '../../../../shared/components/products/product-form/product-form.component';
 
 @Component({
@@ -15,11 +16,13 @@ export class ProductEdit implements OnInit {
     private route = inject(ActivatedRoute);
     private router = inject(Router);
     private productService = inject(ProductService);
+    private partnerService = inject(PartnerService);
 
     id = signal<string | undefined>(undefined);
     mode = signal<'view' | 'edit'>('edit');
     loading = signal(false);
     productData = signal<Product | null>(null);
+    partners = signal<any[]>([]);
 
     hasData = computed(() => !!this.productData() || !this.id());
 
@@ -35,6 +38,19 @@ export class ProductEdit implements OnInit {
         if (modeParam === 'view' || modeParam === 'edit') {
             this.mode.set(modeParam);
         }
+
+        this.loadPartners();
+    }
+
+    loadPartners() {
+        this.partnerService.getAll(0, 100).subscribe({
+            next: (response) => {
+                this.partners.set(response.content || []);
+            },
+            error: (err) => {
+                console.error('Error loading partners', err);
+            }
+        });
     }
 
     loadProduct(id: string) {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 
 import { Partner } from '../models/partner.model';
 
@@ -14,6 +14,7 @@ export interface Product {
     active: boolean;
     subtitle?: string;
     description?: string;
+    deliveryMethod?: string;
     partner?: Partner;
 }
 
@@ -22,6 +23,7 @@ export interface Product {
 })
 export class ProductService {
     private apiUrl = `${environment.apiUrl}/products`;
+    private deliveryMethodsCache$?: Observable<string[]>;
 
     constructor(private http: HttpClient) { }
 
@@ -31,6 +33,15 @@ export class ProductService {
             .set('size', size.toString());
 
         return this.http.get<any>(this.apiUrl, { params });
+    }
+
+    getDeliveryMethods(): Observable<string[]> {
+        if (!this.deliveryMethodsCache$) {
+            this.deliveryMethodsCache$ = this.http.get<string[]>(`${this.apiUrl}/delivery-methods`).pipe(
+                shareReplay(1)
+            );
+        }
+        return this.deliveryMethodsCache$;
     }
 
     findAllActive(): Observable<Product[]> {

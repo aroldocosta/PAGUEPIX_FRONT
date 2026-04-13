@@ -23,6 +23,10 @@ export class DeviceService {
         return this.http.get<any>(this.apiUrl, { params });
     }
 
+    getDeviceTypes(): Observable<string[]> {
+        return this.http.get<string[]>(`${this.apiUrl}/types`);
+    }
+
     findById(id: string): Observable<any> {
         return this.http.get<any>(`${this.apiUrl}/${id}`);
     }

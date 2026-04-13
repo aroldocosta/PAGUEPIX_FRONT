@@ -1,12 +1,14 @@
-import { Component, input, output, signal, computed } from '@angular/core';
+import { Component, input, output, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Product } from '../../../../core/services/product.service';
+import { ProductService, Product } from '../../../../core/services/product.service';
+import { AuthService } from '../../../../core/services/auth.service';
+import { DeleteModalComponent } from '../../delete-modal/delete-modal.component';
 
 @Component({
     selector: 'app-device-product-manager',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, DeleteModalComponent],
     templateUrl: './device-product-manager.component.html',
     styles: [`
         :host { display: block; }
@@ -23,9 +25,13 @@ import { Product } from '../../../../core/services/product.service';
         }
     `]
 })
-export class DeviceProductManagerComponent {
+export class DeviceProductManagerComponent implements OnInit {
+    productService = inject(ProductService);
+    authService = inject(AuthService);
+    deliveryMethods = signal<string[]>([]);
     availableProducts = input.required<Product[]>();
     deviceProducts = input.required<Product[]>();
+    partners = input<any[]>([]);
     loading = input<boolean>(false);
     viewOnly = input<boolean>(false);
 
@@ -40,11 +46,15 @@ export class DeviceProductManagerComponent {
 
 
     selectedProductId = signal<string>('');
-    showList = signal<boolean>(false);
+    showList = signal<boolean>(true); // Default to true now as we mostly want the list visible
 
-    // Edit Product Modal state
+    // Modal states
+    showAddModal = signal<boolean>(false);
     showEditModal = signal<boolean>(false);
+    showDeleteModal = signal<boolean>(false);
+    
     editingProduct = signal<Product | null>(null);
+    productToDelete = signal<Product | null>(null);
 
     // Form fields for editing
     editName = signal('');
@@ -55,6 +65,21 @@ export class DeviceProductManagerComponent {
     editDurationUnit = signal<Product['durationUnit']>('MINUTES');
     editSubtitle = signal('');
     editDescription = signal('');
+    editDeliveryMethod = signal('MQTT_TIME');
+    editActive = signal(true);
+    editPartnerId = signal('');
+
+
+    ngOnInit() {
+        this.loadDeliveryMethods();
+    }
+
+    loadDeliveryMethods() {
+        this.productService.getDeliveryMethods().subscribe({
+            next: (methods) => this.deliveryMethods.set(methods),
+            error: (err) => console.error('Error loading delivery methods', err)
+        });
+    }
 
 
 
@@ -62,27 +87,55 @@ export class DeviceProductManagerComponent {
         this.showList.update(v => !v);
     }
 
-    onAdd() {
+    onOpenAddModal() {
+        this.selectedProductId.set('');
+        this.showAddModal.set(true);
+    }
+
+    onCloseAddModal() {
+        this.showAddModal.set(false);
+    }
+
+    onConfirmAdd() {
         if (this.selectedProductId()) {
             this.add.emit(this.selectedProductId());
             this.selectedProductId.set('');
+            this.showAddModal.set(false);
         }
     }
 
-    onRemove(productId: string) {
-        this.remove.emit(productId);
+    onRemove(product: Product) {
+        this.productToDelete.set(product);
+        this.showDeleteModal.set(true);
+    }
+
+    confirmRemove() {
+        const product = this.productToDelete();
+        if (product?.id) {
+            this.remove.emit(product.id);
+        }
+        this.closeDeleteModal();
+    }
+
+    closeDeleteModal() {
+        this.showDeleteModal.set(false);
+        this.productToDelete.set(null);
     }
 
     onEdit(product: Product) {
         this.editingProduct.set(product);
         this.editName.set(product.name);
         this.editPrice.set(product.price);
-        this.editPriceDisplay.set(product.price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+        this.editPriceDisplay.set(this.formatPrice(product.price));
         this.editDuration.set(product.duration);
 
         this.editDurationUnit.set(product.durationUnit);
         this.editSubtitle.set(product.subtitle || '');
+        this.editSubtitle.set(product.subtitle || '');
         this.editDescription.set(product.description || '');
+        this.editDeliveryMethod.set(product.deliveryMethod || 'MQTT_TIME');
+        this.editActive.set(product.active);
+        this.editPartnerId.set(String(product.partner?.id || ''));
         this.showEditModal.set(true);
     }
 
@@ -102,7 +155,10 @@ export class DeviceProductManagerComponent {
                 duration: this.editDuration(),
                 durationUnit: this.editDurationUnit(),
                 subtitle: this.editSubtitle(),
-                description: this.editDescription()
+                description: this.editDescription(),
+                deliveryMethod: this.editDeliveryMethod(),
+                active: this.editActive(),
+                partner: this.editPartnerId() ? { id: this.editPartnerId() } as any : undefined
             };
 
             this.edit.emit(updatedProduct);
@@ -113,22 +169,25 @@ export class DeviceProductManagerComponent {
 
     onPriceInput(event: Event) {
         const input = event.target as HTMLInputElement;
-        const value = input.value.replace(/[^\d,]/g, ''); // Allow only digits and comma
-        this.editPriceDisplay.set(value);
+        let value = input.value.replace(/\D/g, '');
         
-        const numericValue = parseFloat(value.replace(',', '.'));
-        if (!isNaN(numericValue)) {
-            this.editPrice.set(numericValue);
-        }
+        const numericValue = value ? parseInt(value, 10) / 100 : 0;
+        this.editPrice.set(numericValue);
+        this.editPriceDisplay.set(this.formatPrice(numericValue));
     }
 
     onPriceBlur() {
-        // Force 2 decimal places on blur
-        const formatted = this.editPrice().toLocaleString('pt-BR', { 
-            minimumFractionDigits: 2, 
-            maximumFractionDigits: 2 
-        });
-        this.editPriceDisplay.set(formatted);
+        // Normalization is now handled in real-time by onPriceInput
+    }
+
+    onSubtitleInput(event: Event) {
+        const input = event.target as HTMLInputElement;
+        this.editSubtitle.set(input.value);
+    }
+
+    onDescriptionInput(event: Event) {
+        const input = event.target as HTMLTextAreaElement;
+        this.editDescription.set(input.value);
     }
 
 

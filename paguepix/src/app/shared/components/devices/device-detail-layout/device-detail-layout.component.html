@@ -6,6 +6,7 @@
             [partnerId]="partnerId()" [partners]="partners()" [mode]="mode()" [loading]="releasing()"
             [deviceProducts]="deviceProducts()" [releaseError]="releaseError()" 
             [boards]="boards()" [boardId]="boardId()"
+            [type]="type()" [types]="types()"
             (save)="save.emit($event)"
             (releaseManual)="releaseManual.emit($event)" (cancel)="cancel.emit()">
         </app-device-form>
@@ -13,7 +14,7 @@
         <!-- Gerenciamento de Produtos / Lista de Produtos -->
         <div *ngIf="id() && (mode() === 'edit' || deviceProducts().length > 0)">
             <app-device-product-manager [availableProducts]="allProducts()" [deviceProducts]="deviceProducts()"
-                [loading]="productLoading()" [viewOnly]="mode() === 'view'" (add)="addProduct.emit($event)"
+                [partners]="partners()" [loading]="productLoading()" [viewOnly]="mode() === 'view'" (add)="addProduct.emit($event)"
                 (remove)="removeProduct.emit($event)" (edit)="editProduct.emit($event)">
             </app-device-product-manager>
 

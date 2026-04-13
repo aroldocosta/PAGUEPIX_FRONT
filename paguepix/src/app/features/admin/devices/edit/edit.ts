@@ -36,6 +36,8 @@ export class DeviceEdit implements OnInit {
     partners = signal<any[]>([]);
     boards = signal<Board[]>([]);
     boardId = signal<string | number | null>(null);
+    type = signal('');
+    deviceTypes = signal<string[]>([]);
     loading = signal(false);
     hasData = signal(true);
     releaseError = signal<string | null>(null);
@@ -71,6 +73,14 @@ export class DeviceEdit implements OnInit {
         this.loadPartners();
         this.loadProducts();
         this.loadBoards();
+        this.loadDeviceTypes();
+    }
+
+    loadDeviceTypes() {
+        this.deviceService.getDeviceTypes().subscribe({
+            next: (types) => this.deviceTypes.set(types),
+            error: (err) => console.error('Error loading device types', err)
+        });
     }
 
     loadBoards() {
@@ -100,6 +110,7 @@ export class DeviceEdit implements OnInit {
                 this.model.set(device.model);
                 this.partnerId.set(device.partner?.id || null);
                 this.boardId.set(device.board?.id || null);
+                this.type.set(device.type || '');
                 this.deviceProducts.set(device.productList || []);
                 this.loading.set(false);
             },
@@ -121,15 +132,21 @@ export class DeviceEdit implements OnInit {
 
     onSave(deviceData: any) {
         this.loading.set(true);
-        this.deviceService.update(this.id()!, deviceData).subscribe({
+        const deviceId = this.id();
+        
+        const request = deviceId 
+            ? this.deviceService.update(deviceId, deviceData)
+            : this.deviceService.save(deviceData);
+
+        request.subscribe({
             next: () => {
                 this.loading.set(false);
                 this.router.navigate(['/admin/devices']);
             },
             error: (err) => {
-                console.error('Error updating device', err);
+                console.error(`Error ${deviceId ? 'updating' : 'creating'} device`, err);
                 this.loading.set(false);
-                alert('Erro ao atualizar dispositivo.');
+                alert(`Erro ao ${deviceId ? 'atualizar' : 'criar'} dispositivo.`);
             }
         });
     }
@@ -230,6 +247,26 @@ export class DeviceEdit implements OnInit {
                 console.error('Error removing product', err);
                 this.productLoading.set(false);
                 alert('Erro ao remover produto.');
+            }
+        });
+    }
+
+    onEditProduct(product: Product) {
+        if (!product.id) return;
+
+        this.productLoading.set(true);
+        this.productService.update(product.id, product).subscribe({
+            next: () => {
+                this.productLoading.set(false);
+                const currentId = this.id();
+                if (currentId) {
+                    this.loadDevice(currentId);
+                }
+            },
+            error: (err) => {
+                console.error('Error updating product', err);
+                this.productLoading.set(false);
+                alert('Erro ao atualizar produto.');
             }
         });
     }

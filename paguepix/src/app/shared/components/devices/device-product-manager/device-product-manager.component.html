@@ -1,65 +1,28 @@
 <div class="space-y-6">
-    <!-- Seção de Gerenciamento (Only show if NOT viewOnly) -->
-    <div *ngIf="!viewOnly()"
-        class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-3xl shadow-sm space-y-6">
-        <div class="flex items-center gap-4">
-            <div
-                class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
-                <span class="material-icons-outlined text-2xl">shopping_cart</span>
-            </div>
-            <div>
-                <h3 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Gerenciar Produtos</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap">Adicione produtos
-                    disponíveis a este dispositivo.</p>
-            </div>
-        </div>
-
-        <div class="flex flex-col sm:flex-row gap-4">
-            <!-- Select -->
-            <div class="relative flex-1 group">
-                <span
-                    class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">calendar_today</span>
-                <select [(ngModel)]="selectedProductId"
-                    class="w-full pl-12 pr-10 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer">
-                    <option value="" disabled selected>Selecione um produto...</option>
-                    <option *ngFor="let p of filteredProducts()" [value]="p.id">
-                        {{ p.name }} - {{ formatPrice(p.price) }} ({{ p.duration }} {{ formatUnit(p.durationUnit) }})
-                    </option>
-                </select>
-                <span
-                    class="material-icons-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
-            </div>
-
-            <div class="flex gap-3">
-                <!-- Botão Adicionar -->
-                <button (click)="onAdd()" [disabled]="!selectedProductId() || loading()"
-                    class="px-8 h-[54px] bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 rounded-2xl font-bold text-sm uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-sm active:scale-95">
-                    <span *ngIf="loading()" class="material-icons-outlined animate-spin text-sm">sync</span>
-                    <span class="material-icons-outlined text-lg" *ngIf="!loading()">add</span>
-                    Adicionar
-                </button>
-
-                <!-- Botão Exibir/Ocultar -->
-                <button (click)="toggleList()"
-                    class="w-[140px] h-[54px] bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-500 dark:text-slate-400 border border-gray-200 dark:border-slate-700 rounded-2xl font-bold text-sm uppercase tracking-widest transition-all shadow-sm active:scale-95">
-                    {{ showList() ? 'Ocultar' : 'Exibir' }}
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- Lista de Produtos Vinculados -->
-    <div *ngIf="showList() || viewOnly()"
+    <div
         class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 overflow-hidden rounded-3xl shadow-sm animate-in slide-in-from-top-4 duration-300">
         <div
-            class="p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-800/20 flex items-center justify-between">
-            <h4 class="text-[11px] font-black uppercase tracking-[0.2em] text-[#6366f1] dark:text-[#818cf8]">
-                {{ viewOnly() ? 'Lista de produtos' : 'Produtos Vinculados' }}
-            </h4>
-            <span
-                class="px-3 py-1 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-full text-[10px] font-black tracking-wider border border-indigo-100 dark:border-indigo-500/20">
-                {{ deviceProducts().length }} {{ deviceProducts().length === 1 ? 'ITEM' : 'ITENS' }}
-            </span>
+            class="p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-800/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                    <span class="material-icons-outlined text-lg">inventory_2</span>
+                </div>
+                <div>
+                    <h4 class="text-[11px] font-black uppercase tracking-[0.2em] text-[#6366f1] dark:text-[#818cf8]">
+                        Produtos Vinculados
+                    </h4>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{{ deviceProducts().length
+                        }} {{ deviceProducts().length === 1 ? 'ITEM' : 'ITENS' }}</p>
+                </div>
+            </div>
+
+            <button (click)="onOpenAddModal()" [disabled]="loading()"
+                class="px-6 h-[44px] bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 rounded-2xl font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-sm active:scale-95">
+                <span class="material-icons-outlined text-lg">add</span>
+                Adicionar Produto
+            </button>
         </div>
 
         <div class="divide-y divide-slate-50 dark:divide-slate-800/50">
@@ -91,26 +54,24 @@
                         <div class="flex items-center gap-3 mt-1">
                             <span class="text-sm font-bold text-indigo-600 dark:text-indigo-400">{{ formatPrice(p.price)
                                 }}</span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700"></span>
-                            <span
-                                class="text-[11px] text-slate-400 dark:text-slate-500 uppercase font-black tracking-widest">{{
-                                p.duration }} {{ formatUnit(p.durationUnit) }}</span>
+                            <ng-container *ngIf="p.deliveryMethod === 'MQTT_TIME' || p.deliveryMethod === 'MQTT_PULSE'">
+                                <span class="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700"></span>
+                                <span
+                                    class="text-[11px] text-slate-400 dark:text-slate-500 uppercase font-black tracking-widest">{{
+                                    p.duration }} {{ formatUnit(p.durationUnit) }}</span>
+                            </ng-container>
                         </div>
                     </div>
                 </div>
 
                 <!-- Ações do Produto -->
                 <div class="flex items-center gap-2">
-                    <!-- Botão Editar (Mesmo padrão das demais telas admin) -->
                     <button (click)="onEdit(p)" [disabled]="loading()"
                         class="w-10 h-10 rounded-xl text-slate-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-all flex items-center justify-center active:scale-95">
                         <span class="material-symbols-outlined text-lg">edit_square</span>
                     </button>
 
-
-
-                    <!-- Botão Remover (Only show if NOT viewOnly) -->
-                    <button *ngIf="!viewOnly()" (click)="onRemove(p.id!)" [disabled]="loading()"
+                    <button (click)="onRemove(p)" [disabled]="loading()"
                         class="w-10 h-10 rounded-xl text-slate-200 dark:text-slate-700 hover:text-rose-500 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all flex items-center justify-center active:scale-95">
                         <span class="material-icons-outlined text-xl">delete_outline</span>
                     </button>
@@ -118,129 +79,248 @@
             </div>
         </div>
     </div>
-</div>
 
-<!-- Modal de Edição de Produto -->
-<div *ngIf="showEditModal()"
-    class="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
-    <div
-        class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[32px] shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-300">
-        <div class="p-8">
-            <!-- Cabeçalho do Modal -->
-            <div class="flex items-center gap-4 mb-8">
-                <div
-                    class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-2xl">edit_square</span>
-                </div>
-
-                <div>
-                    <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
-                        Editar Produto</h3>
-                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Personalize os detalhes do
-                        item</p>
-                </div>
-            </div>
-
-            <div class="space-y-6">
-                <!-- Nome do Produto -->
-                <div class="space-y-2">
-                    <label
-                        class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Nome
-                        do Produto</label>
-                    <div class="relative group">
-                        <span
-                            class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">label</span>
-                        <input type="text" [(ngModel)]="editName"
-                            class="w-full pl-12 pr-4 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"
-                            placeholder="Ex: Banho Quente 10 Min">
+    <!-- Modal de Adição de Produto -->
+    <div *ngIf="showAddModal()"
+        class="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+        <div
+            class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[32px] shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-300">
+            <div class="p-8">
+                <div class="flex items-center gap-4 mb-8">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                        <span class="material-icons-outlined text-2xl">add_shopping_cart</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Adicionar
+                            Produto</h3>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Vincule um novo
+                            produto
+                            a este dispositivo</p>
                     </div>
                 </div>
 
-                <!-- Subtítulo -->
-                <div class="space-y-2">
-                    <label
-                        class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Subtítulo</label>
-                    <div class="relative group">
-                        <span
-                            class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">subtitles</span>
-                        <input type="text" [(ngModel)]="editSubtitle"
-                            class="w-full pl-12 pr-4 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"
-                            placeholder="Ex: Promoção de Verão">
-                    </div>
-                </div>
-
-                <!-- Descrição -->
-                <div class="space-y-2">
-                    <label
-                        class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Descrição</label>
-                    <div class="relative group">
-                        <span
-                            class="material-icons-outlined absolute left-4 top-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors">description</span>
-                        <textarea [(ngModel)]="editDescription"
-                            class="w-full pl-12 pr-4 py-4 min-h-[100px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
-                            placeholder="Descreva detalhes do produto..."></textarea>
-                    </div>
-                </div>
-
-
-                <div class="flex flex-wrap gap-4">
-                    <!-- Preço -->
-                    <div class="space-y-2" style="flex: 0 0 35%;">
+                <div class="space-y-6">
+                    <div class="space-y-2">
                         <label
-                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Preço
-                            (R$)</label>
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Selecione
+                            o Produto</label>
                         <div class="relative group">
                             <span
-                                class="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400 group-focus-within:text-indigo-500 transition-colors">R$</span>
-                            <input type="text" [value]="editPriceDisplay()" (input)="onPriceInput($event)" (blur)="onPriceBlur()"
-                                class="w-full pl-12 pr-4 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"
-                                placeholder="0,00">
-                        </div>
-                    </div>
-
-
-                    <!-- Duração -->
-                    <div class="space-y-2" style="flex: 0 0 35%;">
-                        <label
-                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Duração</label>
-                        <div class="relative group">
-                            <span
-                                class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">timer</span>
-                            <input type="number" [(ngModel)]="editDuration" min="1" max="100"
-                                class="w-full pl-12 pr-4 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"
-                                placeholder="0">
-                        </div>
-                    </div>
-
-                    <!-- Unidade (Ocupando o restante) -->
-                    <div class="space-y-2 flex-1">
-                        <label
-                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Unidade</label>
-                        <div class="relative group">
-                            <select [(ngModel)]="editDurationUnit"
-                                class="w-full pl-4 pr-10 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-xs font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer">
-                                <option value="SECONDS">SEG</option>
-                                <option value="MINUTES">MIN</option>
-                                <option value="HOURS">HRS</option>
+                                class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">sell</span>
+                            <select [(ngModel)]="selectedProductId"
+                                class="w-full pl-12 pr-10 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-1 focus:ring-indigo-500 appearance-none cursor-pointer">
+                                <option value="" disabled selected>Escolha um produto da lista...</option>
+                                <option *ngFor="let p of filteredProducts()" [value]="p.id">
+                                    {{ p.name }} - {{ formatPrice(p.price) }}
+                                </option>
                             </select>
                             <span
-                                class="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+                                class="material-icons-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
                         </div>
                     </div>
                 </div>
 
+                <div class="flex gap-4 mt-10">
+                    <button (click)="onCloseAddModal()"
+                        class="flex-1 px-8 h-[54px] bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 rounded-2xl font-bold text-sm uppercase tracking-widest transition-all active:scale-95">
+                        Cancelar
+                    </button>
+                    <button (click)="onConfirmAdd()" [disabled]="!selectedProductId() || loading()"
+                        class="flex-1 px-8 h-[54px] bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 rounded-2xl font-bold text-sm uppercase tracking-widest transition-all shadow-sm active:scale-95 disabled:opacity-50">
+                        Confirmar
+                    </button>
+                </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Rodapé com Botões -->
-            <div class="flex gap-4 mt-10">
-                <button (click)="cancelEdit()"
-                    class="flex-1 px-8 h-[54px] bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-500 dark:text-slate-400 border border-gray-200 dark:border-slate-700 rounded-2xl font-bold text-sm uppercase tracking-widest transition-all active:scale-95">
-                    Cancelar
-                </button>
-                <button (click)="saveEdit()"
-                    class="flex-1 px-8 h-[54px] bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 rounded-2xl font-bold text-sm uppercase tracking-widest transition-all shadow-sm active:scale-95">
-                    Salvar
-                </button>
+    <!-- Modal de Remoção -->
+    <app-delete-modal *ngIf="showDeleteModal()" [objectName]="productToDelete()?.name || ''"
+        alertMessage="Tem certeza que deseja remover este produto do dispositivo?" [loading]="loading()"
+        (confirm)="confirmRemove()" (cancel)="closeDeleteModal()">
+    </app-delete-modal>
+
+    <!-- Modal de Edição de Produto -->
+    <div *ngIf="showEditModal()"
+        class="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+        <div
+            class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[32px] shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-300">
+            <div class="p-8">
+                <!-- Cabeçalho do Modal -->
+                <div class="flex items-center gap-4 mb-8">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-2xl">edit_square</span>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                            Editar Produto</h3>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Personalize os
+                            detalhes
+                            do item</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Nome do Produto e Status Ativo -->
+                    <div class="grid grid-cols-[1fr,auto] gap-6 items-end">
+                        <div class="space-y-2">
+                            <label
+                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Nome
+                                do Produto</label>
+                            <div class="relative group">
+                                <span
+                                    class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">sell</span>
+                                <input type="text" [(ngModel)]="editName" name="name"
+                                    class="w-full pl-12 pr-4 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"
+                                    placeholder="Ex: Banho Quente 10 Min">
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label
+                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 text-center block">Ativo</label>
+                            <div
+                                class="h-[54px] px-4 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl flex items-center justify-center">
+                                <label class="relative inline-flex items-center cursor-pointer group">
+                                    <input type="checkbox" [(ngModel)]="editActive" name="active" class="sr-only peer">
+                                    <div
+                                        class="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500">
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Subtítulo -->
+                    <div class="space-y-2">
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Subtítulo</label>
+                        <div class="relative group">
+                            <span
+                                class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">rectangle</span>
+                            <input type="text" [(ngModel)]="editSubtitle" name="subtitle"
+                                (input)="onSubtitleInput($event)"
+                                class="w-full pl-12 pr-4 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"
+                                placeholder="Ex: Promoção de Verão">
+                        </div>
+                    </div>
+
+                    <!-- Descrição -->
+                    <div class="space-y-2">
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Descrição</label>
+                        <div class="relative group">
+                            <span
+                                class="material-icons-outlined absolute left-4 top-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors">description</span>
+                            <textarea [(ngModel)]="editDescription" name="description"
+                                (input)="onDescriptionInput($event)"
+                                class="w-full pl-12 pr-4 py-4 min-h-[100px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                                placeholder="Descreva detalhes do produto..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Parceiro Responsável -->
+                    <div class="space-y-2" *ngIf="partners().length > 0">
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">
+                            Parceiro Responsável
+                        </label>
+                        <div class="relative group">
+                            <span
+                                class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">handshake</span>
+                            <select [(ngModel)]="editPartnerId" name="partnerId" [disabled]="authService.role() !== 'ADMIN'"
+                                class="w-full pl-12 pr-10 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed">
+                                <option value="">Selecione um parceiro...</option>
+                                <option *ngFor="let p of partners()" [value]="p.id">{{ p.name }}</option>
+                            </select>
+                            <span
+                                class="material-icons-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+                        </div>
+                    </div>
+
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- Preço -->
+                        <div class="space-y-2">
+                            <label
+                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Preço
+                                (R$)</label>
+                            <div class="relative group">
+                                <input type="text" [value]="editPriceDisplay()" (input)="onPriceInput($event)"
+                                    (blur)="onPriceBlur()" name="priceDisplay"
+                                    class="w-full pl-4 pr-4 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"
+                                    placeholder="R$ 0,00">
+                            </div>
+                        </div>
+
+                        <!-- Método de Entrega -->
+                        <div class="space-y-2">
+                            <label
+                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Método
+                                de Entrega</label>
+                            <div class="relative group">
+                                <span
+                                    class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">delivery_dining</span>
+                                <select [(ngModel)]="editDeliveryMethod" name="deliveryMethod"
+                                    class="w-full pl-12 pr-10 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer">
+                                    <option *ngFor="let method of deliveryMethods()" [value]="method">{{ method }}
+                                    </option>
+                                </select>
+                                <span
+                                    class="material-icons-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Campos específicos para MQTT (Duração e Unidade) -->
+                    <div *ngIf="editDeliveryMethod() === 'MQTT_TIME' || editDeliveryMethod() === 'MQTT_PULSE'"
+                        class="flex gap-4">
+                        <!-- Duração -->
+                        <div class="space-y-2 flex-1">
+                            <label
+                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Duração</label>
+                            <div class="relative group">
+                                <span
+                                    class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">timer</span>
+                                <input type="number" [(ngModel)]="editDuration" min="1" max="100" name="duration"
+                                    class="w-full pl-12 pr-4 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"
+                                    placeholder="0">
+                            </div>
+                        </div>
+
+                        <!-- Unidade -->
+                        <div class="space-y-2 flex-1">
+                            <label
+                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Unidade</label>
+                            <div class="relative group">
+                                <select [(ngModel)]="editDurationUnit" name="durationUnit"
+                                    class="w-full pl-4 pr-10 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer">
+                                    <option value="SECONDS">SEG</option>
+                                    <option value="MINUTES">MIN</option>
+                                    <option value="HOURS">HRS</option>
+                                </select>
+                                <span
+                                    class="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Rodapé com Botões -->
+                <div class="flex gap-4 mt-10">
+                    <button (click)="cancelEdit()"
+                        class="flex-1 px-8 h-[54px] bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 rounded-2xl font-bold text-sm uppercase tracking-widest transition-all active:scale-95 shadow-sm">
+                        Cancelar
+                    </button>
+                    <button (click)="saveEdit()"
+                        class="flex-1 px-8 h-[54px] bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 rounded-2xl font-bold text-sm uppercase tracking-widest transition-all shadow-sm active:scale-95">
+                        Salvar
+                    </button>
+                </div>
             </div>
         </div>
     </div>

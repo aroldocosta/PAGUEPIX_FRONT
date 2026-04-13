@@ -32,18 +32,31 @@
                 <!-- Info Column -->
                 <div class="space-y-6">
                     <div>
-                        <label class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Nome do Dispositivo</label>
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Nome
+                            do Dispositivo</label>
                         <div class="mt-2 text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                             <span class="material-icons-outlined text-slate-400 text-lg">badge</span>
-                             {{ device.name || 'Sem nome' }}
+                            <span class="material-icons-outlined text-slate-400 text-lg">badge</span>
+                            {{ device.name || 'Sem nome' }}
                         </div>
                     </div>
 
                     <div>
-                        <label class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Modelo</label>
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Modelo</label>
                         <div class="mt-2 text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                             <span class="material-icons-outlined text-slate-400 text-lg">category</span>
-                             {{ device.model }}
+                            <span class="material-icons-outlined text-slate-400 text-lg">category</span>
+                            {{ device.model }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Tipo
+                            de Produto</label>
+                        <div class="mt-2 text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                            <span class="material-icons-outlined text-slate-400 text-lg">settings_suggest</span>
+                            {{ device.type || 'Não definido' }}
                         </div>
                     </div>
                 </div>
@@ -51,18 +64,21 @@
                 <!-- Secondary Column -->
                 <div class="space-y-6">
                     <div>
-                        <label class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Hardware(Board)</label>
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Hardware(Board)</label>
                         <div class="mt-2 text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                             <span class="material-icons-outlined text-slate-400 text-lg">router</span>
-                             {{ device.board?.clientId || device.code }}
+                            <span class="material-icons-outlined text-slate-400 text-lg">router</span>
+                            {{ device.board?.clientId || device.code }}
                         </div>
                     </div>
 
                     <div>
-                        <label class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Parceiro Responsável</label>
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Parceiro
+                            Responsável</label>
                         <div class="mt-2 text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                             <span class="material-icons-outlined text-slate-400 text-lg">handshake</span>
-                             {{ device.partner?.name || 'Não vinculado' }}
+                            <span class="material-icons-outlined text-slate-400 text-lg">handshake</span>
+                            {{ device.partner?.name || 'Não vinculado' }}
                         </div>
                     </div>
                 </div>

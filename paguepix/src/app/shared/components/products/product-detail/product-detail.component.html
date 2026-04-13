@@ -15,7 +15,7 @@
                     <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                         Detalhes do Produto
                     </h2>
-                    <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mt-0.5">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-0.5">
                         ID #{{ product.id }}
                     </p>
                 </div>
@@ -28,69 +28,128 @@
 
         <div class="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Info Column -->
-                <div class="space-y-6">
-                    <div>
-                        <label class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Nome do Produto</label>
-                        <div class="mt-2 text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                             <span class="material-icons-outlined text-slate-400 text-lg">badge</span>
-                             {{ product.name }}
+            <div class="space-y-6">
+                <!-- Nome do Produto e Status Ativo -->
+                <div class="grid grid-cols-1 md:grid-cols-[1fr,200px] gap-6 items-end">
+                    <!-- Nome do Produto -->
+                    <div class="space-y-2">
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">
+                            Nome do Produto
+                        </label>
+                        <div
+                            class="flex items-center gap-3 p-4 h-[54px] bg-slate-50/50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <span class="material-icons-outlined text-indigo-500 text-xl">local_offer</span>
+                            <span class="text-sm font-bold text-slate-700 dark:text-slate-200">{{ product.name }}</span>
                         </div>
                     </div>
 
-                    <div>
-                        <label class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Subtítulo</label>
-                        <div class="mt-2 text-sm font-medium text-slate-600 dark:text-slate-400 italic">
-                             {{ product.subtitle || 'Não informado' }}
+                    <!-- Status Ativo Display -->
+                    <div
+                        class="p-4 bg-slate-50/50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-center justify-between h-[54px]">
+                        <span
+                            class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Status</span>
+                        <span [class]="product.active ? 'text-emerald-500' : 'text-rose-500'"
+                            class="text-[10px] font-black tracking-widest uppercase ml-4">
+                            {{ product.active ? 'Ativo' : 'Inativo' }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Subtítulo -->
+                <div class="space-y-2">
+                    <label
+                        class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">
+                        Subtítulo
+                    </label>
+                    <div
+                        class="flex items-center gap-3 p-4 bg-slate-50/50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+                        <span class="material-icons-outlined text-indigo-500 text-xl">subtitles</span>
+                        <span class="text-sm font-medium text-slate-600 dark:text-slate-400 italic">
+                            {{ product.subtitle || 'Não informado' }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Descrição -->
+                <div class="space-y-2">
+                    <label
+                        class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">
+                        Descrição
+                    </label>
+                    <div
+                        class="p-5 bg-slate-50/50 dark:bg-slate-800/50 rounded-[24px] border border-slate-100 dark:border-slate-800 flex items-start gap-4">
+                        <span class="material-icons-outlined text-indigo-500 text-xl mt-0.5">description</span>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed italic">
+                            {{ product.description || 'Nenhuma descrição fornecida.' }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Parceiro Responsável -->
+                <div class="space-y-2">
+                    <label
+                        class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">
+                        Parceiro Responsável
+                    </label>
+                    <div
+                        class="flex items-center gap-3 p-4 bg-slate-50/50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+                        <span class="material-icons-outlined text-indigo-500 text-xl">handshake</span>
+                        <span class="text-sm font-bold text-slate-700 dark:text-slate-200">
+                            {{ product.partner?.name || 'Não vinculado' }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Preço e Método -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Preço -->
+                    <div class="space-y-2">
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">
+                            Preço (R$)
+                        </label>
+                        <div
+                            class="flex items-center gap-3 p-4 bg-slate-50/50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <span class="material-icons-outlined text-indigo-500 text-xl">payments</span>
+                            <span class="text-sm font-black text-indigo-600 dark:text-indigo-400">{{ product.price |
+                                currency:'BRL' }}</span>
                         </div>
                     </div>
 
-                    <div>
-                        <label class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Preço</label>
-                        <div class="mt-2 text-lg font-black text-indigo-600 dark:text-indigo-400">
-                             {{ product.price | currency:'BRL' }}
+                    <!-- Método de Entrega -->
+                    <div class="space-y-2">
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">
+                            Método de Entrega
+                        </label>
+                        <div
+                            class="flex items-center gap-3 p-4 bg-slate-50/50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <span class="material-icons-outlined text-indigo-500 text-xl">delivery_dining</span>
+                            <span class="text-sm font-bold text-slate-700 dark:text-slate-200">{{ product.deliveryMethod
+                                || 'MQTT_TIME' }}</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Secondary Column -->
-                <div class="space-y-6">
-                    <div>
-                        <label class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Duração</label>
-                        <div class="mt-2 text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                             <span class="material-icons-outlined text-slate-400 text-lg">timer</span>
-                             {{ product.duration }} {{ formatUnit(product.durationUnit) }}
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Parceiro Responsável</label>
-                        <div class="mt-2 text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                             <span class="material-icons-outlined text-slate-400 text-lg">handshake</span>
-                             {{ product.partner?.name || 'Não vinculado' }}
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Status</label>
-                        <div class="mt-2">
-                            <span [class]="product.active ? 'bg-green-100 text-green-700' : 'bg-rose-100 text-rose-700'"
-                                class="px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase">
-                                {{ product.active ? 'Ativo' : 'Inativo' }}
+                <!-- Duração (Conditional Row) -->
+                <div *ngIf="product.deliveryMethod === 'MQTT_TIME' || product.deliveryMethod === 'MQTT_PULSE'"
+                    class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">
+                            Duração
+                        </label>
+                        <div
+                            class="flex items-center gap-3 p-4 bg-slate-50/50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <span class="material-icons-outlined text-indigo-500 text-xl">timer</span>
+                            <span class="text-sm font-bold text-slate-700 dark:text-slate-200">
+                                {{ product.duration }} {{ formatUnit(product.durationUnit) }}
                             </span>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="mt-8">
-                <label class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Descrição</label>
-                <div class="mt-2 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed italic">
-                        {{ product.description || 'Nenhuma descrição fornecida.' }}
-                    </p>
-                </div>
             </div>
 
         </div>

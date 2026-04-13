@@ -36,6 +36,13 @@ export class UserDeviceView implements OnInit {
     releasing = signal(false);
     releaseError = signal<string | null>(null);
     deviceProducts = signal<Product[]>([]);
+    allProductsRaw = signal<Product[]>([]);
+    allProducts = computed(() => {
+        const pid = this.partnerId();
+        if (!pid) return [];
+        return this.allProductsRaw().filter(p => p.partner?.id === pid);
+    });
+    productLoading = signal(false);
     partnerName = computed(() => this.authService.partnerName());
 
     qrUrl = computed(() => {
@@ -48,7 +55,17 @@ export class UserDeviceView implements OnInit {
         if (idParam) {
             this.id.set(idParam);
             this.loadDevice(idParam);
+            this.loadProducts();
         }
+    }
+
+    loadProducts() {
+        this.productService.findAll(0, 100).subscribe({
+            next: (response) => {
+                this.allProductsRaw.set(response.content || response);
+            },
+            error: (err) => console.error('Error loading products', err)
+        });
     }
 
     loadDevice(id: string) {
@@ -86,6 +103,42 @@ export class UserDeviceView implements OnInit {
                 console.error('Error releasing device', err);
                 this.releasing.set(false);
                 this.releaseError.set('Erro ao enviar comando de liberação.');
+            }
+        });
+    }
+
+    onAddProduct(productId: string) {
+        const currentId = this.id();
+        if (!currentId) return;
+
+        this.productLoading.set(true);
+        this.deviceService.addProductToDevice(currentId, productId).subscribe({
+            next: () => {
+                this.productLoading.set(false);
+                this.loadDevice(currentId);
+            },
+            error: (err) => {
+                console.error('Error adding product', err);
+                this.productLoading.set(false);
+                alert('Erro ao adicionar produto.');
+            }
+        });
+    }
+
+    onRemoveProduct(productId: string) {
+        const currentId = this.id();
+        if (!currentId) return;
+
+        this.productLoading.set(true);
+        this.deviceService.removeProductFromDevice(currentId, productId).subscribe({
+            next: () => {
+                this.productLoading.set(false);
+                this.loadDevice(currentId);
+            },
+            error: (err) => {
+                console.error('Error removing product', err);
+                this.productLoading.set(false);
+                alert('Erro ao remover produto.');
             }
         });
     }

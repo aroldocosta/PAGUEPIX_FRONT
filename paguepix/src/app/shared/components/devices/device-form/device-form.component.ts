@@ -26,6 +26,8 @@ export class DeviceFormComponent {
     @Input() deviceProducts: Product[] = [];
     @Input() boards: Board[] = [];
     @Input() boardId: string | number | null = null;
+    @Input() type = '';
+    @Input() types: string[] = [];
 
     @Output() save = new EventEmitter<any>();
     @Output() releaseManual = new EventEmitter<{ id: string, minutes: number }>();
@@ -39,6 +41,7 @@ export class DeviceFormComponent {
         this.save.emit({
             name: this.name,
             model: this.model,
+            type: this.type,
             partnerId: this.partnerId,
             boardId: this.boardId
         });

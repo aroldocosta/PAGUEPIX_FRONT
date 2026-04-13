@@ -24,6 +24,8 @@ export class DeviceDetailLayoutComponent {
     qrUrl = input.required<string>();
     boards = input<Board[]>([]);
     boardId = input<string | number | null>(null);
+    type = input<string>('');
+    types = input<string[]>([]);
 
     // Behaviour inputs
     mode = input<'view' | 'edit'>('view');

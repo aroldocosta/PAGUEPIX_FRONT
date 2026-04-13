@@ -24,21 +24,21 @@ export type PurchaseState = 'VALIDATING' | 'IDLE' | 'PROCESSING' | 'READY' | 'PE
 export type PaymentType = 'PIX' | 'LINK';
 
 @Component({
-    selector: 'app-shower',
+    selector: 'app-firmware',
     standalone: true,
     imports: [CommonModule],
-    templateUrl: './shower.html',
-    styleUrl: './shower.scss'
+    templateUrl: './firmware.html',
+    styleUrl: './firmware.scss'
 })
-export class ShowerComponent implements OnDestroy {
+export class FirmwareComponent implements OnDestroy {
     selectedDuration = signal<DurationOption | null>(null);
-    pixKey = signal('00020126360014BR.GOV.BCB.PIX0114+55119999999995204000053039865802BR5913PaguePix Inc 6009SAO PAULO62070503***6304ABCD');
+    pixKey = signal('');
     paymentLink = signal('');
     paymentType = signal<PaymentType>('PIX');
     currentState = signal<PurchaseState>('IDLE');
     productName = computed(() => {
         const duration = this.selectedDuration();
-        return duration ? `Tempo de Banho: ${duration.minutes}min` : 'Tempo de Banho';
+        return duration ? `${duration.label}` : 'Selecionar Item';
     });
     errorMessage = signal('');
     showCopySuccess = signal(false);
@@ -62,7 +62,6 @@ export class ShowerComponent implements OnDestroy {
     constructor() {
         this.route.paramMap.subscribe(params => {
             const token = params.get('token');
-            console.log("====================", token);
             if (token) {
                 this.handleInitialization(token, this.route.snapshot.queryParamMap);
             } else {
@@ -82,7 +81,6 @@ export class ShowerComponent implements OnDestroy {
             this.deviceId.set(token);
             this.validateDevice(token);
 
-            // Check if returning from a payment
             const paymentId = queryParams.get('payment_id');
             const status = queryParams.get('status');
             const preferenceId = queryParams.get('preference_id');
@@ -109,13 +107,7 @@ export class ShowerComponent implements OnDestroy {
     }
 
     private getFallbackDescription(minutes: number): string {
-        switch (minutes) {
-            case 1: return 'Banho ultra-rápido';
-            case 3: return 'O mais popular';
-            case 5: return 'Banho completo';
-            case 10: return 'Para toda a familia';
-            default: return `Tempo de banho`;
-        }
+        return 'Ativação de licença/firmware';
     }
 
     private validateDevice(token: string) {
@@ -133,7 +125,7 @@ export class ShowerComponent implements OnDestroy {
                             label: p.name,
                             description: p.subtitle || this.getFallbackDescription(p.duration),
                             price: p.price,
-                            icon: 'timer'
+                            icon: 'settings'
                         }))
                         .sort((a: any, b: any) => a.price - b.price);
 
@@ -144,7 +136,6 @@ export class ShowerComponent implements OnDestroy {
                     }
                 }
 
-                // If we were validating and everything is fine, go to IDLE
                 if (this.currentState() === 'VALIDATING') {
                     this.currentState.set('IDLE');
                 }
@@ -152,7 +143,7 @@ export class ShowerComponent implements OnDestroy {
             error: (err) => {
                 console.error('Error validating device:', err);
                 const backendMessage = err.error?.message;
-                this.errorMessage.set(backendMessage || 'Dispositivo não reconhecido ou inativo. Por favor, leia novamente o QR Code.');
+                this.errorMessage.set(backendMessage || 'Dispositivo não reconhecido ou inativo.');
                 this.currentState.set('ERROR');
             }
         });
@@ -170,23 +161,17 @@ export class ShowerComponent implements OnDestroy {
         if (state === 'IDLE') {
             this.currentState.set('PROCESSING');
 
-            // Call backend createCharge
             const duration = this.selectedDuration();
             const deviceId = this.deviceId();
-
-            // Suggestion 5: form "HASH_UNICO" (deviceToken)
             const deviceToken = deviceId;
 
-            // Secure Sealed Envelope Flow
             const sealedRequest: SealedPaymentRequest = {
                 deviceToken: deviceToken || '',
                 productId: duration?.id || 0,
                 duration: duration?.minutes || 0,
                 timestamp: new Date().toISOString()
             };
-            console.log('--- SEALED REQUEST ---', sealedRequest);
 
-            // Using a real Public Key
             const publicKeyPem = `-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2n4/Bt6wtRWJId7AOVtx
 VHDrHxuwnFcP4H6K7I4tpbcEtejVvztwqwJ3zis6J0g7h7han0M24YZoUmpYE7ot
@@ -198,21 +183,13 @@ twIDAQAB
 -----END PUBLIC KEY-----`;
 
             this.cryptoService.encrypt(sealedRequest, publicKeyPem).then(encryptedPayload => {
-
-                // Construct the final request for the backend
-                // The backend will receive the encrypted string and decrypt it to get the details
                 const finalRequest = {
                     payload: encryptedPayload
                 };
 
                 this.paymentService.createChargeRsa(finalRequest).subscribe({
                     next: (response: ChargeResponse) => {
-
                         this.lastChargeResponse.set(response);
-
-                        // Business Logic:
-                        // 1 - If qrCode is null, it's a payment link
-                        // 2 - If qrCode is present, it's a PIX payment
                         if (response.qrCode) {
                             this.paymentType.set('PIX');
                             this.pixKey.set(response.qrCode);
@@ -220,7 +197,6 @@ twIDAQAB
                             this.paymentType.set('LINK');
                             this.paymentLink.set(response.paymentLink);
                         }
-
                         this.currentState.set('READY');
                     },
                     error: (err) => {
@@ -241,8 +217,6 @@ twIDAQAB
             } else {
                 this.openPaymentLink();
             }
-
-            // Start polling for payment status
             this.startStatusPolling();
         } else if (state === 'SUCCESS' || state === 'ERROR') {
             this.reset();
@@ -255,14 +229,11 @@ twIDAQAB
         this.pollingStartTime = Date.now();
 
         this.pollingInterval = setInterval(() => {
-            const elapsedSeconds = Math.floor((Date.now() - this.pollingStartTime) / 5000);
+            const elapsedSeconds = Math.floor((Date.now() - this.pollingStartTime) / 1000);
 
-            console.log('Elapsed seconds:', elapsedSeconds);
-
-            // Check for timeout (2 minutes = 120 seconds)
             if (elapsedSeconds >= 300) {
                 this.stopPolling();
-                this.errorMessage.set('Ah, o tempo para este pagamento expirou! 🕒 Por favor, volte e gere um novo código Pix para continuar. Estamos aqui se precisar de ajuda!');
+                this.errorMessage.set('O tempo para este pagamento expirou. Por favor, tente novamente.');
                 this.currentState.set('ERROR');
                 return;
             }
@@ -292,40 +263,33 @@ twIDAQAB
             this.cryptoService.encrypt(statusRequest, publicKeyPem).then(encryptedPayload => {
                 this.paymentService.getPaymentStatusRsa({ payload: encryptedPayload }).subscribe({
                     next: (response) => {
-                        // If Mercado Pago, check if modal was closed manually by user (element removed from DOM)
                         const provider = this.deviceInfo()?.partner?.bankProvider || response.provider;
                         if (provider === 'MERCADO_PAGO') {
                             const modalExists = !!document.querySelector('.mp-mercadopago-checkout-wrapper') ||
                                 !!document.querySelector('#mercadopago-checkout');
 
-                            // If we were READY (modal open) and now it's gone, move to PENDING
                             if (!modalExists && this.currentState() === 'READY') {
-                                console.log('Modal closed manually or by SDK - moving to PENDING');
                                 this.currentState.set('PENDING');
                             }
                         }
 
-                        // Check for success using 'paid' boolean flag from backend ChargeStatus
                         if (response.paid) {
                             this.stopPolling();
                             this.closeMercadoPagoModal();
                             this.currentState.set('SUCCESS');
                         }
-                        // If pending but has QR Code (user selected Pix in modal OR it's a direct charge)
                         else if (response.qrCode) {
                             if (this.pixKey() !== response.qrCode) {
-                                console.log('Pix QR Code detected via polling - Closing modal and showing PENDING');
                                 this.pixKey.set(response.qrCode);
                                 this.paymentType.set('PIX');
                                 this.currentState.set('PENDING');
                                 this.closeMercadoPagoModal();
                             }
                         }
-                        // Check for specific rejection/failure states in 'status'
                         else if (response.status === 'rejected' || response.status === 'cancelled') {
                             this.stopPolling();
                             this.closeMercadoPagoModal();
-                            this.errorMessage.set('O pagamento não foi autorizado. Por favor, tente novamente ou use outra forma de pagamento.');
+                            this.errorMessage.set('O pagamento não foi autorizado. Por favor, tente novamente.');
                             this.currentState.set('ERROR');
                         }
                     },
@@ -334,10 +298,10 @@ twIDAQAB
                     }
                 });
             }).catch(err => {
-                console.error('Falha na criptografia do status:', err);
+                console.error('Encryption failed:', err);
                 this.stopPolling();
             });
-        }, 1000);
+        }, 3000);
     }
 
     stopPolling() {
@@ -360,7 +324,6 @@ twIDAQAB
     copyPixKey() {
         navigator.clipboard.writeText(this.pixKey()).then(() => {
             this.showCopySuccess.set(true);
-            // Close the modal upon copying the Pix key requested by user
             this.closeMercadoPagoModal();
             setTimeout(() => this.showCopySuccess.set(false), 3000);
         });
@@ -372,25 +335,16 @@ twIDAQAB
                 resolve();
                 return;
             }
-            console.log('Loading Mercado Pago SDK dynamically...');
             const script = document.createElement('script');
             script.src = 'https://sdk.mercadopago.com/js/v2';
             script.async = true;
-            script.onload = () => {
-                console.log('Mercado Pago SDK loaded successfully');
-                resolve();
-            };
-            script.onerror = (e) => {
-                console.error('Failed to load Mercado Pago SDK', e);
-                reject(e);
-            };
+            script.onload = () => resolve();
+            script.onerror = (e) => reject(e);
             document.head.appendChild(script);
         });
     }
 
-    // New method to force close Mercado Pago Modal/Overlay
     private closeMercadoPagoModal() {
-        console.log('closeMercadoPagoModal called - Cleaning up DOM');
         const selectors = [
             '.mp-checkout-modal',
             '.mp-checkout-iframe-container',
@@ -406,8 +360,6 @@ twIDAQAB
         selectors.forEach(selector => {
             document.querySelectorAll(selector).forEach(el => el.remove());
         });
-
-        // Also ensure body scrolling is restored if the SDK blocked it
         document.body.style.overflow = 'auto';
     }
 
@@ -417,13 +369,10 @@ twIDAQAB
             await this.loadMercadoPagoSDK();
             const mpGlobal = (window as any).MercadoPago;
             if (typeof mpGlobal !== 'undefined') {
-                console.log('Initializing MercadoPago with Public Key');
                 this.mp = new mpGlobal('APP_USR-04a454cf-9abf-4086-b9e2-3ef546f33a94', {
                     locale: 'pt-BR'
                 });
                 return this.mp;
-            } else {
-                console.warn('MercadoPago global object not found after loading script');
             }
         } catch (e) {
             console.error('MercadoPago SDK initialization failed:', e);
@@ -436,21 +385,16 @@ twIDAQAB
         const link = this.paymentLink();
         const provider = this.deviceInfo()?.partner?.bankProvider || charge?.provider;
 
-        console.log('openPaymentLink called', { provider, externalId: charge?.externalId, link });
-
         if (provider === 'MERCADO_PAGO') {
             const mpInstance = await this.getMpInstance();
             if (mpInstance && charge && charge.externalId) {
                 try {
-                    console.log('Attempting to open MP Checkout Pro Modal...');
                     mpInstance.checkout({
                         preference: {
                             id: charge.externalId
                         },
                         autoOpen: true
                     });
-
-                    console.log('MP instance.checkout called with autoOpen: true');
                     return;
                 } catch (e) {
                     console.error('Error opening MP checkout modal:', e);
@@ -458,17 +402,11 @@ twIDAQAB
             }
         }
 
-        // For PAGARME or other providers, or if MP modal fails, use direct redirection
         if (link) {
-            console.log('Redirecting to payment link:', link);
             window.location.href = link;
         } else if (provider === 'MERCADO_PAGO' && charge?.externalId) {
-            // Final Fallback for Mercado Pago
             const manualLink = `https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=${charge.externalId}`;
-            console.log('Attempting manual link fallback for Mercado Pago', manualLink);
             window.location.href = manualLink;
-        } else {
-            console.error('No payment link available for redirection');
         }
     }
 }
