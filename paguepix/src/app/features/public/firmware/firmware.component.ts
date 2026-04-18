@@ -7,6 +7,7 @@ import { CryptoService } from '../../../core/services/crypto.service';
 import { ChargeResponse, Payment } from '../../../core/models/payment.model';
 import { SealedPaymentRequest, SealedStatusRequest } from '../../../core/models/sealed-payment.model';
 import { OnDestroy } from '@angular/core';
+import { environment } from '../../../../environments/environment';
 
 // MercadoPago type declaration
 declare var MercadoPago: any;
@@ -319,6 +320,32 @@ twIDAQAB
         this.stopPolling();
         this.currentState.set('IDLE');
         this.errorMessage.set('');
+    }
+
+    private getBaseApiUrl(): string {
+        if (environment.production) {
+            return 'https://api.paguepix.oficinabr.com';
+        }
+
+        // Fallback/Dynamic detection if production flag is not enough
+        const origin = window.location.origin;
+        if (origin.includes('paguepix.oficinabr.com')) {
+            return 'https://api.paguepix.oficinabr.com';
+        }
+
+        return environment.apiUrl; // Default to localhost:8083 in dev
+    }
+
+    finishAndReturn() {
+        this.stopPolling();
+        const device = this.deviceInfo();
+
+        if (device && device.id) {
+            const baseUrl = this.getBaseApiUrl();
+            window.location.href = `${baseUrl}/devices/qr/${device.id}`;
+        } else {
+            this.reset();
+        }
     }
 
     copyPixKey() {
