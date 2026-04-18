@@ -63,10 +63,11 @@
                             class="w-12 h-12 rounded-full flex flex-col items-center justify-center font-bold text-lg transition-colors overflow-hidden mb-3">
                             <span class="material-icons-outlined text-2xl leading-none">memory</span>
                         </div>
-                        
+
                         <div class="flex flex-col mb-3">
                             <h3 class="font-bold text-[#0f172a] text-[15px] leading-tight mb-1">{{ option.label }}</h3>
-                            <p class="text-[10px] text-slate-400 font-medium italic line-clamp-2 px-1">{{ option.description }}</p>
+                            <p class="text-[10px] text-slate-400 font-medium italic line-clamp-2 px-1">{{
+                                option.description }}</p>
                         </div>
 
                         <div class="text-lg font-black text-[#0d7ff2]">
@@ -76,8 +77,7 @@
                 </div>
 
                 <!-- Multi-State Action Button Section -->
-                <div
-                    [ngClass]="{'pulse-card': isWaitingPayment()}"
+                <div [ngClass]="{'pulse-card': isWaitingPayment()}"
                     class="w-full bg-white rounded-3xl shadow-lg shadow-slate-200/60 border border-slate-50 p-8 flex flex-col items-center mb-8 transition-all duration-500">
                     <button (click)="handlePrimaryAction()"
                         [disabled]="currentState() === 'PROCESSING' || !selectedDuration()" [ngClass]="{
@@ -125,11 +125,13 @@
                                 </ng-container>
                                 <span *ngIf="showCopySuccess() || isWaitingPayment()"
                                     class="flex flex-col items-center gap-1 transition-all duration-300">
-                                    <span *ngIf="showCopySuccess()" class="text-emerald-500 font-bold flex items-center justify-center gap-1">
+                                    <span *ngIf="showCopySuccess()"
+                                        class="text-emerald-500 font-bold flex items-center justify-center gap-1">
                                         <span class="material-icons-outlined text-sm">check_circle</span>
                                         Chave Pix Copiada!
                                     </span>
-                                    <span *ngIf="isWaitingPayment()" class="text-[#0d7ff2] font-black flex items-center justify-center gap-2 animate-pulse mt-1">
+                                    <span *ngIf="isWaitingPayment()"
+                                        class="text-[#0d7ff2] font-black flex items-center justify-center gap-2 animate-pulse mt-1">
                                         <span class="w-2 h-2 bg-[#0d7ff2] rounded-full"></span>
                                         Aguardando pagamento...
                                     </span>
@@ -279,7 +281,7 @@
     </main>
 
     <!-- Purchase Modal -->
-    <div *ngIf="showPurchaseModal()" 
+    <div *ngIf="showPurchaseModal()"
         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
         <div class="w-full max-w-md bg-white rounded-[2rem] shadow-2xl overflow-hidden animate-slide-up">
             <!-- Modal Header -->
@@ -288,7 +290,8 @@
                     <h2 class="text-2xl font-black text-slate-900">Finalizar Compra</h2>
                     <p class="text-slate-400 text-sm font-medium">{{ selectedDuration()?.label }}</p>
                 </div>
-                <button (click)="closeModal()" class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-100 transition-colors">
+                <button (click)="closeModal()"
+                    class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-100 transition-colors">
                     <span class="material-icons-outlined">close</span>
                 </button>
             </div>
@@ -298,8 +301,10 @@
                 <div class="flex flex-col gap-2">
                     <label class="text-[10px] uppercase tracking-widest font-bold text-slate-400 px-1">Seu Nome</label>
                     <div class="relative">
-                        <span class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 text-xl">person</span>
-                        <input type="text" [ngModel]="buyerName()" (ngModelChange)="buyerName.set($event)" placeholder="Ex: João Silva" 
+                        <span
+                            class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 text-xl pointer-events-none">person</span>
+                        <input type="text" [ngModel]="buyerName()" (ngModelChange)="buyerName.set($event)"
+                            placeholder="Ex: João Silva"
                             class="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-slate-700 font-bold focus:outline-none focus:ring-2 focus:ring-[#0d7ff2]/20 focus:border-[#0d7ff2] transition-all">
                     </div>
                 </div>
@@ -307,68 +312,81 @@
                 <div class="flex flex-col gap-2">
                     <label class="text-[10px] uppercase tracking-widest font-bold text-slate-400 px-1">WhatsApp</label>
                     <div class="relative">
-                        <span class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 text-xl">whatsapp</span>
-                        <input type="tel" [ngModel]="buyerWhatsapp()" (ngModelChange)="buyerWhatsapp.set($event)" placeholder="(00) 00000-0000" 
+                        <i
+                            class="fab fa-whatsapp absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 text-xl pointer-events-none"></i>
+                        <input type="tel" [ngModel]="buyerWhatsapp()" (ngModelChange)="buyerWhatsapp.set($event)"
+                            placeholder="(00) 00000-0000"
                             class="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-slate-700 font-bold focus:outline-none focus:ring-2 focus:ring-[#0d7ff2]/20 focus:border-[#0d7ff2] transition-all">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div class="flex flex-col gap-2">
-                        <label class="text-[10px] uppercase tracking-widest font-bold text-slate-400 px-1">Controller ID</label>
-                        <input type="text" [ngModel]="controllerId()" (ngModelChange)="controllerId.set($event)" (blur)="checkExistingLicense()" placeholder="ID" 
+                        <label class="text-[10px] uppercase tracking-widest font-bold text-slate-400 px-1">Controller
+                            ID</label>
+                        <input type="text" [ngModel]="controllerId()" (ngModelChange)="controllerId.set($event)"
+                            (blur)="checkExistingLicense()" placeholder="Controller Id"
                             class="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-4 text-slate-700 font-bold focus:outline-none focus:ring-2 focus:ring-[#0d7ff2]/20 focus:border-[#0d7ff2] transition-all">
                     </div>
                     <div class="flex flex-col gap-2">
-                        <label class="text-[10px] uppercase tracking-widest font-bold text-slate-400 px-1">License ID</label>
-                        <input type="text" [ngModel]="licenseId()" (ngModelChange)="licenseId.set($event)" (blur)="checkExistingLicense()" placeholder="ID" 
+                        <label class="text-[10px] uppercase tracking-widest font-bold text-slate-400 px-1">License
+                            ID</label>
+                        <input type="text" [ngModel]="licenseId()" (ngModelChange)="licenseId.set($event)"
+                            (blur)="checkExistingLicense()" placeholder="License ID"
                             class="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-4 text-slate-700 font-bold focus:outline-none focus:ring-2 focus:ring-[#0d7ff2]/20 focus:border-[#0d7ff2] transition-all">
                     </div>
                 </div>
 
                 <!-- Recovery Option -->
                 <div class="flex justify-center -mt-2">
-                    <button (click)="checkExistingLicense()" [disabled]="isCheckingLicense() || !controllerId() || !licenseId()"
+                    <button (click)="checkExistingLicense()"
+                        [disabled]="isCheckingLicense() || !controllerId() || !licenseId()"
                         class="w-full bg-blue-50/80 hover:bg-blue-100 border border-blue-200 rounded-2xl p-4 transition-all flex flex-col items-center gap-1 group disabled:opacity-40">
                         <div class="flex items-center gap-2">
-                            <span class="material-icons-outlined text-[#0d7ff2] text-xl group-hover:rotate-[-20deg] transition-transform">history</span>
-                            <span class="text-[12px] font-bold text-blue-900 uppercase tracking-wider">Já possui uma licença paga?</span>
+                            <span
+                                class="material-icons-outlined text-[#0d7ff2] text-xl group-hover:rotate-[-20deg] transition-transform">history</span>
+                            <span class="text-[12px] font-bold text-blue-900 uppercase tracking-wider">Já possui uma
+                                licença paga?</span>
                         </div>
                         <span class="text-[16px] font-black text-[#0d7ff2]">Clique aqui para recuperar</span>
                     </button>
                 </div>
 
                 <!-- Recovery Message -->
-                <div *ngIf="lookupMessage()" class="mx-6 p-3 bg-amber-50 border border-amber-100 rounded-xl flex items-start gap-2 mt-1">
+                <div *ngIf="lookupMessage()"
+                    class="mx-6 p-3 bg-amber-50 border border-amber-100 rounded-xl flex items-start gap-2 mt-1">
                     <span class="material-icons-outlined text-amber-500 text-lg">info</span>
                     <p class="text-[11px] text-amber-700 leading-tight font-medium">{{ lookupMessage() }}</p>
                 </div>
 
                 <!-- Price Summary -->
-                <div class="bg-blue-50/50 rounded-2xl p-5 border border-blue-100/50 flex items-center justify-between mt-2">
+                <div
+                    class="bg-blue-50/50 rounded-2xl p-5 border border-blue-100/50 flex items-center justify-between mt-2">
                     <div class="flex flex-col">
-                        <span class="text-[9px] font-bold text-blue-400 uppercase tracking-wider">Valor do produto</span>
-                        <span class="text-lg font-black text-[#0d7ff2]">{{ selectedDuration()?.price | currency:'BRL' }}</span>
+                        <span class="text-[9px] font-bold text-blue-400 uppercase tracking-wider">Valor do
+                            produto</span>
+                        <span class="text-lg font-black text-[#0d7ff2]">{{ selectedDuration()?.price | currency:'BRL'
+                            }}</span>
                     </div>
-                    <div class="w-12 h-12 bg-[#0d7ff2] text-white rounded-xl flex items-center justify-center shadow-lg shadow-blue-200">
+                    <div
+                        class="w-12 h-12 bg-[#0d7ff2] text-white rounded-xl flex items-center justify-center shadow-lg shadow-blue-200">
                         <span class="material-icons-outlined">shopping_cart</span>
                     </div>
                 </div>
 
                 <!-- Modal Actions -->
                 <div class="flex gap-3 mt-2">
-                    <button (click)="closeModal()" 
+                    <button (click)="closeModal()"
                         class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-500 font-bold py-5 rounded-2xl transition-all">
                         Cancelar
                     </button>
-                    <button (click)="startPurchaseProcess()" 
-                        [disabled]="!buyerName() || !buyerWhatsapp()"
+                    <button (click)="startPurchaseProcess()" [disabled]="!buyerName() || !buyerWhatsapp()"
                         class="flex-[2] bg-[#0d7ff2] hover:bg-[#0a6ed1] disabled:bg-slate-100 disabled:text-slate-300 text-white font-bold py-5 rounded-2xl transition-all shadow-xl shadow-blue-100 flex items-center justify-center gap-3">
                         <ng-container *ngIf="currentState() !== 'PROCESSING'">
                             <span>Continuar</span>
                             <span class="material-icons-outlined text-xl">arrow_forward</span>
                         </ng-container>
-                        <div *ngIf="currentState() === 'PROCESSING'" 
+                        <div *ngIf="currentState() === 'PROCESSING'"
                             class="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin">
                         </div>
                     </button>
@@ -378,17 +396,19 @@
     </div>
 
     <!-- License Details Modal (Success) -->
-    <div *ngIf="showLicenseModal()" 
+    <div *ngIf="showLicenseModal()"
         class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
         <div class="w-full max-w-md bg-white rounded-[2.5rem] shadow-2xl overflow-hidden animate-slide-up">
             <!-- Modal Header -->
             <div class="bg-emerald-500 px-8 py-10 flex flex-col items-center text-center relative overflow-hidden">
                 <div class="absolute top-0 right-0 p-4">
-                    <button (click)="showLicenseModal.set(false)" class="text-white/60 hover:text-white transition-colors">
+                    <button (click)="showLicenseModal.set(false)"
+                        class="text-white/60 hover:text-white transition-colors">
                         <span class="material-icons-outlined">close</span>
                     </button>
                 </div>
-                <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mb-6 backdrop-blur-md ring-8 ring-white/10">
+                <div
+                    class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mb-6 backdrop-blur-md ring-8 ring-white/10">
                     <span class="material-icons-outlined text-white text-4xl">verified</span>
                 </div>
                 <h2 class="text-2xl font-black text-white mb-1">Licença Disponível!</h2>
@@ -400,32 +420,44 @@
                 <!-- Info Grid -->
                 <div class="grid grid-cols-1 gap-4">
                     <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                        <label class="text-[10px] uppercase tracking-widest font-bold text-slate-400 mb-1 block">Produto</label>
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-bold text-slate-400 mb-1 block">Produto</label>
                         <p class="text-slate-900 font-bold">{{ selectedDuration()?.label }}</p>
                     </div>
 
-                    <div *ngIf="paymentResult()?.licenseId || licenseId()" class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                        <label class="text-[10px] uppercase tracking-widest font-bold text-slate-400 mb-1 block">LICENÇA</label>
+                    <div *ngIf="paymentResult()?.licenseId || licenseId()"
+                        class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-bold text-slate-400 mb-1 block">LICENÇA</label>
                         <div class="flex items-center justify-between">
-                            <p class="text-slate-900 font-mono font-bold">{{ paymentResult()?.licenseId || licenseId() }}</p>
+                            <p class="text-slate-900 font-mono font-bold">{{ paymentResult()?.licenseId || licenseId()
+                                }}</p>
                             <span class="material-icons-outlined text-emerald-500 text-sm">check_circle</span>
                         </div>
                     </div>
 
-                    <div *ngIf="paymentResult()?.controllerId || controllerId()" class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                        <label class="text-[10px] uppercase tracking-widest font-bold text-slate-400 mb-1 block">CONTROLADOR</label>
-                        <p class="text-slate-900 font-mono font-bold">{{ paymentResult()?.controllerId || controllerId() }}</p>
+                    <div *ngIf="paymentResult()?.controllerId || controllerId()"
+                        class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-bold text-slate-400 mb-1 block">CONTROLADOR</label>
+                        <p class="text-slate-900 font-mono font-bold">{{ paymentResult()?.controllerId || controllerId()
+                            }}</p>
                     </div>
-                    
-                    <div *ngIf="paymentResult()?.activationKey" class="bg-emerald-50 rounded-2xl p-5 border border-emerald-100 relative group">
-                        <label class="text-[10px] uppercase tracking-widest font-bold text-emerald-600 mb-1 block">CHAVE DE ATIVAÇÃO</label>
+
+                    <div *ngIf="paymentResult()?.activationKey"
+                        class="bg-emerald-50 rounded-2xl p-5 border border-emerald-100 relative group">
+                        <label class="text-[10px] uppercase tracking-widest font-bold text-emerald-600 mb-1 block">CHAVE
+                            DE ATIVAÇÃO</label>
                         <div class="flex items-center justify-between gap-4">
-                            <p class="text-emerald-900 font-mono font-black text-xl tracking-wider select-all truncate">{{ paymentResult()?.activationKey }}</p>
-                            <button (click)="copyActivationKey()" class="flex-shrink-0 w-10 h-10 bg-white border border-emerald-200 text-emerald-600 rounded-xl flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-all shadow-sm active:scale-90">
-                                <span class="material-icons-outlined text-xl">{{ showActivationCopySuccess() ? 'check' : 'content_copy' }}</span>
+                            <p class="text-emerald-900 font-mono font-black text-xl tracking-wider select-all truncate">
+                                {{ paymentResult()?.activationKey }}</p>
+                            <button (click)="copyActivationKey()"
+                                class="flex-shrink-0 w-10 h-10 bg-white border border-emerald-200 text-emerald-600 rounded-xl flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-all shadow-sm active:scale-90">
+                                <span class="material-icons-outlined text-xl">{{ showActivationCopySuccess() ? 'check' :
+                                    'content_copy' }}</span>
                             </button>
                         </div>
-                        <div *ngIf="showActivationCopySuccess()" 
+                        <div *ngIf="showActivationCopySuccess()"
                             class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg animate-bounce">
                             Chave de ativação copiada!
                         </div>
@@ -433,7 +465,7 @@
                 </div>
 
                 <!-- Footer Action -->
-                <button (click)="showLicenseModal.set(false); finishAndReturn()" 
+                <button (click)="showLicenseModal.set(false); finishAndReturn()"
                     class="w-full bg-[#0f172a] text-white font-bold py-5 rounded-2xl transition-all hover:bg-slate-800 active:scale-[0.98] shadow-lg shadow-slate-200">
                     Concluir e Voltar
                 </button>
