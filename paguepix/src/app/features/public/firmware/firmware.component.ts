@@ -53,7 +53,7 @@ export class FirmwareComponent implements OnDestroy {
     controllerId = signal('');
     licenseId = signal('');
     showPurchaseModal = signal(false);
-    
+
     // Result Signals
     showLicenseModal = signal(false);
     paymentResult = signal<any>(null);
@@ -274,7 +274,7 @@ twIDAQAB
                 } else {
                     this.foundLicense.set(null);
                     if (response.message && (cId.length > 3 || lId.length > 3)) {
-                         this.lookupMessage.set(response.message);
+                        this.lookupMessage.set(response.message);
                     }
                 }
             },
@@ -390,7 +390,7 @@ twIDAQAB
 
         // Set the interval first so that pollAction can clear it if needed
         this.pollingInterval = setInterval(pollAction, 5000);
-        
+
         // Execute immediately for the first time
         pollAction();
     }
@@ -419,9 +419,10 @@ twIDAQAB
         // Prioritize the real deviceId from the backend success response
         // Fallback to deviceInfo.id if already loaded, or last resort the token/hash
         const finalId = this.paymentResult()?.deviceId || this.deviceInfo()?.id || this.deviceId();
-        
+
         if (finalId) {
-            window.location.href = `http://localhost:8083/devices/qr/${finalId}`;
+            const baseUrl = this.getBaseApiUrl();
+            window.location.href = `${baseUrl}/devices/qr/${finalId}`;
         } else {
             this.reset();
         }
@@ -439,18 +440,6 @@ twIDAQAB
         }
 
         return environment.apiUrl; // Default to localhost:8083 in dev
-    }
-
-    finishAndReturn() {
-        this.stopPolling();
-        const device = this.deviceInfo();
-
-        if (device && device.id) {
-            const baseUrl = this.getBaseApiUrl();
-            window.location.href = `${baseUrl}/devices/qr/${device.id}`;
-        } else {
-            this.reset();
-        }
     }
 
     copyPixKey() {
