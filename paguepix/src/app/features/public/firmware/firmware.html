@@ -417,9 +417,18 @@
                         <p class="text-slate-900 font-mono font-bold">{{ paymentResult()?.controllerId || controllerId() }}</p>
                     </div>
                     
-                    <div *ngIf="paymentResult()?.activationKey" class="bg-emerald-50 rounded-2xl p-5 border border-emerald-100">
+                    <div *ngIf="paymentResult()?.activationKey" class="bg-emerald-50 rounded-2xl p-5 border border-emerald-100 relative group">
                         <label class="text-[10px] uppercase tracking-widest font-bold text-emerald-600 mb-1 block">CHAVE DE ATIVAÇÃO</label>
-                        <p class="text-emerald-900 font-mono font-black text-xl tracking-wider select-all">{{ paymentResult()?.activationKey }}</p>
+                        <div class="flex items-center justify-between gap-4">
+                            <p class="text-emerald-900 font-mono font-black text-xl tracking-wider select-all truncate">{{ paymentResult()?.activationKey }}</p>
+                            <button (click)="copyActivationKey()" class="flex-shrink-0 w-10 h-10 bg-white border border-emerald-200 text-emerald-600 rounded-xl flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-all shadow-sm active:scale-90">
+                                <span class="material-icons-outlined text-xl">{{ showActivationCopySuccess() ? 'check' : 'content_copy' }}</span>
+                            </button>
+                        </div>
+                        <div *ngIf="showActivationCopySuccess()" 
+                            class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg animate-bounce">
+                            Chave de ativação copiada!
+                        </div>
                     </div>
                 </div>
 

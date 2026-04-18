@@ -45,6 +45,7 @@ export class FirmwareComponent implements OnDestroy {
     });
     errorMessage = signal('');
     showCopySuccess = signal(false);
+    showActivationCopySuccess = signal(false);
     isWaitingPayment = signal(false);
 
     // Form Signals
@@ -449,6 +450,16 @@ twIDAQAB
             this.closeMercadoPagoModal();
             setTimeout(() => this.showCopySuccess.set(false), 3000);
         });
+    }
+
+    copyActivationKey() {
+        const key = this.paymentResult()?.activationKey;
+        if (key) {
+            navigator.clipboard.writeText(key).then(() => {
+                this.showActivationCopySuccess.set(true);
+                setTimeout(() => this.showActivationCopySuccess.set(false), 3000);
+            });
+        }
     }
 
     private loadMercadoPagoSDK(): Promise<void> {
