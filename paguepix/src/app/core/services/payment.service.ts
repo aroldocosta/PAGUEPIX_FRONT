@@ -56,4 +56,20 @@ export class PaymentService {
     getPaymentStatus(request: { payload: string }) {
         return this.getPaymentStatusRsa(request);
     }
+
+    lookupLicense(controllerId: string, licenseId: string, productName?: string, productId?: number) {
+        let params = new HttpParams()
+            .set('controllerId', controllerId)
+            .set('licenseId', licenseId);
+        
+        if (productName) {
+            params = params.set('productName', productName);
+        }
+
+        if (productId) {
+            params = params.set('productId', productId.toString());
+        }
+        
+        return this.http.get<any>(`${environment.apiUrl}/licenses/public/lookup`, { params });
+    }
 }

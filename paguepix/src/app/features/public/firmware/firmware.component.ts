@@ -23,10 +23,12 @@ interface DurationOption {
 export type PurchaseState = 'VALIDATING' | 'IDLE' | 'PROCESSING' | 'READY' | 'PENDING' | 'SUCCESS' | 'ERROR';
 export type PaymentType = 'PIX' | 'LINK';
 
+import { FormsModule } from '@angular/forms';
+
 @Component({
     selector: 'app-firmware',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, FormsModule],
     templateUrl: './firmware.html',
     styleUrl: './firmware.scss'
 })
@@ -42,6 +44,20 @@ export class FirmwareComponent implements OnDestroy {
     });
     errorMessage = signal('');
     showCopySuccess = signal(false);
+
+    // Form Signals
+    buyerName = signal('');
+    buyerWhatsapp = signal('');
+    controllerId = signal('');
+    licenseId = signal('');
+    showPurchaseModal = signal(false);
+    
+    // Result Signals
+    showLicenseModal = signal(false);
+    paymentResult = signal<any>(null);
+    isCheckingLicense = signal(false);
+    foundLicense = signal<any | null>(null);
+    lookupMessage = signal('');
 
     deviceId = signal<string | null>(null);
     deviceInfo = signal<any | null>(null);
@@ -152,27 +168,45 @@ export class FirmwareComponent implements OnDestroy {
     selectDuration(option: DurationOption) {
         if (this.currentState() === 'IDLE') {
             this.selectedDuration.set(option);
+            this.showPurchaseModal.set(true);
         }
     }
 
-    handlePrimaryAction() {
-        const state = this.currentState();
+    openModal() {
+        if (this.selectedDuration()) {
+            this.showPurchaseModal.set(true);
+        }
+    }
 
-        if (state === 'IDLE') {
-            this.currentState.set('PROCESSING');
+    closeModal() {
+        this.showPurchaseModal.set(false);
+    }
 
-            const duration = this.selectedDuration();
-            const deviceId = this.deviceId();
-            const deviceToken = deviceId;
+    /**
+     * Called from the Purchase Modal to initiate the actual charge creation.
+     */
+    startPurchaseProcess() {
+        if (this.currentState() !== 'IDLE') return;
 
-            const sealedRequest: SealedPaymentRequest = {
-                deviceToken: deviceToken || '',
-                productId: duration?.id || 0,
-                duration: duration?.minutes || 0,
-                timestamp: new Date().toISOString()
-            };
+        this.showPurchaseModal.set(false);
+        this.currentState.set('PROCESSING');
 
-            const publicKeyPem = `-----BEGIN PUBLIC KEY-----
+        const duration = this.selectedDuration();
+        const deviceId = this.deviceId();
+        const deviceToken = deviceId;
+
+        const sealedRequest: SealedPaymentRequest = {
+            deviceToken: deviceToken || '',
+            productId: duration?.id || 0,
+            duration: duration?.minutes || 0,
+            timestamp: new Date().toISOString(),
+            name: this.buyerName(),
+            whatsapp: this.buyerWhatsapp(),
+            controllerId: this.controllerId(),
+            licenseId: this.licenseId()
+        };
+
+        const publicKeyPem = `-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2n4/Bt6wtRWJId7AOVtx
 VHDrHxuwnFcP4H6K7I4tpbcEtejVvztwqwJ3zis6J0g7h7han0M24YZoUmpYE7ot
 X1TSSErJC6x0XkciVmnpJa3YUkhYBYsAHsQ8jGeZEiqCKbF2XaplppdpilSyuN2W
@@ -182,35 +216,78 @@ sy6q5O6rDBrDn2QuyXV03HOZ7BIFzvpiUmE5gKtyu11Nvv882hmIWRA4LzsT4rPc
 twIDAQAB
 -----END PUBLIC KEY-----`;
 
-            this.cryptoService.encrypt(sealedRequest, publicKeyPem).then(encryptedPayload => {
-                const finalRequest = {
-                    payload: encryptedPayload
-                };
+        this.cryptoService.encrypt(sealedRequest, publicKeyPem).then(encryptedPayload => {
+            const finalRequest = {
+                payload: encryptedPayload
+            };
 
-                this.paymentService.createChargeRsa(finalRequest).subscribe({
-                    next: (response: ChargeResponse) => {
-                        this.lastChargeResponse.set(response);
-                        if (response.qrCode) {
-                            this.paymentType.set('PIX');
-                            this.pixKey.set(response.qrCode);
-                        } else {
-                            this.paymentType.set('LINK');
-                            this.paymentLink.set(response.paymentLink);
-                        }
-                        this.currentState.set('READY');
-                    },
-                    error: (err) => {
-                        console.error('Error creating charge:', err);
-                        const backendMessage = err.error?.message;
-                        this.errorMessage.set(backendMessage || 'Falha na comunicação com o servidor. Tente novamente.');
-                        this.currentState.set('ERROR');
+            this.paymentService.createChargeRsa(finalRequest).subscribe({
+                next: (response: ChargeResponse) => {
+                    this.lastChargeResponse.set(response);
+
+                    if (response.qrCode) {
+                        this.paymentType.set('PIX');
+                        this.pixKey.set(response.qrCode);
+                    } else {
+                        this.paymentType.set('LINK');
+                        this.paymentLink.set(response.paymentLink);
                     }
-                });
-            }).catch(err => {
-                console.error('Encryption failed:', err);
-                this.errorMessage.set('Falha ao processar segurança da transação.');
-                this.currentState.set('ERROR');
+                    this.currentState.set('READY');
+                },
+                error: (err) => {
+                    console.error('Error creating charge:', err);
+                    const backendMessage = err.error?.message;
+                    this.errorMessage.set(backendMessage || 'Falha na comunicação com o servidor. Tente novamente.');
+                    this.currentState.set('ERROR');
+                }
             });
+        }).catch(err => {
+            console.error('Encryption failed:', err);
+            this.errorMessage.set('Falha ao processar segurança da transação.');
+            this.currentState.set('ERROR');
+        });
+    }
+
+    checkExistingLicense() {
+        const cId = this.controllerId().trim();
+        const lId = this.licenseId().trim();
+        const pName = this.selectedDuration()?.label;
+        const pId = this.selectedDuration()?.id;
+
+        if (!cId || !lId) return;
+
+        this.isCheckingLicense.set(true);
+        this.lookupMessage.set('');
+
+        this.paymentService.lookupLicense(cId, lId, pName, pId).subscribe({
+            next: (response) => {
+                this.isCheckingLicense.set(false);
+                if (response.paid) {
+                    this.foundLicense.set(response);
+                    // Automatically show success if found
+                    this.paymentResult.set(response);
+                    this.showPurchaseModal.set(false);
+                    this.showLicenseModal.set(true);
+                    this.currentState.set('SUCCESS');
+                } else {
+                    this.foundLicense.set(null);
+                    if (response.message && (cId.length > 3 || lId.length > 3)) {
+                         this.lookupMessage.set(response.message);
+                    }
+                }
+            },
+            error: (err) => {
+                this.isCheckingLicense.set(false);
+                console.error('Error checking license:', err);
+            }
+        });
+    }
+
+    handlePrimaryAction() {
+        const state = this.currentState();
+
+        if (state === 'IDLE') {
+            this.openModal();
         } else if (state === 'READY') {
             if (this.paymentType() === 'PIX') {
                 this.copyPixKey();
@@ -228,7 +305,7 @@ twIDAQAB
 
         this.pollingStartTime = Date.now();
 
-        this.pollingInterval = setInterval(() => {
+        const pollAction = () => {
             const elapsedSeconds = Math.floor((Date.now() - this.pollingStartTime) / 1000);
 
             if (elapsedSeconds >= 300) {
@@ -273,9 +350,15 @@ twIDAQAB
                             }
                         }
 
+
                         if (response.paid) {
+                            console.log("============= RESPONSE =============");
+                            console.log(JSON.stringify(response, null, 2));
+                            console.log("====================================");
                             this.stopPolling();
                             this.closeMercadoPagoModal();
+                            this.paymentResult.set(response); // Store detailed license data
+                            this.showLicenseModal.set(true);  // Show results modal
                             this.currentState.set('SUCCESS');
                         }
                         else if (response.qrCode) {
@@ -301,7 +384,13 @@ twIDAQAB
                 console.error('Encryption failed:', err);
                 this.stopPolling();
             });
-        }, 5000);
+        };
+
+        // Set the interval first so that pollAction can clear it if needed
+        this.pollingInterval = setInterval(pollAction, 5000);
+        
+        // Execute immediately for the first time
+        pollAction();
     }
 
     stopPolling() {

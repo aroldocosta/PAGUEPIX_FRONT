@@ -3,6 +3,10 @@ export interface SealedPaymentRequest {
     productId?: number;
     duration: number;
     timestamp: string; // ISO format: YYYY-MM-DDTHH:mm:ss.sssZ
+    name?: string;
+    whatsapp?: string;
+    controllerId?: string;
+    licenseId?: string;
 }
 
 export interface SealedStatusRequest {

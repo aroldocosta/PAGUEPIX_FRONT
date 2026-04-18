@@ -8,27 +8,57 @@ export class CryptoService {
     constructor() { }
 
     /**
-     * Encrypts a payload string or object using an RSA public key (PEM format).
+     * Encrypts a payload using Hybrid Encryption (RSA + AES-GCM).
+     * This solves the size limitation of pure RSA encryption.
      * @param payload The data to encrypt.
-     * @param publicKeyPem The public key in PEM format.
-     * @returns A Promise that resolves to the Base64-encoded ciphertext.
+     * @param publicKeyPem The RSA public key in PEM format.
+     * @returns A Promise that resolves to the combined ciphertext string: ENC_AES_KEY:IV:CIPHERTEXT
      */
     async encrypt(payload: any, publicKeyPem: string): Promise<string> {
         const data = typeof payload === 'string' ? payload : JSON.stringify(payload);
         const encoder = new TextEncoder();
         const dataBuffer = encoder.encode(data);
 
-        const publicKey = await this.importPublicKey(publicKeyPem);
-
-        const encryptedBuffer = await window.crypto.subtle.encrypt(
+        // 1. Generate random AES-GCM key (256 bits)
+        const aesKey = await window.crypto.subtle.generateKey(
             {
-                name: "RSA-OAEP"
+                name: "AES-GCM",
+                length: 256
             },
-            publicKey,
+            true,
+            ["encrypt"]
+        );
+
+        // 2. Generate random IV (12 bytes recommended for GCM)
+        const iv = window.crypto.getRandomValues(new Uint8Array(12));
+
+        // 3. Encrypt data with AES-GCM
+        const encryptedDataBuffer = await window.crypto.subtle.encrypt(
+            {
+                name: "AES-GCM",
+                iv: iv
+            },
+            aesKey,
             dataBuffer
         );
 
-        return this.arrayBufferToBase64(encryptedBuffer);
+        // 4. Encrypt the AES key with RSA-OAEP
+        const exportedAesKey = await window.crypto.subtle.exportKey("raw", aesKey);
+        const rsaPublicKey = await this.importPublicKey(publicKeyPem);
+        const encryptedAesKeyBuffer = await window.crypto.subtle.encrypt(
+            {
+                name: "RSA-OAEP"
+            },
+            rsaPublicKey,
+            exportedAesKey
+        );
+
+        // 5. Return combined format: base64(encrypted_aes_key):base64(iv):base64(ciphertext)
+        return [
+            this.arrayBufferToBase64(encryptedAesKeyBuffer),
+            this.arrayBufferToBase64(iv.buffer),
+            this.arrayBufferToBase64(encryptedDataBuffer)
+        ].join(':');
     }
 
     private async importPublicKey(pem: string): Promise<CryptoKey> {

@@ -59,4 +59,7 @@ export interface ChargeStatus {
     qrCode?: string;
     totalPaidAmount?: number;
     provider?: string;
+    licenseId?: string;
+    controllerId?: string;
+    activationKey?: string;
 }
