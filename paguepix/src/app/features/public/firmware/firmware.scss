@@ -87,3 +87,23 @@ input::placeholder {
 .transition-colors {
     transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
+
+.pulse-card {
+    animation: pulse-card 2s infinite ease-in-out;
+    border-color: #0d7ff2 !important;
+}
+
+@keyframes pulse-card {
+    0% {
+        box-shadow: 0 10px 25px -5px rgba(13, 127, 242, 0.2), 0 8px 10px -6px rgba(13, 127, 242, 0.2);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 15px 35px -5px rgba(13, 127, 242, 0.4), 0 12px 20px -6px rgba(13, 127, 242, 0.4);
+        transform: scale(1.02);
+    }
+    100% {
+        box-shadow: 0 10px 25px -5px rgba(13, 127, 242, 0.2), 0 8px 10px -6px rgba(13, 127, 242, 0.2);
+        transform: scale(1);
+    }
+}

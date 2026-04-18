@@ -44,6 +44,7 @@ export class FirmwareComponent implements OnDestroy {
     });
     errorMessage = signal('');
     showCopySuccess = signal(false);
+    isWaitingPayment = signal(false);
 
     // Form Signals
     buyerName = signal('');
@@ -408,11 +409,27 @@ twIDAQAB
         this.stopPolling();
         this.currentState.set('IDLE');
         this.errorMessage.set('');
+        this.isWaitingPayment.set(false);
+    }
+
+    finishAndReturn() {
+        this.stopPolling();
+        this.isWaitingPayment.set(false);
+        // Prioritize the real deviceId from the backend success response
+        // Fallback to deviceInfo.id if already loaded, or last resort the token/hash
+        const finalId = this.paymentResult()?.deviceId || this.deviceInfo()?.id || this.deviceId();
+        
+        if (finalId) {
+            window.location.href = `http://localhost:8083/devices/qr/${finalId}`;
+        } else {
+            this.reset();
+        }
     }
 
     copyPixKey() {
         navigator.clipboard.writeText(this.pixKey()).then(() => {
             this.showCopySuccess.set(true);
+            this.isWaitingPayment.set(true);
             this.closeMercadoPagoModal();
             setTimeout(() => this.showCopySuccess.set(false), 3000);
         });

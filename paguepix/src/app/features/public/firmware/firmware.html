@@ -77,7 +77,8 @@
 
                 <!-- Multi-State Action Button Section -->
                 <div
-                    class="w-full bg-white rounded-3xl shadow-lg shadow-slate-200/60 border border-slate-50 p-8 flex flex-col items-center mb-8">
+                    [ngClass]="{'pulse-card': isWaitingPayment()}"
+                    class="w-full bg-white rounded-3xl shadow-lg shadow-slate-200/60 border border-slate-50 p-8 flex flex-col items-center mb-8 transition-all duration-500">
                     <button (click)="handlePrimaryAction()"
                         [disabled]="currentState() === 'PROCESSING' || !selectedDuration()" [ngClass]="{
                                 'bg-[#f1f5f9] text-[#0f172a] hover:bg-slate-200': currentState() === 'IDLE' || currentState() === 'READY',
@@ -122,10 +123,16 @@
                                     {{ paymentType() === 'PIX' ? 'Efetue o pagamento via Pix Copia e Cola.' : 'Clique
                                     para abrir o pagamento seguro.' }}
                                 </ng-container>
-                                <span *ngIf="showCopySuccess()"
-                                    class="text-emerald-500 font-bold flex items-center justify-center gap-1">
-                                    <span class="material-icons-outlined text-sm">check_circle</span>
-                                    Chave Pix Copiada!
+                                <span *ngIf="showCopySuccess() || isWaitingPayment()"
+                                    class="flex flex-col items-center gap-1 transition-all duration-300">
+                                    <span *ngIf="showCopySuccess()" class="text-emerald-500 font-bold flex items-center justify-center gap-1">
+                                        <span class="material-icons-outlined text-sm">check_circle</span>
+                                        Chave Pix Copiada!
+                                    </span>
+                                    <span *ngIf="isWaitingPayment()" class="text-[#0d7ff2] font-black flex items-center justify-center gap-2 animate-pulse mt-1">
+                                        <span class="w-2 h-2 bg-[#0d7ff2] rounded-full"></span>
+                                        Aguardando pagamento...
+                                    </span>
                                 </span>
                             </span>
                         </ng-container>
@@ -215,7 +222,7 @@
                             <p
                                 class="text-[13px] font-semibold text-emerald-600/80 uppercase tracking-widest text-center mb-2">
                                 Ativação em andamento...</p>
-                            <button (click)="reset()"
+                            <button (click)="finishAndReturn()"
                                 class="w-full bg-[#0f172a] text-white font-bold py-5 px-6 rounded-2xl transition-all hover:bg-slate-800 active:scale-[0.98] shadow-lg shadow-slate-200">
                                 Voltar ao Início
                             </button>
@@ -417,7 +424,7 @@
                 </div>
 
                 <!-- Footer Action -->
-                <button (click)="showLicenseModal.set(false); reset()" 
+                <button (click)="showLicenseModal.set(false); finishAndReturn()" 
                     class="w-full bg-[#0f172a] text-white font-bold py-5 rounded-2xl transition-all hover:bg-slate-800 active:scale-[0.98] shadow-lg shadow-slate-200">
                     Concluir e Voltar
                 </button>

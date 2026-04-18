@@ -62,4 +62,5 @@ export interface ChargeStatus {
     licenseId?: string;
     controllerId?: string;
     activationKey?: string;
+    deviceId?: string;
 }
