@@ -314,7 +314,7 @@
                     <div class="relative">
                         <i
                             class="fab fa-whatsapp absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 text-xl pointer-events-none"></i>
-                        <input type="tel" [ngModel]="buyerWhatsapp()" (ngModelChange)="buyerWhatsapp.set($event)"
+                        <input type="tel" [ngModel]="buyerWhatsapp()" (ngModelChange)="onWhatsappChange($event)"
                             placeholder="(00) 00000-0000"
                             class="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-slate-700 font-bold focus:outline-none focus:ring-2 focus:ring-[#0d7ff2]/20 focus:border-[#0d7ff2] transition-all">
                     </div>
@@ -421,8 +421,11 @@
                 <div class="grid grid-cols-1 gap-4">
                     <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
                         <label
-                            class="text-[10px] uppercase tracking-widest font-bold text-slate-400 mb-1 block">Produto</label>
-                        <p class="text-slate-900 font-bold">{{ selectedDuration()?.label }}</p>
+                            class="text-[10px] uppercase tracking-widest font-bold text-slate-400 mb-1 block">PRODUTO</label>
+                        <div class="flex items-center justify-between">
+                            <p class="text-slate-900 font-bold">{{ selectedDuration()?.label }}</p>
+                            <span class="material-symbols-outlined text-emerald-500 text-lg">developer_board</span>
+                        </div>
                     </div>
 
                     <div *ngIf="paymentResult()?.licenseId || licenseId()"
@@ -432,7 +435,7 @@
                         <div class="flex items-center justify-between">
                             <p class="text-slate-900 font-mono font-bold">{{ paymentResult()?.licenseId || licenseId()
                                 }}</p>
-                            <span class="material-icons-outlined text-emerald-500 text-sm">check_circle</span>
+                            <span class="material-symbols-outlined text-emerald-500 text-lg">license</span>
                         </div>
                     </div>
 
@@ -440,8 +443,12 @@
                         class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
                         <label
                             class="text-[10px] uppercase tracking-widest font-bold text-slate-400 mb-1 block">CONTROLADOR</label>
-                        <p class="text-slate-900 font-mono font-bold">{{ paymentResult()?.controllerId || controllerId()
-                            }}</p>
+                        <div class="flex items-center justify-between">
+                            <p class="text-slate-900 font-mono font-bold">{{ paymentResult()?.controllerId ||
+                                controllerId()
+                                }}</p>
+                            <span class="material-symbols-outlined text-emerald-500 text-lg">memory</span>
+                        </div>
                     </div>
 
                     <div *ngIf="paymentResult()?.activationKey"

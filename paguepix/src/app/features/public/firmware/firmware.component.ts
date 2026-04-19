@@ -462,6 +462,32 @@ twIDAQAB
         }
     }
 
+    onWhatsappChange(value: string) {
+        // Remove all non-digits
+        let cleaned = value.replace(/\D/g, '');
+
+        // Limit to 11 digits
+        if (cleaned.length > 11) {
+            cleaned = cleaned.substring(0, 11);
+        }
+
+        // Apply mask
+        let masked = '';
+        if (cleaned.length > 0) {
+            masked = '(' + cleaned.substring(0, 2);
+            if (cleaned.length > 2) {
+                masked += ') ' + cleaned.substring(2, 7);
+                if (cleaned.length > 7) {
+                    masked += '-' + cleaned.substring(7, 11);
+                }
+            }
+        } else {
+            masked = '';
+        }
+
+        this.buyerWhatsapp.set(masked);
+    }
+
     private loadMercadoPagoSDK(): Promise<void> {
         return new Promise((resolve, reject) => {
             if ((window as any).MercadoPago) {
