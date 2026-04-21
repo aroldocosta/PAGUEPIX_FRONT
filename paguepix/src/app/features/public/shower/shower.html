@@ -47,28 +47,28 @@
                     <h1 class="text-3xl font-black text-[#0f172a] mb-2">Selecione o tempo</h1>
                 </section>
 
-                <!-- Options List -->
-                <div class="flex flex-col gap-4 w-full mb-10">
+                <!-- Options List (Grid of 1/2 page cards) -->
+                <div class="grid grid-cols-2 gap-4 w-full mb-10">
                     <div *ngFor="let option of durationOptions" (click)="selectDuration(option)" [ngClass]="{
                             'border-[#0d7ff2] ring-2 ring-[#0d7ff2]/10 bg-white selected-option': selectedDuration()?.minutes === option.minutes,
                             'border-slate-100 bg-white hover:border-[#0d7ff2]/30 shadow-sm': selectedDuration()?.minutes !== option.minutes,
                             'opacity-40 grayscale pointer-events-none': currentState() !== 'IDLE'
                         }"
-                        class="p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between group">
+                        class="p-4 rounded-2xl border transition-all cursor-pointer flex flex-col items-center text-center group min-h-[160px] justify-center">
 
-                        <div class="flex items-center gap-4">
-                            <div [ngClass]="{
-                                'bg-[#0d7ff2] text-white': selectedDuration()?.minutes === option.minutes,
-                                'bg-[#ebf5ff] text-[#0d7ff2]': selectedDuration()?.minutes !== option.minutes
-                            }"
-                                class="w-12 h-12 rounded-full flex flex-col items-center justify-center font-bold text-lg transition-colors overflow-hidden">
-                                <span class="material-icons-outlined text-xl leading-none">timer</span>
-                                <span class="text-[10px] leading-none mt-0.5">{{ option.minutes }}'</span>
-                            </div>
-                            <div class="flex flex-col">
-                                <h3 class="font-bold text-[#0f172a] text-[15px]">{{ option.label }}</h3>
-                                <p class="text-[11px] text-slate-400 font-medium italic">{{ option.description }}</p>
-                            </div>
+                        <div [ngClass]="{
+                            'bg-[#0d7ff2] text-white': selectedDuration()?.minutes === option.minutes,
+                            'bg-[#ebf5ff] text-[#0d7ff2]': selectedDuration()?.minutes !== option.minutes
+                        }"
+                            class="w-12 h-12 rounded-full flex flex-col items-center justify-center font-bold text-lg transition-colors overflow-hidden mb-3">
+                            <span class="material-icons-outlined text-2xl leading-none">timer</span>
+                            <span class="text-[10px] leading-none mt-0.5">{{ option.minutes }}'</span>
+                        </div>
+
+                        <div class="flex flex-col mb-3">
+                            <h3 class="font-bold text-[#0f172a] text-[15px] leading-tight mb-1">{{ option.label }}</h3>
+                            <p class="text-[10px] text-slate-400 font-medium italic line-clamp-2 px-1">{{
+                                option.description }}</p>
                         </div>
 
                         <div class="text-lg font-black text-[#0d7ff2]">
