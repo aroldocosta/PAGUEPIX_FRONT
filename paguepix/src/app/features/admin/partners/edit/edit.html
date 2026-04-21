@@ -84,6 +84,117 @@
                                 placeholder="Ex: 5.5">
                         </div>
                     </div>
+
+                    <!-- Configuração de Repasse -->
+                    <div class="md:col-span-2 pt-6 border-t border-slate-100 dark:border-slate-800">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                            <span class="material-icons-outlined text-indigo-500">payments</span>
+                            Configuração de Repasse (Payout)
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <label class="relative flex flex-col p-4 border rounded-2xl cursor-pointer transition-all"
+                                [class.border-indigo-500]="payoutMethod() === 'AUTOMATIC_TED'"
+                                [class.bg-indigo-50]="payoutMethod() === 'AUTOMATIC_TED'"
+                                [class.dark:bg-indigo-500/10]="payoutMethod() === 'AUTOMATIC_TED'"
+                                [class.border-slate-200]="payoutMethod() !== 'AUTOMATIC_TED'"
+                                [class.dark:border-slate-800]="payoutMethod() !== 'AUTOMATIC_TED'">
+                                <input type="radio" name="payoutMethod" value="AUTOMATIC_TED" 
+                                    [ngModel]="payoutMethod()" (ngModelChange)="payoutMethod.set($event)"
+                                    class="absolute opacity-0">
+                                <span class="font-bold text-slate-900 dark:text-white">TED Automático</span>
+                                <span class="text-xs text-slate-500">Repasse via API (D+1)</span>
+                            </label>
+
+                            <label class="relative flex flex-col p-4 border rounded-2xl cursor-pointer transition-all"
+                                [class.border-emerald-500]="payoutMethod() === 'AUTOMATIC_PIX'"
+                                [class.bg-emerald-50]="payoutMethod() === 'AUTOMATIC_PIX'"
+                                [class.dark:bg-emerald-500/10]="payoutMethod() === 'AUTOMATIC_PIX'"
+                                [class.border-slate-200]="payoutMethod() !== 'AUTOMATIC_PIX'"
+                                [class.dark:border-slate-800]="payoutMethod() !== 'AUTOMATIC_PIX'">
+                                <input type="radio" name="payoutMethod" value="AUTOMATIC_PIX"
+                                    [ngModel]="payoutMethod()" (ngModelChange)="payoutMethod.set($event)"
+                                    class="absolute opacity-0">
+                                <span class="font-bold text-slate-900 dark:text-white">Pix Automático</span>
+                                <span class="text-xs text-slate-500">Disponível em breve</span>
+                            </label>
+
+                            <label class="relative flex flex-col p-4 border rounded-2xl cursor-pointer transition-all"
+                                [class.border-amber-500]="payoutMethod() === 'MANUAL_PIX'"
+                                [class.bg-amber-50]="payoutMethod() === 'MANUAL_PIX'"
+                                [class.dark:bg-amber-500/10]="payoutMethod() === 'MANUAL_PIX'"
+                                [class.border-slate-200]="payoutMethod() !== 'MANUAL_PIX'"
+                                [class.dark:border-slate-800]="payoutMethod() !== 'MANUAL_PIX'">
+                                <input type="radio" name="payoutMethod" value="MANUAL_PIX"
+                                    [ngModel]="payoutMethod()" (ngModelChange)="payoutMethod.set($event)"
+                                    class="absolute opacity-0">
+                                <span class="font-bold text-slate-900 dark:text-white">Pix Manual</span>
+                                <span class="text-xs text-slate-500">Fluxo de contingência</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Dados Bancários -->
+                    <div class="md:col-span-2 space-y-6 pt-6 border-t border-slate-100 dark:border-slate-800"
+                        *ngIf="payoutMethod() === 'AUTOMATIC_TED' || payoutMethod() === 'AUTOMATIC_PIX'">
+                        
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <span class="material-icons-outlined text-indigo-500">account_balance</span>
+                            Dados Bancários para Repasse
+                        </h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <!-- CPF/CNPJ Titular -->
+                            <div class="space-y-2 md:col-span-2">
+                                <label for="documentNumber" class="block text-sm font-bold text-gray-700 dark:text-slate-300">CPF/CNPJ do Titular</label>
+                                <input id="documentNumber" name="documentNumber" type="text" [ngModel]="documentNumber()" (ngModelChange)="documentNumber.set($event)"
+                                    class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900 dark:text-white"
+                                    placeholder="000.000.000-00">
+                            </div>
+
+                            <!-- Banco -->
+                            <div class="space-y-2">
+                                <label for="bankCode" class="block text-sm font-bold text-gray-700 dark:text-slate-300">Cód. Banco</label>
+                                <input id="bankCode" name="bankCode" type="text" [ngModel]="bankCode()" (ngModelChange)="bankCode.set($event)"
+                                    class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900 dark:text-white"
+                                    placeholder="Ex: 341">
+                            </div>
+
+                            <!-- Agência -->
+                            <div class="space-y-2">
+                                <label for="bankBranch" class="block text-sm font-bold text-gray-700 dark:text-slate-300">Agência</label>
+                                <input id="bankBranch" name="bankBranch" type="text" [ngModel]="bankBranch()" (ngModelChange)="bankBranch.set($event)"
+                                    class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900 dark:text-white"
+                                    placeholder="0001">
+                            </div>
+
+                            <!-- Conta -->
+                            <div class="space-y-2">
+                                <label for="bankAccount" class="block text-sm font-bold text-gray-700 dark:text-slate-300">Conta</label>
+                                <input id="bankAccount" name="bankAccount" type="text" [ngModel]="bankAccount()" (ngModelChange)="bankAccount.set($event)"
+                                    class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900 dark:text-white"
+                                    placeholder="12345">
+                            </div>
+
+                            <!-- Dígito -->
+                            <div class="space-y-2">
+                                <label for="bankAccountDigit" class="block text-sm font-bold text-gray-700 dark:text-slate-300">Dígito</label>
+                                <input id="bankAccountDigit" name="bankAccountDigit" type="text" [ngModel]="bankAccountDigit()" (ngModelChange)="bankAccountDigit.set($event)"
+                                    class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900 dark:text-white"
+                                    placeholder="0">
+                            </div>
+
+                            <!-- Tipo de Conta -->
+                            <div class="space-y-2 md:col-span-2">
+                                <label for="bankAccountType" class="block text-sm font-bold text-gray-700 dark:text-slate-300">Tipo de Conta</label>
+                                <select id="bankAccountType" name="bankAccountType" [ngModel]="bankAccountType()" (ngModelChange)="bankAccountType.set($event)"
+                                    class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900 dark:text-white appearance-none">
+                                    <option value="CHECKING">Conta Corrente</option>
+                                    <option value="SAVINGS">Conta Poupança</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Ações -->

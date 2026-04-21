@@ -9,6 +9,14 @@ export interface Partner {
     description?: string;
     gateway?: any;
     pixKey?: string;
+    bankCode?: string;
+    bankBranch?: string;
+    bankAccount?: string;
+    bankAccountDigit?: string;
+    bankAccountType?: string;
+    documentNumber?: string;
+    payoutMethod?: string;
+    recipientId?: string;
     commissionRate?: number;
     userList?: User[];
     paymentList?: Payment[];

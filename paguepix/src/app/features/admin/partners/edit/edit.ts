@@ -23,6 +23,13 @@ export class PartnerEdit implements OnInit {
   description = signal('');
   gateway = signal('');
   pixKey = signal('');
+  bankCode = signal('');
+  bankBranch = signal('');
+  bankAccount = signal('');
+  bankAccountDigit = signal('');
+  bankAccountType = signal('CHECKING');
+  documentNumber = signal('');
+  payoutMethod = signal('AUTOMATIC_TED');
   commissionRate = signal<number | null>(null);
   logo = signal<string | null>(null);
   imageError = signal(false);
@@ -60,6 +67,13 @@ export class PartnerEdit implements OnInit {
         this.gateway.set(initialGateway);
         
         this.pixKey.set(partner.pixKey || '');
+        this.bankCode.set(partner.bankCode || '');
+        this.bankBranch.set(partner.bankBranch || '');
+        this.bankAccount.set(partner.bankAccount || '');
+        this.bankAccountDigit.set(partner.bankAccountDigit || '');
+        this.bankAccountType.set(partner.bankAccountType || 'CHECKING');
+        this.documentNumber.set(partner.documentNumber || '');
+        this.payoutMethod.set(partner.payoutMethod || 'AUTOMATIC_TED');
         this.commissionRate.set(partner.commissionRate || null);
         
         if (partner.logo) {
@@ -102,6 +116,13 @@ export class PartnerEdit implements OnInit {
       description: this.description(),
       gateway: this.gateway(),
       pixKey: this.pixKey(),
+      bankCode: this.bankCode(),
+      bankBranch: this.bankBranch(),
+      bankAccount: this.bankAccount(),
+      bankAccountDigit: this.bankAccountDigit(),
+      bankAccountType: this.bankAccountType(),
+      documentNumber: this.documentNumber(),
+      payoutMethod: this.payoutMethod(),
       commissionRate: this.commissionRate()
     };
 
