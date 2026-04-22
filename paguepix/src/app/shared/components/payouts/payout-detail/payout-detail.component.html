@@ -87,14 +87,25 @@
                     </div>
 
                     <div *ngIf="payout.statusMessage"
-                        class="bg-rose-50 dark:bg-rose-900/10 border border-rose-100 dark:border-rose-900/20 p-4 rounded-2xl">
+                        [ngClass]="{
+                            'bg-indigo-50 dark:bg-indigo-900/10 border-indigo-100 dark:border-indigo-900/20': payout.status === 'PAID_OUT',
+                            'bg-rose-50 dark:bg-rose-900/10 border-rose-100 dark:border-rose-900/20': payout.status !== 'PAID_OUT'
+                        }"
+                        class="border p-4 rounded-2xl transition-colors duration-300">
                         <div class="flex gap-3">
-                            <span class="material-icons-outlined text-rose-500 text-lg">error_outline</span>
+                            <span class="material-icons-outlined text-lg"
+                                [ngClass]="payout.status === 'PAID_OUT' ? 'text-indigo-500' : 'text-rose-500'">
+                                {{ payout.status === 'PAID_OUT' ? 'assignment' : 'error_outline' }}
+                            </span>
                             <div>
-                                <p class="text-[10px] uppercase font-black text-rose-600 dark:text-rose-400 mb-1">Motivo
-                                    da Falha</p>
-                                <p class="text-xs font-bold text-rose-800 dark:text-rose-300 leading-relaxed">{{
-                                    payout.statusMessage }}</p>
+                                <p class="text-[10px] uppercase font-black mb-1"
+                                    [ngClass]="payout.status === 'PAID_OUT' ? 'text-indigo-600 dark:text-indigo-400' : 'text-rose-600 dark:text-rose-400'">
+                                    {{ payout.status === 'PAID_OUT' ? 'Notas do Pagamento' : 'Detalhes da Ocorrência' }}
+                                </p>
+                                <p class="text-xs font-bold leading-relaxed"
+                                    [ngClass]="payout.status === 'PAID_OUT' ? 'text-indigo-800 dark:text-indigo-300' : 'text-rose-800 dark:text-rose-300'">
+                                    {{ payout.statusMessage }}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -112,7 +123,7 @@
                         </div>
                     </div>
 
-                    <div *ngIf="payout.receipt && mode === 'admin'"
+                    <div *ngIf="payout.receipt"
                         class="p-6 rounded-[2rem] bg-indigo-50/30 dark:bg-indigo-500/5 border border-indigo-100/50 dark:border-indigo-500/10">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-4">
@@ -128,10 +139,11 @@
                                         disponível</p>
                                 </div>
                             </div>
-                            <a [href]="payout.receipt" target="_blank"
-                                class="bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-2xl shadow-lg transition-all active:scale-95">
-                                <span class="material-icons-outlined text-xl">open_in_new</span>
-                            </a>
+                            <button (click)="onViewReceipt()" [disabled]="loadingReceipt"
+                                class="bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-2xl shadow-lg transition-all active:scale-95 disabled:opacity-50">
+                                <span *ngIf="!loadingReceipt" class="material-icons-outlined text-xl">visibility</span>
+                                <span *ngIf="loadingReceipt" class="material-icons-outlined text-xl animate-spin">refresh</span>
+                            </button>
                         </div>
                     </div>
 
@@ -155,6 +167,51 @@
             <button (click)="onClose()"
                 class="bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 px-8 py-3 rounded-2xl font-black text-sm tracking-tight transition-all shadow-sm">
                 FECHAR DETALHES
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Pré-visualização do Comprovante -->
+<div *ngIf="showReceiptPreview"
+    class="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-300">
+    <div class="relative w-full max-w-5xl h-[90vh] bg-white dark:bg-slate-900 rounded-[32px] overflow-hidden flex flex-col shadow-2xl">
+        
+        <!-- Header Modal Preview -->
+        <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+            <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-3">
+                <span class="material-icons-outlined text-indigo-500">description</span>
+                Visualização do Comprovante
+            </h3>
+            <div class="flex items-center gap-3">
+                <button (click)="onDownloadReceipt()"
+                    class="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl font-bold text-xs transition-all active:scale-95 shadow-lg shadow-emerald-500/20">
+                    <span class="material-icons-outlined text-sm">cloud_download</span>
+                    BAIXAR
+                </button>
+                <button (click)="closeReceiptPreview()"
+                    class="p-2 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+                    <span class="material-icons-outlined">close</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Content Preview -->
+        <div class="flex-1 bg-slate-100 dark:bg-slate-950 overflow-hidden relative">
+            <!-- PDF Viewer -->
+            <iframe *ngIf="isPdf && receiptBlobUrl" [src]="receiptBlobUrl" class="w-full h-full border-none"></iframe>
+            
+            <!-- Image Viewer -->
+            <div *ngIf="!isPdf && receiptBlobUrl" class="w-full h-full p-4 flex items-center justify-center overflow-auto">
+                <img [src]="receiptBlobUrl" class="max-w-full max-h-full object-contain shadow-lg rounded-lg">
+            </div>
+        </div>
+
+        <!-- Footer Preview -->
+        <div class="p-4 bg-slate-50 dark:bg-slate-800/50 flex justify-center">
+            <button (click)="closeReceiptPreview()"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white px-10 py-3 rounded-2xl font-black text-sm tracking-tight transition-all shadow-lg active:scale-95">
+                FECHAR VISUALIZAÇÃO
             </button>
         </div>
     </div>

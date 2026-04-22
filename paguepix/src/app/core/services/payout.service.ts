@@ -26,4 +26,14 @@ export class PayoutService {
     getById(id: string) {
         return this.http.get<Payout>(`${this.apiUrl}/${id}`);
     }
+
+    uploadReceipt(id: string, file: File) {
+        const formData = new FormData();
+        formData.append('file', file);
+        return this.http.post<Payout>(`${this.apiUrl}/${id}/receipt`, formData);
+    }
+
+    getReceipt(id: string) {
+        return this.http.get(`${this.apiUrl}/${id}/receipt`, { responseType: 'blob' });
+    }
 }

@@ -118,6 +118,12 @@
                                 title="Ver Detalhes">
                                 <span class="material-icons-outlined text-lg">visibility</span>
                             </button>
+
+                            <button *ngIf="payout.status === 'PENDING_MANUAL'" (click)="onAddReceipt(payout)"
+                                class="p-2 text-slate-400 dark:text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-all"
+                                title="Adicionar Comprovante">
+                                <span class="material-icons-outlined text-lg">receipt_long</span>
+                            </button>
                         </div>
                     </td>
                 </tr>
@@ -127,6 +133,8 @@
         <!-- Payout Details Modal -->
         <app-payout-detail *ngIf="selectedPayout()" [payout]="selectedPayout()!" mode="admin"
             (close)="selectedPayout.set(null)"></app-payout-detail>
+
+        <input type="file" #receiptInput class="hidden" (change)="onFileSelected($event)" accept="application/pdf,image/*">
 
     </ng-template>
 

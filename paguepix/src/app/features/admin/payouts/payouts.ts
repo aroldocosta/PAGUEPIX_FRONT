@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ManagementLayoutComponent } from '../../../shared/components/management-layout/management-layout.component';
@@ -24,6 +24,10 @@ export class PayoutsManagement implements OnInit {
     currentPage = signal(0);
     totalPages = signal(0);
     hasData = computed(() => this.payouts().length > 0);
+
+    payoutToUpload = signal<Payout | null>(null);
+
+    @ViewChild('receiptInput') receiptInput!: ElementRef;
 
     private payoutService = inject(PayoutService);
     private partnerService = inject(PartnerService);
@@ -76,6 +80,33 @@ export class PayoutsManagement implements OnInit {
         if (this.currentPage() > 0) {
             this.currentPage.update(p => p - 1);
             this.loadPayouts();
+        }
+    }
+
+    onAddReceipt(payout: Payout) {
+        this.payoutToUpload.set(payout);
+        this.receiptInput.nativeElement.click();
+    }
+
+    onFileSelected(event: any) {
+        const file = event.target.files[0];
+        const payout = this.payoutToUpload();
+
+        if (file && payout) {
+            this.loading.set(true);
+            this.payoutService.uploadReceipt(payout.id.toString(), file).subscribe({
+                next: () => {
+                    this.loadPayouts();
+                    this.payoutToUpload.set(null);
+                    // Reset input
+                    event.target.value = '';
+                },
+                error: (err) => {
+                    console.error('Error uploading receipt', err);
+                    this.loading.set(false);
+                    this.payoutToUpload.set(null);
+                }
+            });
         }
     }
 }
