@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DeviceFormComponent } from '../device-form/device-form.component';
 import { DeviceQrCardComponent } from '../device-qr-card/device-qr-card.component';
 import { DeviceProductManagerComponent } from '../device-product-manager/device-product-manager.component';
-import { Product } from '../../../../core/services/product.service';
+import { ProductSummaryResponse, ProductDetailResponse } from '../../../../core/services/product.service';
 import { Board } from '../../../../core/models/board.model';
 
 @Component({
@@ -33,8 +33,8 @@ export class DeviceDetailLayoutComponent {
     releaseError = input<string | null>(null);
 
     // Product related data
-    allProducts = input<Product[]>([]);
-    deviceProducts = input<Product[]>([]);
+    allProducts = input<ProductSummaryResponse[]>([]);
+    deviceProducts = input<ProductDetailResponse[]>([]);
     productLoading = input<boolean>(false);
 
     // Outputs
@@ -44,7 +44,7 @@ export class DeviceDetailLayoutComponent {
 
     addProduct = output<string>();
     removeProduct = output<string>();
-    editProduct = output<Product>();
+    editProduct = output<ProductDetailResponse>();
 
 
     /** Exposto para que o componente pai possa controlar o modal de liberação */

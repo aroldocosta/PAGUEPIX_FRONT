@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DeviceService } from '../../../../core/services/device.service';
 import { AuthService } from '../../../../core/services/auth.service';
-import { Product, ProductService } from '../../../../core/services/product.service';
+import { ProductService, ProductSummaryResponse, ProductDetailResponse } from '../../../../core/services/product.service';
 
 import { ManagementLayoutComponent } from '../../../../shared/components/management-layout/management-layout.component';
 import { DeviceDetailLayoutComponent } from '../../../../shared/components/devices/device-detail-layout/device-detail-layout.component';
@@ -38,8 +38,8 @@ export class UserDeviceView implements OnInit {
     hasData = signal(true);
     releasing = signal(false);
     releaseError = signal<string | null>(null);
-    deviceProducts = signal<Product[]>([]);
-    allProductsRaw = signal<Product[]>([]);
+    deviceProducts = signal<ProductDetailResponse[]>([]);
+    allProductsRaw = signal<ProductSummaryResponse[]>([]);
     deviceTypes = signal<string[]>([]);
     allProducts = computed(() => {
         const pid = this.partnerId();
@@ -67,7 +67,8 @@ export class UserDeviceView implements OnInit {
     loadProducts() {
         this.productService.findAll(0, 100).subscribe({
             next: (response) => {
-                this.allProductsRaw.set(response.content || response);
+                const content = (response as any).content || response;
+                this.allProductsRaw.set(content);
             },
             error: (err) => console.error('Error loading products', err)
         });
@@ -162,11 +163,11 @@ export class UserDeviceView implements OnInit {
         });
     }
 
-    onProductUpdated(product: Product) {
+    onProductUpdated(product: ProductDetailResponse) {
         if (!product.id) return;
         
         this.loading.set(true);
-        this.productService.update(product.id, product).subscribe({
+        this.productService.update(product.id, product as any).subscribe({
             next: (updated) => {
                 // Update local list
                 this.deviceProducts.update(products => 

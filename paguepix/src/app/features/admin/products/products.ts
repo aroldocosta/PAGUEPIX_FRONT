@@ -2,7 +2,7 @@ import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { ManagementLayoutComponent } from '../../../shared/components/management-layout/management-layout.component';
-import { ProductService, Product } from '../../../core/services/product.service';
+import { ProductService, Product, ProductSummaryResponse, ProductDetailResponse } from '../../../core/services/product.service';
 import { PartnerService } from '../../../core/services/partner.service';
 import { Partner } from '../../../core/models/partner.model';
 import { ProductListComponent } from '../../../shared/components/products/product-list/product-list.component';
@@ -21,15 +21,15 @@ export class ProductManagement implements OnInit {
     private productService = inject(ProductService);
     private partnerService = inject(PartnerService);
 
-    products = signal<Product[]>([]);
+    products = signal<ProductSummaryResponse[]>([]);
     partners = signal<Partner[]>([]);
     selectedPartnerId = signal<string | number>('all');
-    selectedProduct = signal<Product | null>(null);
+    selectedProduct = signal<ProductDetailResponse | null>(null);
 
     // Modal de Exclusão
     showDeleteModal = signal(false);
     isDeleting = signal(false);
-    productToDelete = signal<Product | null>(null);
+    productToDelete = signal<ProductSummaryResponse | null>(null);
 
     filteredProducts = computed(() => {
         const pId = this.selectedPartnerId();
@@ -57,7 +57,8 @@ export class ProductManagement implements OnInit {
         this.productService.findAll().subscribe({
             next: (response) => {
                 // Backend might return a Page object or a direct List
-                this.products.set(response.content || response);
+                const content = (response as any).content || response;
+                this.products.set(content);
                 this.loading.set(false);
             },
             error: (err) => {
@@ -67,8 +68,20 @@ export class ProductManagement implements OnInit {
         });
     }
 
-    onView(product: Product) {
-        this.selectedProduct.set(product);
+    onView(product: ProductSummaryResponse) {
+        if (!product.id) return;
+        this.loading.set(true);
+        this.productService.findById(product.id).subscribe({
+            next: (detailed) => {
+                this.selectedProduct.set(detailed);
+                this.loading.set(false);
+            },
+            error: (err) => {
+                console.error('Error loading product details', err);
+                this.loading.set(false);
+                alert('Erro ao carregar detalhes do produto.');
+            }
+        });
     }
 
     onEdit(id: string) {

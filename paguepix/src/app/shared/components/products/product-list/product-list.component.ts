@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Product } from '../../../../core/services/product.service';
+import { ProductSummaryResponse } from '../../../../core/services/product.service';
 
 @Component({
     selector: 'app-product-list',
@@ -13,15 +13,15 @@ import { Product } from '../../../../core/services/product.service';
     `]
 })
 export class ProductListComponent {
-    @Input({ required: true }) products: Product[] = [];
+    @Input({ required: true }) products: ProductSummaryResponse[] = [];
     @Input() mode: 'admin' | 'user' = 'user';
     @Input() loading: boolean = false;
 
-    @Output() view = new EventEmitter<Product>();
+    @Output() view = new EventEmitter<ProductSummaryResponse>();
     @Output() edit = new EventEmitter<string>();
     @Output() delete = new EventEmitter<string>();
 
-    onView(product: Product) {
+    onView(product: ProductSummaryResponse) {
         this.view.emit(product);
     }
 

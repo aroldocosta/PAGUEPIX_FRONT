@@ -5,7 +5,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { DeviceService } from '../../../../core/services/device.service';
 import { PartnerService } from '../../../../core/services/partner.service';
-import { ProductService, Product } from '../../../../core/services/product.service';
+import { ProductService, ProductSummaryResponse, ProductDetailResponse } from '../../../../core/services/product.service';
 import { BoardService } from '../../../../core/services/board.service';
 import { Board } from '../../../../core/models/board.model';
 import { ManagementLayoutComponent } from '../../../../shared/components/management-layout/management-layout.component';
@@ -44,14 +44,14 @@ export class DeviceEdit implements OnInit {
     releaseError = signal<string | null>(null);
     releasing = signal(false);
 
-    allProductsRaw = signal<Product[]>([]);
+    allProductsRaw = signal<ProductSummaryResponse[]>([]);
     allProducts = computed(() => {
         const pid = this.partnerId();
         if (!pid) return [];
         return this.allProductsRaw().filter(p => p.partner?.id?.toString() === pid.toString());
     });
 
-    deviceProducts = signal<Product[]>([]);
+    deviceProducts = signal<ProductDetailResponse[]>([]);
     productLoading = signal(false);
 
     qrUrl = computed(() => {
@@ -101,7 +101,8 @@ export class DeviceEdit implements OnInit {
         }
         this.productService.findAll(partnerId, 0, 100).subscribe({
             next: (response) => {
-                this.allProductsRaw.set(response.content || response);
+                const content = (response as any).content || response;
+                this.allProductsRaw.set(content);
             },
             error: (err) => console.error('Error loading products', err)
         });
@@ -272,11 +273,11 @@ export class DeviceEdit implements OnInit {
         });
     }
 
-    onEditProduct(product: Product) {
+    onEditProduct(product: ProductDetailResponse) {
         if (!product.id) return;
 
         this.productLoading.set(true);
-        this.productService.update(product.id, product).subscribe({
+        this.productService.update(product.id, product as any).subscribe({
             next: () => {
                 this.productLoading.set(false);
                 const currentId = this.id();

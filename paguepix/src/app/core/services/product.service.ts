@@ -5,7 +5,17 @@ import { Observable, shareReplay } from 'rxjs';
 
 import { Partner } from '../models/partner.model';
 
-export interface Product {
+export interface ProductSummaryResponse {
+    id?: string;
+    name: string;
+    duration: number;
+    durationUnit: 'SECONDS' | 'MINUTES' | 'HOURS';
+    price: number;
+    active: boolean;
+    partner?: Partner;
+}
+
+export interface ProductDetailResponse {
     id?: string;
     name: string;
     duration: number;
@@ -16,7 +26,10 @@ export interface Product {
     description?: string;
     deliveryMethod?: string;
     partner?: Partner;
+    boardChannel?: number;
 }
+
+export interface Product extends ProductDetailResponse {}
 
 @Injectable({
     providedIn: 'root'
@@ -27,7 +40,7 @@ export class ProductService {
 
     constructor(private http: HttpClient) { }
 
-    findAll(partnerId?: string | number, page: number = 0, size: number = 100): Observable<any> {
+    findAll(partnerId?: string | number, page: number = 0, size: number = 100): Observable<{ content: ProductSummaryResponse[], totalPages: number } | ProductSummaryResponse[]> {
         let params = new HttpParams()
             .set('page', page.toString())
             .set('size', size.toString());
@@ -48,20 +61,20 @@ export class ProductService {
         return this.deliveryMethodsCache$;
     }
 
-    findAllActive(): Observable<Product[]> {
-        return this.http.get<Product[]>(`${this.apiUrl}/active`);
+    findAllActive(): Observable<ProductSummaryResponse[]> {
+        return this.http.get<ProductSummaryResponse[]>(`${this.apiUrl}/active`);
     }
 
-    findById(id: string): Observable<Product> {
-        return this.http.get<Product>(`${this.apiUrl}/${id}`);
+    findById(id: string): Observable<ProductDetailResponse> {
+        return this.http.get<ProductDetailResponse>(`${this.apiUrl}/${id}`);
     }
 
-    save(product: Product): Observable<Product> {
-        return this.http.post<Product>(this.apiUrl, product);
+    save(product: Product): Observable<ProductDetailResponse> {
+        return this.http.post<ProductDetailResponse>(this.apiUrl, product);
     }
 
-    update(id: string, product: Product): Observable<Product> {
-        return this.http.put<Product>(`${this.apiUrl}/${id}`, product);
+    update(id: string, product: Product): Observable<ProductDetailResponse> {
+        return this.http.put<ProductDetailResponse>(`${this.apiUrl}/${id}`, product);
     }
 
     delete(id: string): Observable<void> {

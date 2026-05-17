@@ -1,7 +1,7 @@
 import { Component, input, output, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ProductService, Product } from '../../../../core/services/product.service';
+import { ProductService, ProductSummaryResponse, ProductDetailResponse } from '../../../../core/services/product.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { DeleteModalComponent } from '../../delete-modal/delete-modal.component';
 
@@ -29,8 +29,8 @@ export class DeviceProductManagerComponent implements OnInit {
     productService = inject(ProductService);
     authService = inject(AuthService);
     deliveryMethods = signal<string[]>([]);
-    availableProducts = input.required<Product[]>();
-    deviceProducts = input.required<Product[]>();
+    availableProducts = input.required<ProductSummaryResponse[]>();
+    deviceProducts = input.required<ProductDetailResponse[]>();
     partners = input<any[]>([]);
     loading = input<boolean>(false);
     viewOnly = input<boolean>(false);
@@ -42,7 +42,7 @@ export class DeviceProductManagerComponent implements OnInit {
 
     add = output<string>();
     remove = output<string>();
-    edit = output<Product>();
+    edit = output<ProductDetailResponse>();
 
 
     selectedProductId = signal<string>('');
@@ -53,8 +53,8 @@ export class DeviceProductManagerComponent implements OnInit {
     showEditModal = signal<boolean>(false);
     showDeleteModal = signal<boolean>(false);
     
-    editingProduct = signal<Product | null>(null);
-    productToDelete = signal<Product | null>(null);
+    editingProduct = signal<ProductDetailResponse | null>(null);
+    productToDelete = signal<ProductDetailResponse | null>(null);
 
     // Form fields for editing
     editName = signal('');
@@ -62,7 +62,7 @@ export class DeviceProductManagerComponent implements OnInit {
     editPriceDisplay = signal('');
     editDuration = signal(0);
 
-    editDurationUnit = signal<Product['durationUnit']>('MINUTES');
+    editDurationUnit = signal<ProductDetailResponse['durationUnit']>('MINUTES');
     editSubtitle = signal('');
     editDescription = signal('');
     editDeliveryMethod = signal('MQTT_TIME');
@@ -104,7 +104,7 @@ export class DeviceProductManagerComponent implements OnInit {
         }
     }
 
-    onRemove(product: Product) {
+    onRemove(product: ProductDetailResponse) {
         this.productToDelete.set(product);
         this.showDeleteModal.set(true);
     }
@@ -122,7 +122,7 @@ export class DeviceProductManagerComponent implements OnInit {
         this.productToDelete.set(null);
     }
 
-    onEdit(product: Product) {
+    onEdit(product: ProductDetailResponse) {
         this.editingProduct.set(product);
         this.editName.set(product.name);
         this.editPrice.set(product.price);
@@ -148,7 +148,7 @@ export class DeviceProductManagerComponent implements OnInit {
     saveEdit() {
         const current = this.editingProduct();
         if (current) {
-            const updatedProduct: Product = {
+            const updatedProduct: ProductDetailResponse = {
                 ...current,
                 name: this.editName(),
                 price: this.editPrice(),
