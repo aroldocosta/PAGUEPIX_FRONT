@@ -4,7 +4,7 @@ import { ManagementLayoutComponent } from '../../../shared/components/management
 import { ScriptService } from '../../../core/services/script.service';
 import { ScriptDetailComponent } from '../../../shared/components/scripts/script-detail/script-detail.component';
 import { DeleteModalComponent } from '../../../shared/components/delete-modal/delete-modal.component';
-import { Script } from '../../../core/models/script.model';
+import { ScriptSummaryResponse, ScriptDetailResponse } from '../../../core/models/script.model';
 
 import { RouterModule, Router } from '@angular/router';
 import { inject } from '@angular/core';
@@ -19,15 +19,15 @@ import { inject } from '@angular/core';
 export class ScriptsManagement implements OnInit {
     private router = inject(Router);
     private scriptService = inject(ScriptService);
-    scripts = signal<Script[]>([]);
-    selectedScript = signal<Script | null>(null);
+    scripts = signal<ScriptSummaryResponse[]>([]);
+    selectedScript = signal<ScriptDetailResponse | null>(null);
     hasData = computed(() => this.scripts().length > 0);
     loading = signal(true);
 
     // Modal de Exclusão
     showDeleteModal = signal(false);
     isDeleting = signal(false);
-    scriptToDelete = signal<Script | null>(null);
+    scriptToDelete = signal<ScriptSummaryResponse | null>(null);
 
     constructor() { }
 
@@ -49,8 +49,19 @@ export class ScriptsManagement implements OnInit {
         });
     }
 
-    onView(script: Script) {
-        this.selectedScript.set(script);
+    onView(script: ScriptSummaryResponse) {
+        this.loading.set(true);
+        this.scriptService.findById(script.id).subscribe({
+            next: (detailedScript) => {
+                this.selectedScript.set(detailedScript);
+                this.loading.set(false);
+            },
+            error: (err) => {
+                console.error('Error loading script details', err);
+                this.loading.set(false);
+                alert('Erro ao carregar detalhes do script.');
+            }
+        });
     }
 
     onEdit(id: string | number) {

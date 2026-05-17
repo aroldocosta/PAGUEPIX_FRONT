@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
-import { ScriptRequest, ScriptResponse } from '../models/script.model';
+import { ScriptRequest, ScriptSummaryResponse, ScriptDetailResponse } from '../models/script.model';
 
 @Injectable({
     providedIn: 'root'
@@ -20,19 +20,19 @@ export class ScriptService {
         return this.http.get<any>(this.apiUrl, { params });
     }
 
-    findById(id: string | number): Observable<ScriptResponse> {
-        return this.http.get<ScriptResponse>(`${this.apiUrl}/${id}`);
+    findById(id: string | number): Observable<ScriptDetailResponse> {
+        return this.http.get<ScriptDetailResponse>(`${this.apiUrl}/${id}`);
     }
 
-    save(script: ScriptRequest): Observable<ScriptResponse> {
-        return this.http.post<ScriptResponse>(this.apiUrl, script);
+    save(script: ScriptRequest): Observable<ScriptDetailResponse> {
+        return this.http.post<ScriptDetailResponse>(this.apiUrl, script);
     }
 
-    update(script: ScriptRequest): Observable<ScriptResponse> {
-        return this.http.put<ScriptResponse>(this.apiUrl, script);
+    update(script: ScriptRequest): Observable<ScriptDetailResponse> {
+        return this.http.put<ScriptDetailResponse>(this.apiUrl, script);
     }
 
-    delete(id: string | number): Observable<ScriptResponse> {
-        return this.http.delete<ScriptResponse>(`${this.apiUrl}/${id}`);
+    delete(id: string | number): Observable<ScriptDetailResponse> {
+        return this.http.delete<ScriptDetailResponse>(`${this.apiUrl}/${id}`);
     }
 }

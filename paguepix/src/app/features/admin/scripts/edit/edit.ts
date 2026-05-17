@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ScriptService } from '../../../../core/services/script.service';
 import { ManagementLayoutComponent } from '../../../../shared/components/management-layout/management-layout.component';
+import { ScriptRequest } from '../../../../core/models/script.model';
 
 @Component({
   selector: 'app-script-edit',
@@ -19,7 +20,6 @@ export class ScriptEdit implements OnInit {
 
   id = signal<string | number | null>(null);
   name = signal('');
-  code = signal('');
   type = signal('');
   description = signal('');
 
@@ -39,7 +39,6 @@ export class ScriptEdit implements OnInit {
     this.scriptService.findById(id).subscribe({
       next: (script) => {
         this.name.set(script.name || '');
-        this.code.set(script.code || '');
         this.type.set(script.type || '');
         this.description.set(script.description || '');
         this.loading.set(false);
@@ -52,17 +51,14 @@ export class ScriptEdit implements OnInit {
   }
 
   onSave() {
-    // Backend model might need ID appended to body, or not.
-    // We'll mimic save/update paradigm
-    const scriptData: any = {
+    const scriptData: ScriptRequest = {
       name: this.name(),
-      code: this.code(),
       type: this.type(),
       description: this.description(),
     };
 
     if (this.id()) {
-      scriptData.id = this.id();
+      scriptData.id = this.id()!;
     }
 
     this.loading.set(true);

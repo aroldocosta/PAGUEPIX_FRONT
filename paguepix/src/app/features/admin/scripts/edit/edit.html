@@ -56,26 +56,12 @@
                         </div>
                     </div>
 
-                    <!-- Código do Script -->
-                    <div class="space-y-2">
-                        <label for="code" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
-                            Bloco de Código / Conteúdo (<span class="text-xs text-slate-400">Syntax Highlighted
-                                Area</span>)
-                        </label>
-                        <div class="relative group">
-                            <textarea id="code" name="code" [ngModel]="code()" (ngModelChange)="code.set($event)"
-                                required rows="10"
-                                class="w-full p-4 font-mono text-sm bg-slate-900 text-emerald-400 dark:bg-slate-950 dark:text-emerald-300 border border-slate-700 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all resize-y shadow-inner"
-                                placeholder="// Insira seu código C++, Python, Lua ou Script PaguePix..."></textarea>
-                        </div>
-                    </div>
-
                     <!-- Ações -->
                     <div
                         class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800 mt-6">
                         <div class="flex items-center gap-4">
                             <button type="submit"
-                                [disabled]="loading() || !name() || !type() || !description() || !code()"
+                                [disabled]="loading() || !name() || !type() || !description()"
                                 class="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-emerald-200 dark:shadow-none">
                                 <span class="material-icons-outlined text-lg">save</span>
                                 Salvar Script
@@ -84,12 +70,6 @@
                                 class="px-8 py-3 rounded-xl font-bold text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-all">
                                 Cancelar
                             </button>
-                        </div>
-
-                        <div
-                            class="hidden sm:flex bg-emerald-50 dark:bg-emerald-900/20 px-4 py-2 rounded-lg items-center gap-2 text-emerald-700 dark:text-emerald-400">
-                            <span class="material-icons-outlined text-sm">terminal</span>
-                            <span class="text-xs font-bold">Modo PaguePix Scripting</span>
                         </div>
                     </div>
                 </div>

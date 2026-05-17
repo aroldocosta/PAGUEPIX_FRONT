@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Script } from '../../../../core/models/script.model';
+import { ScriptDetailResponse } from '../../../../core/models/script.model';
 
 @Component({
     selector: 'app-script-detail',
@@ -22,7 +22,7 @@ import { Script } from '../../../../core/models/script.model';
     `]
 })
 export class ScriptDetailComponent {
-    @Input({ required: true }) script!: Script;
+    @Input({ required: true }) script!: ScriptDetailResponse;
     @Output() close = new EventEmitter<void>();
 
     onClose() {
