@@ -22,7 +22,7 @@ export interface FinancialValue {
     net: number;
 }
 
-export interface DashboardData {
+export interface DashboardSummary {
     availableBalance: number;
     totalTransacted: FinancialValue;
     completedPayouts: number;
@@ -31,15 +31,24 @@ export interface DashboardData {
     previousTotalTransacted: FinancialValue;
     previousCompletedPayouts: number;
     previousAverageTicket: FinancialValue;
+}
+
+export interface DashboardDetail extends DashboardSummary {
     salesOverview: DailySales[];
     recentTransactions: RecentTransaction[];
 }
+
+export interface DashboardData extends DashboardDetail {}
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
     private http = inject(HttpClient);
 
-    getStats(days: number = 7): Observable<DashboardData> {
-        return this.http.get<DashboardData>(`${environment.apiUrl}/dashboard?days=${days}`);
+    getStats(days: number = 7): Observable<DashboardDetail> {
+        return this.http.get<DashboardDetail>(`${environment.apiUrl}/dashboard?days=${days}`);
+    }
+
+    getSummary(days: number = 7): Observable<DashboardSummary> {
+        return this.http.get<DashboardSummary>(`${environment.apiUrl}/dashboard/summary?days=${days}`);
     }
 }
