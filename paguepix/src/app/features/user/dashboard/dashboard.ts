@@ -2,7 +2,7 @@ import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
 import { ThemeService } from '../../../core/services/theme.service';
-import { DashboardService, DashboardData } from '../../../core/services/dashboard.service';
+import { DashboardService, DashboardDetail } from '../../../core/services/dashboard.service';
 import { PaymentService } from '../../../core/services/payment.service';
 import { SalesChartComponent, DailySales } from '../../../shared/components/sales-chart/sales-chart.component';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
@@ -115,7 +115,7 @@ export class UserDashboard implements OnInit {
   private loadDashboard(): void {
     this.loading.set(true);
     this.dashboardService.getStats(this.selectedDays()).subscribe({
-      next: (data: DashboardData) => {
+      next: (data: DashboardDetail) => {
         this.balance.set(data.availableBalance);
         this.todaySales.set(data.totalTransacted || { gross: 0, fee: 0, net: 0 });
         this.averageTicket.set(data.averageTicket || { gross: 0, fee: 0, net: 0 });

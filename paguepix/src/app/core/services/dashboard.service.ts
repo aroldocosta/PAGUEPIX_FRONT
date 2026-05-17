@@ -38,8 +38,6 @@ export interface DashboardDetail extends DashboardSummary {
     recentTransactions: RecentTransaction[];
 }
 
-export interface DashboardData extends DashboardDetail {}
-
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
     private http = inject(HttpClient);
