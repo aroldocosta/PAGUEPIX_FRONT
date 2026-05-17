@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { User } from '../models/user.model';
+import { UserSummaryResponse, UserDetailResponse, UserRequest } from '../models/user.model';
 import { environment } from '../../../environments/environment';
+import { Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -11,7 +12,7 @@ export class UserService {
 
     constructor(private http: HttpClient) { }
 
-    getAll(partnerId?: number, page: number = 0, size: number = 10) {
+    getAll(partnerId?: number, page: number = 0, size: number = 10): Observable<any> {
         let params = new HttpParams()
             .set('page', page.toString())
             .set('size', size.toString());
@@ -23,23 +24,23 @@ export class UserService {
         return this.http.get<any>(this.apiUrl, { params });
     }
 
-    getById(id: string | number) {
-        return this.http.get<User>(`${this.apiUrl}/${id}`);
+    getById(id: string | number): Observable<UserDetailResponse> {
+        return this.http.get<UserDetailResponse>(`${this.apiUrl}/${id}`);
     }
 
-    save(user: any) {
-        return this.http.post<User>(this.apiUrl, user);
+    save(user: UserRequest): Observable<UserDetailResponse> {
+        return this.http.post<UserDetailResponse>(this.apiUrl, user);
     }
 
-    update(user: any) {
-        return this.http.put<User>(this.apiUrl, user);
+    update(user: UserRequest): Observable<UserDetailResponse> {
+        return this.http.put<UserDetailResponse>(this.apiUrl, user);
     }
 
-    delete(id: string | number) {
-        return this.http.delete<User>(`${this.apiUrl}/${id}`);
+    delete(id: string | number): Observable<UserDetailResponse> {
+        return this.http.delete<UserDetailResponse>(`${this.apiUrl}/${id}`);
     }
 
-    getUserPartner(id: string | number) {
+    getUserPartner(id: string | number): Observable<any> {
         return this.http.get<any>(`${this.apiUrl}/${id}/partner`);
     }
 }

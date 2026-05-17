@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { UserService } from '../../../../core/services/user.service';
 import { PartnerService } from '../../../../core/services/partner.service';
 import { ManagementLayoutComponent } from '../../../../shared/components/management-layout/management-layout.component';
+import { UserDetailResponse, UserRequest } from '../../../../core/models/user.model';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
@@ -25,7 +26,7 @@ export class UserEdit implements OnInit {
   name = signal('');
   login = signal('');
   password = signal('');
-  role = signal('PARTNER');
+  role = signal<'ADMIN' | 'PARTNER'>('PARTNER');
   partnerId = signal<number | null>(null);
 
   partners = signal<any[]>([]);
@@ -54,12 +55,12 @@ export class UserEdit implements OnInit {
   loadUser(id: string | number) {
     this.loading.set(true);
     this.userService.getById(id).subscribe({
-      next: (user: any) => {
+      next: (user: UserDetailResponse) => {
         this.name.set(user.name || '');
         this.login.set(user.login || ''); // Fixed mapping from user.login
         this.role.set(user.role || 'PARTNER');
         // The backend user object might have partner.id or partnerId. Adjust as needed:
-        this.partnerId.set(user.partner?.id || user.partnerId || null);
+        this.partnerId.set((user.partner?.id as number) || null);
         this.loading.set(false);
       },
       error: (err) => {
@@ -70,8 +71,8 @@ export class UserEdit implements OnInit {
   }
 
   onSave() {
-    const userData: any = {
-      id: this.id() ? this.id() : undefined,
+    const userData: UserRequest = {
+      id: this.id() ? this.id()! : undefined,
       name: this.name(),
       login: this.login(), // Send login instead of email to match backend API
       role: this.role(),

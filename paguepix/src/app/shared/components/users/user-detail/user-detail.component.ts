@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { User } from '../../../../core/models/user.model';
+import { UserDetailResponse } from '../../../../core/models/user.model';
 
 @Component({
     selector: 'app-user-detail',
@@ -22,7 +22,7 @@ import { User } from '../../../../core/models/user.model';
     `]
 })
 export class UserDetailComponent {
-    @Input({ required: true }) user!: User;
+    @Input({ required: true }) user!: UserDetailResponse;
     @Output() close = new EventEmitter<void>();
 
     onClose() {

@@ -5,7 +5,7 @@ import { UserDetailComponent } from '../../../shared/components/users/user-detai
 import { DeleteModalComponent } from '../../../shared/components/delete-modal/delete-modal.component';
 import { UserService } from '../../../core/services/user.service';
 import { PartnerService } from '../../../core/services/partner.service';
-import { User } from '../../../core/models/user.model';
+import { UserSummaryResponse, UserDetailResponse } from '../../../core/models/user.model';
 import { Partner } from '../../../core/models/partner.model';
 import { FormsModule } from '@angular/forms';
 
@@ -19,16 +19,16 @@ import { RouterModule } from '@angular/router';
     styleUrl: './users.scss'
 })
 export class UserManagement implements OnInit {
-    users = signal<User[]>([]);
+    users = signal<UserSummaryResponse[]>([]);
     partners = signal<Partner[]>([]);
     selectedPartnerId = signal<string | number>('all');
-    selectedUser = signal<User | null>(null);
+    selectedUser = signal<UserDetailResponse | null>(null);
     loading = signal(true);
 
     // Modal de Exclusão
     showDeleteModal = signal(false);
     isDeleting = signal(false);
-    userToDelete = signal<User | null>(null);
+    userToDelete = signal<UserSummaryResponse | null>(null);
 
     filteredUsers = computed(() => {
         const pId = this.selectedPartnerId();
@@ -67,8 +67,19 @@ export class UserManagement implements OnInit {
         });
     }
 
-    onView(user: User) {
-        this.selectedUser.set(user);
+    onView(user: UserSummaryResponse) {
+        this.loading.set(true);
+        this.userService.getById(user.id).subscribe({
+            next: (detailedUser) => {
+                this.selectedUser.set(detailedUser);
+                this.loading.set(false);
+            },
+            error: (err) => {
+                console.error('Error loading user details', err);
+                this.loading.set(false);
+                alert('Erro ao carregar detalhes do usuário.');
+            }
+        });
     }
 
     onCloseDetail() {
