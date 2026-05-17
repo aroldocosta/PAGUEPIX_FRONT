@@ -27,10 +27,14 @@ export class ProductService {
 
     constructor(private http: HttpClient) { }
 
-    findAll(page: number = 0, size: number = 100): Observable<any> {
-        const params = new HttpParams()
+    findAll(partnerId?: string | number, page: number = 0, size: number = 100): Observable<any> {
+        let params = new HttpParams()
             .set('page', page.toString())
             .set('size', size.toString());
+
+        if (partnerId) {
+            params = params.set('partnerId', partnerId.toString());
+        }
 
         return this.http.get<any>(this.apiUrl, { params });
     }

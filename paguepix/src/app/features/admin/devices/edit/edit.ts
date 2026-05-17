@@ -1,7 +1,8 @@
-import { Component, OnInit, signal, inject, computed, ViewChild } from '@angular/core';
+import { Component, OnInit, signal, inject, computed, ViewChild, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { DeviceService } from '../../../../core/services/device.service';
 import { PartnerService } from '../../../../core/services/partner.service';
 import { ProductService, Product } from '../../../../core/services/product.service';
@@ -47,7 +48,7 @@ export class DeviceEdit implements OnInit {
     allProducts = computed(() => {
         const pid = this.partnerId();
         if (!pid) return [];
-        return this.allProductsRaw().filter(p => p.partner?.id === pid);
+        return this.allProductsRaw().filter(p => p.partner?.id?.toString() === pid.toString());
     });
 
     deviceProducts = signal<Product[]>([]);
@@ -69,11 +70,12 @@ export class DeviceEdit implements OnInit {
         if (idParam) {
             this.id.set(idParam);
             this.loadDevice(idParam);
+        } else {
+            // Modo criação: carrega types independentemente
+            this.loadDeviceTypes();
         }
         this.loadPartners();
-        this.loadProducts();
         this.loadBoards();
-        this.loadDeviceTypes();
     }
 
     loadDeviceTypes() {
@@ -92,8 +94,12 @@ export class DeviceEdit implements OnInit {
         });
     }
 
-    loadProducts() {
-        this.productService.findAll(0, 100).subscribe({
+    loadProducts(partnerId?: string | number) {
+        if (!partnerId) {
+            this.allProductsRaw.set([]);
+            return;
+        }
+        this.productService.findAll(partnerId, 0, 100).subscribe({
             next: (response) => {
                 this.allProductsRaw.set(response.content || response);
             },
@@ -103,15 +109,30 @@ export class DeviceEdit implements OnInit {
 
     loadDevice(id: string) {
         this.loading.set(true);
-        this.deviceService.findById(id).subscribe({
-            next: (device) => {
+
+        // forkJoin garante que device e deviceTypes cheguem juntos,
+        // evitando race condition onde o <select> de tipo não tem options ainda.
+        forkJoin({
+            device: this.deviceService.findById(id),
+            types: this.deviceService.getDeviceTypes()
+        }).subscribe({
+            next: ({ device, types }) => {
                 console.log('Device loaded:', device);
+
+                // Popula tipos ANTES de setar o valor selecionado
+                this.deviceTypes.set(types);
+
                 this.name.set(device.name || '');
                 this.model.set(device.model);
                 this.partnerId.set(device.partner?.id || null);
                 this.boardId.set(device.board?.id || null);
                 this.type.set(device.type || '');
                 this.deviceProducts.set(device.productList || []);
+
+                if (device.partner?.id) {
+                    this.loadProducts(device.partner.id);
+                }
+
                 this.loading.set(false);
             },
             error: (err) => {
