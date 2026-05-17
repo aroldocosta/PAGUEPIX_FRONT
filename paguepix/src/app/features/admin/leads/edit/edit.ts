@@ -16,7 +16,7 @@ export class LeadEdit implements OnInit {
     private router = inject(Router);
     private leadService = inject(LeadService);
 
-    id = signal<number | null>(null);
+    id = signal<string | number | null>(null);
     formMode = signal<'view' | 'edit'>('edit');
     loading = signal(false);
     lead = signal<any>({});
@@ -31,7 +31,7 @@ export class LeadEdit implements OnInit {
         }
 
         if (idParam) {
-            this.id.set(Number(idParam));
+            this.id.set(idParam);
             this.loadLead(idParam);
         }
     }

@@ -13,7 +13,7 @@ import { RouterModule } from '@angular/router';
     `]
 })
 export class LeadFormComponent {
-    @Input() id: number | null = null;
+    @Input() id: string | number | null = null;
     @Input() name = '';
     @Input() email = '';
     @Input() barraca = '';

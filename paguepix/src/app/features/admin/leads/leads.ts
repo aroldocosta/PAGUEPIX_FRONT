@@ -6,7 +6,7 @@ import { LeadListComponent } from '../../../shared/components/leads/lead-list/le
 import { LeadDetailComponent } from '../../../shared/components/leads/lead-detail/lead-detail.component';
 import { DeleteModalComponent } from '../../../shared/components/delete-modal/delete-modal.component';
 import { LeadService } from '../../../core/services/lead.service';
-import { Lead } from '../../../core/models/lead.model';
+import { LeadSummary, LeadDetail } from '../../../core/models/lead.model';
 
 @Component({
     selector: 'app-leads-management',
@@ -18,15 +18,15 @@ export class LeadsManagement implements OnInit {
     private router = inject(Router);
     private leadService = inject(LeadService);
 
-    leads = signal<Lead[]>([]);
-    selectedLead = signal<Lead | null>(null);
+    leads = signal<LeadSummary[]>([]);
+    selectedLead = signal<LeadDetail | null>(null);
     hasData = computed(() => this.leads().length > 0);
     loading = signal(true);
 
     // Modal de Exclusão
     showDeleteModal = signal(false);
     isDeleting = signal(false);
-    leadToDelete = signal<Lead | null>(null);
+    leadToDelete = signal<LeadSummary | null>(null);
 
     ngOnInit() {
         this.loadLeads();
@@ -35,7 +35,7 @@ export class LeadsManagement implements OnInit {
     loadLeads() {
         this.loading.set(true);
         this.leadService.findAll().subscribe({
-            next: (response) => {
+            next: (response: any) => {
                 this.leads.set(response.content || response);
                 this.loading.set(false);
             },
@@ -46,19 +46,26 @@ export class LeadsManagement implements OnInit {
         });
     }
 
-    onView(id: number) {
-        const lead = this.leads().find(l => l.id === id);
-        if (lead) {
-            this.selectedLead.set(lead);
-        }
+    onView(id: string | number) {
+        this.loading.set(true);
+        this.leadService.findById(id).subscribe({
+            next: (lead) => {
+                this.selectedLead.set(lead);
+                this.loading.set(false);
+            },
+            error: (err) => {
+                console.error('Error loading lead details', err);
+                this.loading.set(false);
+            }
+        });
     }
 
-    onEdit(id: number) {
-        this.router.navigate(['/admin/leads/edit', id], { queryParams: { mode: 'edit' } });
+    onEdit(id: string | number) {
+        this.router.navigate(['/admin/leads/edit', id.toString()], { queryParams: { mode: 'edit' } });
     }
 
-    onDelete(id: number) {
-        const lead = this.leads().find(l => l.id === id);
+    onDelete(id: string | number) {
+        const lead = this.leads().find(l => l.id.toString() === id.toString());
         if (lead) {
             this.leadToDelete.set(lead);
             this.showDeleteModal.set(true);

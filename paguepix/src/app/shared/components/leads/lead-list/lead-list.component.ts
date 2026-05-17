@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Lead } from '../../../../core/models/lead.model';
+import { LeadSummary } from '../../../../core/models/lead.model';
 
 @Component({
     selector: 'app-lead-list',
@@ -13,22 +13,22 @@ import { Lead } from '../../../../core/models/lead.model';
     `]
 })
 export class LeadListComponent {
-    @Input({ required: true }) leads: Lead[] = [];
+    @Input({ required: true }) leads: LeadSummary[] = [];
     @Input() loading: boolean = false;
 
-    @Output() view = new EventEmitter<number>();
-    @Output() edit = new EventEmitter<number>();
-    @Output() remove = new EventEmitter<number>();
+    @Output() view = new EventEmitter<string | number>();
+    @Output() edit = new EventEmitter<string | number>();
+    @Output() remove = new EventEmitter<string | number>();
 
-    onView(id: number) {
+    onView(id: string | number) {
         this.view.emit(id);
     }
 
-    onEdit(id: number) {
+    onEdit(id: string | number) {
         this.edit.emit(id);
     }
 
-    onDelete(id: number) {
+    onDelete(id: string | number) {
         this.remove.emit(id);
     }
 }
