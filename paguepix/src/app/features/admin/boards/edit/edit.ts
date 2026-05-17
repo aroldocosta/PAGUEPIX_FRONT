@@ -62,7 +62,7 @@ export class BoardEdit implements OnInit {
     this.loading.set(true);
     this.boardService.findById(id).subscribe({
       next: (board) => {
-        this.clientId.set(board.clientId || '');
+        this.clientId.set(board.mqttId || board.clientId || '');
         this.model.set(board.model || '');
         this.description.set(board.description || '');
         this.scriptId.set(board.script?.id || null);
@@ -79,6 +79,7 @@ export class BoardEdit implements OnInit {
     const boardData: BoardRequest = {
       id: this.id() || undefined,
       clientId: this.clientId(),
+      mqttId: this.clientId(),
       model: this.model(),
       description: this.description(),
       scriptId: this.scriptId()!

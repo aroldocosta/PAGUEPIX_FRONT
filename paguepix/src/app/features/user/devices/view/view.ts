@@ -29,6 +29,7 @@ export class UserDeviceView implements OnInit {
     id = signal<string | null>(null);
     name = signal('');
     model = signal('');
+    type = signal('');
     partnerId = signal<string | null>(null);
     partners = signal<any[]>([]);
     boardId = signal<string | number | null>(null);
@@ -39,6 +40,7 @@ export class UserDeviceView implements OnInit {
     releaseError = signal<string | null>(null);
     deviceProducts = signal<Product[]>([]);
     allProductsRaw = signal<Product[]>([]);
+    deviceTypes = signal<string[]>([]);
     allProducts = computed(() => {
         const pid = this.partnerId();
         if (!pid) return [];
@@ -58,6 +60,7 @@ export class UserDeviceView implements OnInit {
             this.id.set(idParam);
             this.loadDevice(idParam);
             this.loadProducts();
+            this.loadDeviceTypes();
         }
     }
 
@@ -70,12 +73,20 @@ export class UserDeviceView implements OnInit {
         });
     }
 
+    loadDeviceTypes() {
+        this.deviceService.getDeviceTypes().subscribe({
+            next: (types) => this.deviceTypes.set(types),
+            error: (err) => console.error('Error loading device types', err)
+        });
+    }
+
     loadDevice(id: string) {
         this.loading.set(true);
         this.deviceService.findById(id).subscribe({
             next: (device) => {
                 this.name.set(device.name || '');
                 this.model.set(device.model);
+                this.type.set(device.type || '');
                 this.partnerId.set(device.partner?.id || null);
                 if (device.partner) {
                     this.partners.set([device.partner]);

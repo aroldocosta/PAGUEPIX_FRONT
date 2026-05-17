@@ -70,10 +70,12 @@ export class DeviceManagement implements OnInit {
     }
 
     onView(id: string) {
-        const device = this.devices().find(d => d.id.toString() === id);
-        if (device) {
-            this.selectedDevice.set(device);
-        }
+        this.deviceService.findById(id).subscribe({
+            next: (device) => {
+                this.selectedDevice.set(device);
+            },
+            error: (err) => console.error('Error loading device details', err)
+        });
     }
 
     onCloseDetail() {

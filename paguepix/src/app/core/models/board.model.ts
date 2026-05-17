@@ -4,7 +4,10 @@ import { Partner } from './partner.model';
 
 export interface Board {
     id: string | number;
-    clientId: string;
+    clientId?: string;
+    name?: string;
+    mqttId: string;
+    mqttClientId?: string;
     model: string;
     description: string;
     script?: Script;
@@ -15,7 +18,9 @@ export interface Board {
 export interface BoardRequest {
     id?: string | number;
     scriptId: string | number;
-    clientId: string;
+    clientId?: string;
+    mqttId: string;
+    mqttClientId?: string;
     model: string;
     description: string;
 }
