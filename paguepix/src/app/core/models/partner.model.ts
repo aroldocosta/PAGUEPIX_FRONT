@@ -2,7 +2,16 @@ import { User } from './user.model';
 import { Device } from './device.model';
 import { Payment } from './payment.model';
 
-export interface Partner {
+export interface PartnerSummary {
+    id: string | number;
+    name: string;
+    logo?: string;
+    gateway?: any;
+    pixKey?: string;
+    commissionRate?: number;
+}
+
+export interface PartnerDetail {
     id: string | number;
     name: string;
     logo?: string;
@@ -22,3 +31,5 @@ export interface Partner {
     paymentList?: Payment[];
     deviceList?: Device[];
 }
+
+export interface Partner extends PartnerDetail {}

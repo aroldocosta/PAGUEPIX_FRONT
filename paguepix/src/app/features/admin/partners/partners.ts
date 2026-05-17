@@ -4,7 +4,7 @@ import { ManagementLayoutComponent } from '../../../shared/components/management
 import { PartnerDetailComponent } from '../../../shared/components/partners/partner-detail/partner-detail.component';
 import { DeleteModalComponent } from '../../../shared/components/delete-modal/delete-modal.component';
 import { PartnerService } from '../../../core/services/partner.service';
-import { Partner } from '../../../core/models/partner.model';
+import { PartnerSummary, PartnerDetail } from '../../../core/models/partner.model';
 
 import { RouterModule } from '@angular/router';
 
@@ -17,15 +17,15 @@ import { RouterModule } from '@angular/router';
 })
 export class PartnerManagement implements OnInit {
     private partnerService = inject(PartnerService);
-    partners = signal<Partner[]>([]);
-    selectedPartner = signal<Partner | null>(null);
+    partners = signal<PartnerSummary[]>([]);
+    selectedPartner = signal<PartnerDetail | null>(null);
     hasData = computed(() => this.partners().length > 0);
     loading = signal(true);
 
     // Modal de Exclusão
     showDeleteModal = signal(false);
     isDeleting = signal(false);
-    partnerToDelete = signal<Partner | null>(null);
+    partnerToDelete = signal<PartnerSummary | null>(null);
 
     constructor() { }
 
@@ -48,8 +48,18 @@ export class PartnerManagement implements OnInit {
         });
     }
 
-    onView(partner: Partner) {
-        this.selectedPartner.set(partner);
+    onView(partner: PartnerSummary) {
+        this.loading.set(true);
+        this.partnerService.getById(partner.id).subscribe({
+            next: (detailedPartner) => {
+                this.selectedPartner.set(detailedPartner);
+                this.loading.set(false);
+            },
+            error: (err) => {
+                console.error('Error loading partner details', err);
+                this.loading.set(false);
+            }
+        });
     }
 
     onCloseDetail() {
@@ -57,7 +67,7 @@ export class PartnerManagement implements OnInit {
     }
 
     onDelete(id: string | number) {
-        const partner = this.partners().find(p => p.id === id);
+        const partner = this.partners().find(p => p.id.toString() === id.toString());
         if (partner) {
             this.partnerToDelete.set(partner);
             this.showDeleteModal.set(true);
