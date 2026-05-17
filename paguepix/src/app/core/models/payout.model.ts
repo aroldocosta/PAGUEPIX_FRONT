@@ -1,8 +1,24 @@
-import { Partner } from './partner.model';
-
-export interface Payout {
+export interface PayoutSummaryResponse {
     id: string;
-    partner?: Partner;
+    partner?: {
+        id: string;
+        name: string;
+        pixKey?: string;
+    };
+    amount: number;
+    status: 'AVAILABLE' | 'PAID_OUT' | 'FAILED' | string;
+    createdAt: string;
+    paidAt?: string | null;
+    statusMessage?: string | null;
+}
+
+export interface PayoutDetailResponse {
+    id: string;
+    partner?: {
+        id: string;
+        name: string;
+        pixKey?: string;
+    };
     amount: number;
     status: 'AVAILABLE' | 'PAID_OUT' | 'FAILED' | string;
     createdAt: string;
@@ -10,3 +26,5 @@ export interface Payout {
     receipt?: string | null;
     statusMessage?: string | null;
 }
+
+export interface Payout extends PayoutDetailResponse {}

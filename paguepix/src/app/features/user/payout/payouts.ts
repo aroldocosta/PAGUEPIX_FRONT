@@ -5,7 +5,7 @@ import { TopbarComponent } from '../../../shared/components/topbar/topbar.compon
 import { FooterComponent } from '../../../shared/components/footer/footer.component';
 import { PayoutDetailComponent } from '../../../shared/components/payouts/payout-detail/payout-detail.component';
 import { PayoutService } from '../../../core/services/payout.service';
-import { Payout } from '../../../core/models/payout.model';
+import { Payout, PayoutSummaryResponse, PayoutDetailResponse } from '../../../core/models/payout.model';
 import { AuthService } from '../../../core/services/auth.service';
 import { environment } from '../../../../environments/environment';
 
@@ -28,8 +28,8 @@ export class PartnerPayouts implements OnInit {
         return `${environment.apiUrl}/partners/${this.authService.partnerId()}/logo`;
     });
 
-    payouts = signal<Payout[]>([]);
-    selectedPayout = signal<Payout | null>(null);
+    payouts = signal<PayoutSummaryResponse[]>([]);
+    selectedPayout = signal<PayoutDetailResponse | null>(null);
     loading = signal(false);
     currentPage = signal(0);
     totalPages = signal(1);
@@ -40,8 +40,18 @@ export class PartnerPayouts implements OnInit {
         this.loadPayouts();
     }
 
-    onViewPayout(payout: Payout) {
-        this.selectedPayout.set(payout);
+    onViewPayout(payout: PayoutSummaryResponse) {
+        this.loading.set(true);
+        this.payoutService.getById(payout.id).subscribe({
+            next: (detailed) => {
+                this.selectedPayout.set(detailed);
+                this.loading.set(false);
+            },
+            error: (err) => {
+                console.error('Error loading payout details', err);
+                this.loading.set(false);
+            }
+        });
     }
 
     loadPayouts() {

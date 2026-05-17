@@ -5,7 +5,7 @@ import { ManagementLayoutComponent } from '../../../shared/components/management
 import { PayoutService } from '../../../core/services/payout.service';
 import { PartnerService } from '../../../core/services/partner.service';
 import { Partner } from '../../../core/models/partner.model';
-import { Payout } from '../../../core/models/payout.model';
+import { Payout, PayoutSummaryResponse, PayoutDetailResponse } from '../../../core/models/payout.model';
 import { PayoutDetailComponent } from '../../../shared/components/payouts/payout-detail/payout-detail.component';
 
 @Component({
@@ -16,16 +16,16 @@ import { PayoutDetailComponent } from '../../../shared/components/payouts/payout
     styleUrl: './payouts.scss'
 })
 export class PayoutsManagement implements OnInit {
-    payouts = signal<Payout[]>([]);
+    payouts = signal<PayoutSummaryResponse[]>([]);
     partners = signal<Partner[]>([]);
-    selectedPayout = signal<Payout | null>(null);
+    selectedPayout = signal<PayoutDetailResponse | null>(null);
     selectedPartnerId = signal<string | number>('all');
     loading = signal(false);
     currentPage = signal(0);
     totalPages = signal(0);
     hasData = computed(() => this.payouts().length > 0);
 
-    payoutToUpload = signal<Payout | null>(null);
+    payoutToUpload = signal<PayoutSummaryResponse | null>(null);
 
     @ViewChild('receiptInput') receiptInput!: ElementRef;
 
@@ -49,8 +49,18 @@ export class PayoutsManagement implements OnInit {
         this.loadPayouts();
     }
 
-    onViewPayout(payout: Payout) {
-        this.selectedPayout.set(payout);
+    onViewPayout(payout: PayoutSummaryResponse) {
+        this.loading.set(true);
+        this.payoutService.getById(payout.id).subscribe({
+            next: (detailed) => {
+                this.selectedPayout.set(detailed);
+                this.loading.set(false);
+            },
+            error: (err) => {
+                console.error('Error loading payout details', err);
+                this.loading.set(false);
+            }
+        });
     }
 
     loadPayouts() {
@@ -83,7 +93,7 @@ export class PayoutsManagement implements OnInit {
         }
     }
 
-    onAddReceipt(payout: Payout) {
+    onAddReceipt(payout: PayoutSummaryResponse) {
         this.payoutToUpload.set(payout);
         this.receiptInput.nativeElement.click();
     }

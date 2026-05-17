@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Payout } from '../models/payout.model';
+import { Payout, PayoutSummaryResponse, PayoutDetailResponse } from '../models/payout.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -20,17 +20,17 @@ export class PayoutService {
             params = params.set('partnerId', partnerId);
         }
 
-        return this.http.get<any>(this.apiUrl, { params });
+        return this.http.get<{ content: PayoutSummaryResponse[], totalPages: number }>(this.apiUrl, { params });
     }
 
     getById(id: string) {
-        return this.http.get<Payout>(`${this.apiUrl}/${id}`);
+        return this.http.get<PayoutDetailResponse>(`${this.apiUrl}/${id}`);
     }
 
     uploadReceipt(id: string, file: File) {
         const formData = new FormData();
         formData.append('file', file);
-        return this.http.post<Payout>(`${this.apiUrl}/${id}/receipt`, formData);
+        return this.http.post<PayoutDetailResponse>(`${this.apiUrl}/${id}/receipt`, formData);
     }
 
     getReceipt(id: string) {
