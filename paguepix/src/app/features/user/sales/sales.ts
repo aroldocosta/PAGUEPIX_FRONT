@@ -8,7 +8,7 @@ import { PaymentService } from '../../../core/services/payment.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { PaymentListComponent } from '../../../shared/components/payments/payment-list/payment-list.component';
 import { PaymentDetailComponent } from '../../../shared/components/payments/payment-detail/payment-detail.component';
-import { Payment } from '../../../core/models/payment.model';
+import { PaymentSummary, PaymentDetail } from '../../../core/models/payment.model';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -32,8 +32,8 @@ export class SalesComponent implements OnInit {
         return `${environment.apiUrl}/partners/${this.authService.partnerId()}/logo`;
     });
 
-    sales = signal<Payment[]>([]);
-    selectedPayment = signal<Payment | null>(null);
+    sales = signal<PaymentSummary[]>([]);
+    selectedPayment = signal<PaymentDetail | null>(null);
     loading = signal(false);
     currentPage = signal(0);
     totalPages = signal(1);
@@ -42,8 +42,11 @@ export class SalesComponent implements OnInit {
         this.loadSales();
     }
 
-    onViewPayment(payment: Payment) {
-        this.selectedPayment.set(payment);
+    onViewPayment(payment: PaymentSummary) {
+        this.paymentService.getById(payment.id).subscribe({
+            next: (detailedPayment) => this.selectedPayment.set(detailedPayment),
+            error: (err) => console.error('Error loading payment details', err)
+        });
     }
 
     loadSales() {

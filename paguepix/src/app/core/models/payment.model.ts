@@ -1,29 +1,50 @@
 import { Device } from './device.model';
 import { Partner } from './partner.model';
 
-export interface Payment {
-    id: number;
+export interface PaymentSummary {
+    id: string | number;
     paidValue: number;
     type: string;
     description: string;
     time: string;
     date: string;
-    device?: Device;
-    partner?: Partner;
     externalId: string;
-    transferReceipt?: string;
-    state: string;
-    solicitationChannel: string;
-    qrCode?: string;
-    paymentLink?: string;
-    customerPhone?: string;
     commissionRate?: number;
     commissionAmount?: number;
+    netAmount?: number;
+    state: string;
+    device?: {
+        id: string | number;
+        name: string;
+        model?: string;
+    };
+    partner?: {
+        id: string | number;
+        name: string;
+    };
+}
+
+export interface PaymentDetail extends PaymentSummary {
+    externalReference?: string;
+    paymentLink?: string;
+    qrCode?: string;
+    usageTime?: string;
+    transferReceipt?: string;
+    solicitationChannel?: string;
+    customerPhone?: string;
     transferredValue?: number;
     transactionId?: string;
-    netAmount?: number;
-    usageTime?: string;
+    license?: {
+        id: string | number;
+        userName?: string;
+        whatsapp?: string;
+        controllerId?: string;
+        licenseId?: string;
+        value?: string;
+    };
 }
+
+export interface Payment extends PaymentDetail {}
 
 export interface ChargeResponse {
     id?: string;

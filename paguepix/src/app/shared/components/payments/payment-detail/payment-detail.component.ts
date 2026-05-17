@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Payment } from '../../../../core/models/payment.model';
+import { PaymentDetail } from '../../../../core/models/payment.model';
 
 @Component({
     selector: 'app-payment-detail',
@@ -10,7 +10,7 @@ import { Payment } from '../../../../core/models/payment.model';
     styleUrl: './payment-detail.component.scss'
 })
 export class PaymentDetailComponent {
-    @Input({ required: true }) payment!: Payment;
+    @Input({ required: true }) payment!: PaymentDetail;
     @Input() mode: 'admin' | 'user' = 'user';
     @Output() close = new EventEmitter<void>();
 

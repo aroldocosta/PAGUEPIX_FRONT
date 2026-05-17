@@ -5,7 +5,7 @@ import { PaymentService } from '../../../core/services/payment.service';
 import { PartnerService } from '../../../core/services/partner.service';
 import { PaymentListComponent } from '../../../shared/components/payments/payment-list/payment-list.component';
 import { PaymentDetailComponent } from '../../../shared/components/payments/payment-detail/payment-detail.component';
-import { Payment } from '../../../core/models/payment.model';
+import { PaymentSummary, PaymentDetail } from '../../../core/models/payment.model';
 import { Partner } from '../../../core/models/partner.model';
 import { FormsModule } from '@angular/forms';
 
@@ -17,14 +17,14 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './payments.scss'
 })
 export class PaymentsManagement implements OnInit {
-  payments = signal<Payment[]>([]);
+  payments = signal<PaymentSummary[]>([]);
   partners = signal<Partner[]>([]);
   selectedPartnerId = signal<string | number>('all');
   loading = signal(false);
   currentPage = signal(0);
   totalPages = signal(0);
   hasData = signal(true);
-  selectedPayment = signal<Payment | null>(null);
+  selectedPayment = signal<PaymentDetail | null>(null);
 
   constructor(
     private paymentService: PaymentService,
@@ -48,8 +48,11 @@ export class PaymentsManagement implements OnInit {
     this.loadPayments();
   }
 
-  onViewPayment(payment: Payment) {
-    this.selectedPayment.set(payment);
+  onViewPayment(payment: PaymentSummary) {
+    this.paymentService.getById(payment.id).subscribe({
+      next: (detailed) => this.selectedPayment.set(detailed),
+      error: (err) => console.error('Error loading payment details', err)
+    });
   }
 
   loadPayments() {

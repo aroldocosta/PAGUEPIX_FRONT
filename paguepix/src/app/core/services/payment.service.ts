@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Payment, ChargeResponse, ChargeStatus } from '../models/payment.model';
+import { Payment, PaymentSummary, PaymentDetail, ChargeResponse, ChargeStatus } from '../models/payment.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -24,7 +24,7 @@ export class PaymentService {
     }
 
     getById(id: string | number) {
-        return this.http.get<Payment>(`${this.apiUrl}/${id}`);
+        return this.http.get<PaymentDetail>(`${this.apiUrl}/${id}`);
     }
 
     payout(request: any) {
