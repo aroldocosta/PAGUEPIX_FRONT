@@ -28,6 +28,7 @@ export class DeviceFormComponent {
     @Input() boardId: string | number | null = null;
     @Input() type = '';
     @Input() types: string[] = [];
+    @Input() channel = 1;
 
     @Output() save = new EventEmitter<any>();
     @Output() releaseManual = new EventEmitter<{ id: string, minutes: number }>();
@@ -43,7 +44,8 @@ export class DeviceFormComponent {
             model: this.model,
             type: this.type,
             partnerId: this.partnerId,
-            boardId: this.boardId
+            boardId: this.boardId,
+            channel: this.channel
         });
     }
 

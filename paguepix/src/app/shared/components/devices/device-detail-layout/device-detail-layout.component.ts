@@ -26,6 +26,7 @@ export class DeviceDetailLayoutComponent {
     boardId = input<string | number | null>(null);
     type = input<string>('');
     types = input<string[]>([]);
+    channel = input<number>(1);
 
     // Behaviour inputs
     mode = input<'view' | 'edit'>('view');

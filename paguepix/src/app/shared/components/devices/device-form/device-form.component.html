@@ -93,22 +93,51 @@
                 </div>
             </div>
 
-            <!-- Botão Liberação Manual (se id existir) -->
-            <div *ngIf="id" class="flex items-end">
-                <button type="button" (click)="onOpenReleaseModal()" [disabled]="loading"
-                    class="w-full bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 px-4 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-sm">
-                    <span class="material-icons-outlined text-lg">bolt</span>
-                    <span>Liberação Manual</span>
-                </button>
+            <!-- Canal -->
+            <div class="space-y-2">
+                <label for="channel" class="flex items-center gap-2 text-sm font-bold text-gray-700 dark:text-slate-300">
+                    Canal
+                    <span *ngIf="mode === 'view'" class="material-icons-outlined text-xs text-slate-400">lock</span>
+                </label>
+                <div class="relative group">
+                    <span
+                        class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">tag</span>
+                    <select id="channel" name="channel" [(ngModel)]="channel" [disabled]="mode === 'view'"
+                        [class]="getFieldClasses(true)">
+                        <option *ngFor="let num of [1, 2, 3, 4, 5, 6, 7, 8]" [value]="num">{{ num }}</option>
+                    </select>
+                    <span *ngIf="mode === 'edit'"
+                        class="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">expand_more</span>
+                </div>
             </div>
 
         </div>
 
         <!-- Ações -->
-        <div class="flex flex-wrap items-center gap-4 pt-1">
+        <div class="flex flex-wrap items-center justify-between gap-4 pt-1">
+            <!-- Cancelar / Voltar no lado esquerdo -->
+            <div>
+                <!-- Cancelar (apenas modo edit) -->
+                <button *ngIf="mode === 'edit'" type="button" (click)="onCancel()"
+                    class="w-full sm:w-auto text-center px-8 py-3 rounded-xl font-bold text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-all">
+                    Cancelar
+                </button>
+                <!-- Voltar (apenas modo view) -->
+                <button *ngIf="mode === 'view'" type="button" (click)="onCancel()"
+                    class="w-full sm:w-auto text-center px-8 py-3 rounded-xl font-bold text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-all">
+                    Voltar
+                </button>
+            </div>
 
-            <!-- Linha de botões primários: lado a lado no mobile, inline no desktop -->
-            <div class="flex gap-2 w-full sm:w-auto sm:contents">
+            <!-- Botões primários no lado direito -->
+            <div class="flex flex-wrap gap-2 w-full sm:w-auto justify-end">
+                <!-- Botão Liberação Manual (se id existir) -->
+                <button *ngIf="id" type="button" (click)="onOpenReleaseModal()" [disabled]="loading"
+                    class="flex-1 sm:flex-none bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 px-4 sm:px-8 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-sm">
+                    <span class="material-icons-outlined text-lg">bolt</span>
+                    <span>Liberação Manual</span>
+                </button>
+
                 <!-- Salvar (apenas modo edit) -->
                 <button *ngIf="mode === 'edit'" type="submit" [disabled]="loading"
                     class="flex-1 sm:flex-none bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 px-4 sm:px-8 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-sm">
@@ -116,18 +145,7 @@
                     <span class="sm:hidden">Salvar</span>
                     <span class="hidden sm:inline">Salvar Alterações</span>
                 </button>
-                <!-- Voltar: no mobile em modo view fica dentro da linha (50%); no desktop inline -->
-                <button *ngIf="mode === 'view'" type="button" (click)="onCancel()"
-                    class="flex-1 sm:flex-none text-center px-4 sm:px-8 py-3 rounded-xl font-bold text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-all">
-                    Voltar
-                </button>
             </div>
-
-            <!-- Cancelar: apenas em modo edit, abaixo no mobile, inline no desktop -->
-            <button *ngIf="mode === 'edit'" type="button" (click)="onCancel()"
-                class="w-full sm:w-auto text-center px-8 py-3 rounded-xl font-bold text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-all">
-                Cancelar
-            </button>
         </div>
     </form>
 </div>

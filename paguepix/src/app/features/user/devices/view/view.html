@@ -6,6 +6,7 @@
             [partners]="partners()" [qrUrl]="qrUrl()" mode="view" [releasing]="releasing()"
             [deviceProducts]="deviceProducts()" [allProducts]="allProducts()" [productLoading]="productLoading()"
             [releaseError]="releaseError()" [boards]="boards()" [boardId]="boardId()" [type]="type()" [types]="deviceTypes()"
+            [channel]="channel()"
             (releaseManual)="onReleaseManual($event)"
             (addProduct)="onAddProduct($event)" (removeProduct)="onRemoveProduct($event)"
             (editProduct)="onProductUpdated($event)" (cancel)="onCancel()">
