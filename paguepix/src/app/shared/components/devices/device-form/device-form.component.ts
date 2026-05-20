@@ -23,7 +23,14 @@ export class DeviceFormComponent {
     @Input() mode: 'view' | 'edit' = 'view';
     @Input() loading = false;
     @Input() releaseError: string | null = null;
-    @Input() deviceProducts: Product[] = [];
+    private _deviceProducts: Product[] = [];
+    @Input() set deviceProducts(value: Product[]) {
+        this._deviceProducts = value || [];
+        this.updateReleaseOptions();
+    }
+    get deviceProducts(): Product[] {
+        return this._deviceProducts;
+    }
     @Input() boards: Board[] = [];
     @Input() boardId: string | number | null = null;
     @Input() type = '';
@@ -36,6 +43,7 @@ export class DeviceFormComponent {
 
     showReleaseModal = signal(false);
     selectedReleaseMinutes = signal(1);
+    releaseOptions = signal<{ label: string, value: number }[]>([]);
 
     onSave() {
         if (this.mode === 'view') return;
@@ -53,8 +61,43 @@ export class DeviceFormComponent {
         this.cancel.emit();
     }
 
+    updateReleaseOptions() {
+        if (!this.deviceProducts || this.deviceProducts.length === 0) {
+            this.releaseOptions.set([
+                { label: '1 MIN', value: 1 },
+                { label: '3 MIN', value: 3 },
+                { label: '5 MIN', value: 5 },
+                { label: '10 MIN', value: 10 }
+            ]);
+            return;
+        }
+
+        const mapped = this.deviceProducts.map(product => {
+            let minutes = product.duration;
+            if (product.durationUnit === 'SECONDS') {
+                minutes = Math.max(1, Math.round(product.duration / 60));
+            } else if (product.durationUnit === 'HOURS') {
+                minutes = product.duration * 60;
+            }
+
+            const unitLabel = product.durationUnit === 'SECONDS' ? 'SEG' :
+                              product.durationUnit === 'HOURS' ? 'HORAS' : 'MIN';
+
+            return {
+                label: `${product.name} (${product.duration} ${unitLabel})`,
+                value: minutes
+            };
+        });
+
+        this.releaseOptions.set(mapped);
+    }
+
     onOpenReleaseModal() {
         this.releaseError = null;
+        const options = this.releaseOptions();
+        if (options.length > 0) {
+            this.selectedReleaseMinutes.set(options[0].value);
+        }
         this.showReleaseModal.set(true);
     }
 

@@ -8,7 +8,7 @@
             <form (ngSubmit)="onSave()"
                 class="lg:col-span-2 space-y-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-3xl shadow-sm h-fit">
 
-                <div class="grid grid-cols-1 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Hardware(Board) (MAC Address / Serial) -->
                     <div class="space-y-2">
                         <label for="clientId" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
@@ -24,77 +24,81 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Modelo do Hardware -->
-                        <div class="space-y-2">
-                            <label for="model" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
-                                Modelo do Hardware (Specs)
-                            </label>
-                            <div class="relative group">
-                                <span
-                                    class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors">memory</span>
-                                <input id="model" name="model" type="text" [ngModel]="model()"
-                                    (ngModelChange)="model.set($event)" required
-                                    class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white"
-                                    placeholder="Ex: ESP32 4 Relés">
-                            </div>
-                        </div>
-
-                        <!-- Descrição/Versão -->
-                        <div class="space-y-2">
-                            <label for="description" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
-                                Nome Amigável / Descrição
-                            </label>
-                            <div class="relative group">
-                                <span
-                                    class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors">description</span>
-                                <input id="description" name="description" type="text" [ngModel]="description()"
-                                    (ngModelChange)="description.set($event)" required
-                                    class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white"
-                                    placeholder="Ex: Placa Vending V1.2">
-                            </div>
+                    <!-- Modelo do Hardware -->
+                    <div class="space-y-2">
+                        <label for="model" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
+                            Modelo do Hardware (Specs)
+                        </label>
+                        <div class="relative group">
+                            <span
+                                class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors">memory</span>
+                            <input id="model" name="model" type="text" [ngModel]="model()"
+                                (ngModelChange)="model.set($event)" required
+                                class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white"
+                                placeholder="Ex: ESP32 4 Relés">
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Script Selection -->
-                        <div class="space-y-2">
-                            <label for="scriptId" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
-                                Script de Lógica
-                            </label>
-                            <div class="relative group">
-                                <span
-                                    class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors">code</span>
-                                <select id="scriptId" name="scriptId" [ngModel]="scriptId()"
-                                    (ngModelChange)="scriptId.set($event)" required
-                                    class="w-full pl-10 pr-10 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white appearance-none">
-                                    <option value="" disabled class="bg-white dark:bg-slate-900 text-gray-500">
-                                        Selecionar Script...</option>
-                                    <option *ngFor="let script of scripts()" [value]="script.id"
-                                        class="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">
-                                        {{ script.name }}
-                                    </option>
-                                </select>
-                                <span
-                                    class="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">expand_more</span>
-                            </div>
+                    <!-- Descrição/Versão -->
+                    <div class="space-y-2">
+                        <label for="description" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
+                            Nome Amigável / Descrição
+                        </label>
+                        <div class="relative group">
+                            <span
+                                class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors">description</span>
+                            <input id="description" name="description" type="text" [ngModel]="description()"
+                                (ngModelChange)="description.set($event)" required
+                                class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white"
+                                placeholder="Ex: Placa Vending V1.2">
                         </div>
+                    </div>
 
+                    <!-- Script Selection -->
+                    <div class="space-y-2">
+                        <label for="scriptId" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
+                            Script de Lógica
+                        </label>
+                        <div class="relative group">
+                            <span
+                                class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors">code</span>
+                            <select id="scriptId" name="scriptId" [ngModel]="scriptId()"
+                                (ngModelChange)="scriptId.set($event)" required
+                                class="w-full pl-10 pr-10 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white appearance-none">
+                                <option value="" disabled class="bg-white dark:bg-slate-900 text-gray-500">
+                                    Selecionar Script...</option>
+                                <option *ngFor="let script of scripts()" [value]="script.id"
+                                    class="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">
+                                    {{ script.name }}
+                                </option>
+                            </select>
+                            <span
+                                class="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">expand_more</span>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Ações -->
-                <div class="flex items-center gap-4 pt-4 border-t border-slate-100 dark:border-slate-800 mt-6">
-                    <button type="submit"
-                        [disabled]="loading() || !clientId() || !model() || !description() || !scriptId()"
-                        class="bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-sm">
-                        <span class="material-icons-outlined text-lg">save</span>
-                        Salvar Placa
-                    </button>
-                    <button type="button" routerLink="/admin/boards"
-                        class="px-8 py-3 rounded-xl font-bold text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-all">
-                        Cancelar
-                    </button>
+                <div class="flex items-center justify-between gap-4 pt-4 border-t border-slate-100 dark:border-slate-800 mt-6">
+                    <div>
+                        <button type="button" routerLink="/admin/boards"
+                            class="px-8 py-3 rounded-xl font-bold text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-all">
+                            Cancelar
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button *ngIf="board()?.device" type="button" (click)="onOpenReleaseModal()" [disabled]="releasing() || loading()"
+                            class="bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-sm">
+                            <span class="material-icons-outlined text-lg">bolt</span>
+                            Liberação Manual
+                        </button>
+                        <button type="submit"
+                            [disabled]="loading() || !clientId() || !model() || !description() || !scriptId()"
+                            class="bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-sm">
+                            <span class="material-icons-outlined text-lg">save</span>
+                            Salvar Alterações
+                        </button>
+                    </div>
                 </div>
             </form>
 
@@ -108,11 +112,118 @@
                     </div>
 
                     <p class="text-sm text-purple-700/80 dark:text-purple-400/80 leading-relaxed">
-                        A Placa de Hardware (Board) é a interface de comunicação de baixo nível que executará os Scripts
+                         A Placa de Hardware (Board) é a interface de comunicação de baixo nível que executará os Scripts
                         e que ficará armazenada dentro do Dispositivo (Device - QRCode).<br><br>
                         Certifique-se de que o <strong>Hardware(Board) (clientId)</strong> esteja perfeitamente preenchido,
                         pois é a identificação unificada que o Broker usará para autorizar a conexão do módulo.
                     </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Liberação Manual -->
+        <div *ngIf="showReleaseModal()"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+            <div
+                class="bg-white dark:bg-slate-900 w-full max-w-md rounded-[32px] shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-300">
+                <div class="p-8">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                            <span class="material-icons-outlined text-2xl">bolt</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                                Liberação Manual</h3>
+                            <div class="flex flex-wrap items-center gap-1.5 mt-0.5">
+                                <span class="text-sm font-extrabold text-indigo-600 dark:text-indigo-400">{{ board()?.device?.name }}</span>
+                                <span class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">• Canal {{ deviceChannel() }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <!-- Tempo de Liberação -->
+                        <div class="space-y-2">
+                            <label
+                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Tempo
+                                de Liberação (minutos)</label>
+                            <div class="relative group">
+                                <span
+                                    class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">schedule</span>
+                                <input type="number" min="1" [ngModel]="selectedReleaseMinutes()"
+                                    (ngModelChange)="selectedReleaseMinutes.set($event)" required
+                                    class="w-full pl-11 pr-5 py-4 bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition-all outline-none"
+                                    placeholder="Ex: 5">
+                            </div>
+                        </div>
+
+                        <!-- Canal Selection -->
+                        <div class="space-y-2">
+                            <label
+                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Canal</label>
+                            <div class="relative">
+                                <select #channelSelect (change)="selectedReleaseChannel.set(+channelSelect.value)"
+                                    [value]="selectedReleaseChannel()"
+                                    class="w-full bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 rounded-2xl px-5 py-4 text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition-all appearance-none cursor-pointer">
+                                    <option *ngFor="let ch of channels" [value]="ch">
+                                        Canal {{ ch }}
+                                    </option>
+                                </select>
+                                <span
+                                    class="material-icons-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+                            </div>
+                        </div>
+
+                        <!-- Alerta de Aviso (Default) -->
+                        <div *ngIf="!releasing() && !releaseError()"
+                            class="bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/30 p-4 rounded-2xl">
+                            <div class="flex gap-3">
+                                <span class="material-icons-outlined text-amber-600 dark:text-amber-400 text-lg">warning</span>
+                                <p class="text-[11px] text-amber-800 dark:text-amber-300 leading-relaxed font-medium">
+                                    Esta ação enviará um comando imediato ao terminal. Certifique-se de que o equipamento
+                                    está pronto.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Alerta de Loading -->
+                        <div *ngIf="releasing()"
+                            class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/30 p-4 rounded-2xl animate-pulse">
+                            <div class="flex items-center gap-3">
+                                <span
+                                    class="material-icons-outlined text-blue-600 dark:text-blue-400 text-lg animate-spin">sync</span>
+                                <p
+                                    class="text-[11px] text-blue-800 dark:text-blue-300 leading-relaxed font-bold uppercase tracking-tight">
+                                    Enviando comando de liberação...
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Alerta de Erro -->
+                        <div *ngIf="releaseError()"
+                            class="bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-900/30 p-4 rounded-2xl animate-in shake duration-500">
+                            <div class="flex gap-3">
+                                <span
+                                    class="material-icons-outlined text-rose-600 dark:text-rose-400 text-lg">error_outline</span>
+                                <p class="text-[11px] text-rose-800 dark:text-rose-300 leading-relaxed font-bold">
+                                    {{ releaseError() }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3 mt-8">
+                        <button type="button" (click)="cancelRelease()"
+                            class="flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 py-4 rounded-2xl font-black text-sm transition-all">
+                            CANCELAR
+                        </button>
+                        <button type="button" (click)="confirmRelease()" [disabled]="releasing()"
+                            class="flex-1 bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 py-4 rounded-2xl font-black text-sm transition-all flex items-center justify-center gap-2">
+                            <span *ngIf="releasing()" class="material-icons-outlined animate-spin text-sm">sync</span>
+                            {{ releaseError() ? 'TENTAR NOVAMENTE' : 'CONFIRMAR' }}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

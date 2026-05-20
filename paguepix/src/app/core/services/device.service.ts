@@ -51,10 +51,12 @@ export class DeviceService {
         return this.http.post<any>(`${this.apiUrl}/${id}/release`, {});
     }
 
-    releaseManual(id: string, minutes: number): Observable<any> {
-        return this.http.post<any>(`${this.apiUrl}/${id}/release-manual`, {}, {
-            params: { minutes: minutes.toString() }
-        });
+    releaseManual(id: string, minutes: number, channel?: number): Observable<any> {
+        let params: any = { minutes: minutes.toString() };
+        if (channel !== undefined && channel !== null) {
+            params.channel = channel.toString();
+        }
+        return this.http.post<any>(`${this.apiUrl}/${id}/release-manual`, {}, { params });
     }
 
     addProductToDevice(deviceId: string, productId: string): Observable<any> {
