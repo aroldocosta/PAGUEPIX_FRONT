@@ -136,7 +136,7 @@
                 <button *ngIf="id" type="button" (click)="onOpenReleaseModal()" [disabled]="loading"
                     class="flex-1 sm:flex-none bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 px-4 sm:px-8 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-sm">
                     <span class="material-icons-outlined text-lg">bolt</span>
-                    <span>Liberação Manual</span>
+                    <span>Acionar</span>
                 </button>
 
                 <!-- Salvar (apenas modo edit) -->
@@ -144,7 +144,7 @@
                     class="flex-1 sm:flex-none bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 px-4 sm:px-8 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-sm">
                     <span class="material-icons-outlined text-lg">save</span>
                     <span class="sm:hidden">Salvar</span>
-                    <span class="hidden sm:inline">Salvar Alterações</span>
+                    <span class="hidden sm:inline">Salvar</span>
                 </button>
             </div>
         </div>
@@ -164,10 +164,11 @@
                 </div>
                 <div>
                     <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
-                        Liberação Manual</h3>
+                        Acionamento<br>Manual</h3>
                     <div class="flex flex-wrap items-center gap-1.5 mt-0.5">
                         <span class="text-sm font-extrabold text-indigo-600 dark:text-indigo-400">{{ name }}</span>
-                        <span class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">• Canal {{ channel }}</span>
+                        <span class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">•
+                            Canal {{ channel }}</span>
                     </div>
                 </div>
             </div>
