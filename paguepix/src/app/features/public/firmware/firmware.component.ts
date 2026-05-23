@@ -117,7 +117,7 @@ export class FirmwareComponent implements OnDestroy {
                 });
 
                 this.closeMercadoPagoModal();
-                setTimeout(() => this.startStatusPolling(), 500);
+                setTimeout(() => this.startStatusPolling(true), 500);
             }
         } else {
             this.currentState.set('ERROR');
@@ -303,7 +303,7 @@ twIDAQAB
         }
     }
 
-    startStatusPolling() {
+    startStatusPolling(immediate: boolean = false) {
         if (this.pollingInterval) return;
 
         this.pollingStartTime = Date.now();
@@ -353,7 +353,6 @@ twIDAQAB
                             }
                         }
 
-
                         if (response.paid) {
                             console.log("============= RESPONSE =============");
                             console.log(JSON.stringify(response, null, 2));
@@ -371,6 +370,9 @@ twIDAQAB
                                 this.currentState.set('PENDING');
                                 this.closeMercadoPagoModal();
                             }
+                            if (this.pollingInterval) {
+                                this.pollingInterval = setTimeout(pollAction, 1500);
+                            }
                         }
                         else if (response.status === 'rejected' || response.status === 'cancelled') {
                             this.stopPolling();
@@ -378,9 +380,17 @@ twIDAQAB
                             this.errorMessage.set('O pagamento não foi autorizado. Por favor, tente novamente.');
                             this.currentState.set('ERROR');
                         }
+                        else {
+                            if (this.pollingInterval) {
+                                this.pollingInterval = setTimeout(pollAction, 1500);
+                            }
+                        }
                     },
                     error: (err) => {
                         console.error('Erro ao consultar status:', err);
+                        if (this.pollingInterval) {
+                            this.pollingInterval = setTimeout(pollAction, 2000);
+                        }
                     }
                 });
             }).catch(err => {
@@ -389,16 +399,12 @@ twIDAQAB
             });
         };
 
-        // Set the interval first so that pollAction can clear it if needed
-        this.pollingInterval = setInterval(pollAction, 5000);
-
-        // Execute immediately for the first time
-        pollAction();
+        this.pollingInterval = setTimeout(pollAction, immediate ? 0 : 5000);
     }
 
     stopPolling() {
         if (this.pollingInterval) {
-            clearInterval(this.pollingInterval);
+            clearTimeout(this.pollingInterval);
             this.pollingInterval = null;
         }
     }

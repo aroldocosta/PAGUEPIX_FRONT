@@ -100,7 +100,7 @@ export class ShowerComponent implements OnDestroy {
                 });
 
                 this.closeMercadoPagoModal();
-                setTimeout(() => this.startStatusPolling(), 500);
+                setTimeout(() => this.startStatusPolling(true), 500);
             }
         } else {
             this.currentState.set('ERROR');
@@ -248,19 +248,19 @@ twIDAQAB
         }
     }
 
-    startStatusPolling() {
+    startStatusPolling(immediate: boolean = false) {
         if (this.pollingInterval) return;
 
         console.log('Starting status polling...');
 
         this.pollingStartTime = Date.now();
 
-        this.pollingInterval = setInterval(() => {
-            const elapsedSeconds = Math.floor((Date.now() - this.pollingStartTime) / 5000);
+        const pollAction = () => {
+            const elapsedSeconds = Math.floor((Date.now() - this.pollingStartTime) / 1000);
 
             console.log('Elapsed seconds:', elapsedSeconds);
 
-            // Check for timeout (2 minutes = 120 seconds)
+            // Check for timeout (5 minutes = 300 seconds)
             if (elapsedSeconds >= 300) {
                 this.stopPolling();
                 this.errorMessage.set('Ah, o tempo para este pagamento expirou! 🕒 Por favor, volte e gere um novo código Pix para continuar. Estamos aqui se precisar de ajuda!');
@@ -321,6 +321,9 @@ twIDAQAB
                                 this.currentState.set('PENDING');
                                 this.closeMercadoPagoModal();
                             }
+                            if (this.pollingInterval) {
+                                this.pollingInterval = setTimeout(pollAction, 1500);
+                            }
                         }
                         // Check for specific rejection/failure states in 'status'
                         else if (response.status === 'rejected' || response.status === 'cancelled') {
@@ -329,21 +332,31 @@ twIDAQAB
                             this.errorMessage.set('O pagamento não foi autorizado. Por favor, tente novamente ou use outra forma de pagamento.');
                             this.currentState.set('ERROR');
                         }
+                        else {
+                            if (this.pollingInterval) {
+                                this.pollingInterval = setTimeout(pollAction, 1500);
+                            }
+                        }
                     },
                     error: (err) => {
                         console.error('Erro ao consultar status:', err);
+                        if (this.pollingInterval) {
+                            this.pollingInterval = setTimeout(pollAction, 2000);
+                        }
                     }
                 });
             }).catch(err => {
                 console.error('Falha na criptografia do status:', err);
                 this.stopPolling();
             });
-        }, 1000);
+        };
+
+        this.pollingInterval = setTimeout(pollAction, immediate ? 0 : 5000);
     }
 
     stopPolling() {
         if (this.pollingInterval) {
-            clearInterval(this.pollingInterval);
+            clearTimeout(this.pollingInterval);
             this.pollingInterval = null;
         }
     }
