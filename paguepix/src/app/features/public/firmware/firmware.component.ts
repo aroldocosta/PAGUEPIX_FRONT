@@ -236,6 +236,7 @@ twIDAQAB
                         this.paymentLink.set(response.paymentLink);
                     }
                     this.currentState.set('READY');
+                    this.startStatusPolling();
                 },
                 error: (err) => {
                     console.error('Error creating charge:', err);
