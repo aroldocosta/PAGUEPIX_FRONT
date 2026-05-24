@@ -1,4 +1,4 @@
-import { Component, signal, computed, OnInit, inject } from '@angular/core';
+import { Component, signal, computed, OnInit, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { TopbarComponent } from '../../../shared/components/topbar/topbar.component';
@@ -75,6 +75,14 @@ export class SalesComponent implements OnInit {
     prevPage() {
         if (this.currentPage() > 0) {
             this.currentPage.update(p => p - 1);
+            this.loadSales();
+        }
+    }
+
+    @HostListener('document:visibilitychange', [])
+    onVisibilityChange() {
+        if (document.visibilityState === 'visible') {
+            console.log('Sales page became visible, refreshing sales list...');
             this.loadSales();
         }
     }

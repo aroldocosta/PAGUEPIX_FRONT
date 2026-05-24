@@ -1,4 +1,4 @@
-import { Component, signal, inject, computed } from '@angular/core';
+import { Component, signal, inject, computed, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PaymentService } from '../../../core/services/payment.service';
@@ -364,6 +364,17 @@ twIDAQAB
 
     ngOnDestroy() {
         this.stopPolling();
+    }
+
+    @HostListener('document:visibilitychange', [])
+    onVisibilityChange() {
+        if (document.visibilityState === 'visible') {
+            if (this.pollingInterval || this.currentState() === 'PENDING') {
+                console.log('Page became visible, checking payment status immediately...');
+                this.stopPolling();
+                this.startStatusPolling(true);
+            }
+        }
     }
 
     reset() {
