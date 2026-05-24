@@ -52,6 +52,10 @@ export class ShowerComponent implements OnDestroy {
     private pollingStartTime: number = 0;
     private mp: any;
 
+    remainingTimeText = signal<string>('00:00');
+    remainingSeconds = signal<number | null>(null);
+    private localTimerInterval: any = null;
+
     private paymentService = inject(PaymentService);
     private deviceService = inject(DeviceService);
     private cryptoService = inject(CryptoService);
@@ -309,9 +313,15 @@ twIDAQAB
 
                         // Check for success using 'paid' boolean flag from backend ChargeStatus
                         if (response.paid) {
-                            this.stopPolling();
                             this.closeMercadoPagoModal();
                             this.currentState.set('SUCCESS');
+                            if (response.approvedTime && response.usageTime && response.serverTime) {
+                                this.startLocalCountdown(response.approvedTime, response.usageTime, response.serverTime);
+                            }
+                            if (this.pollingInterval) {
+                                clearTimeout(this.pollingInterval);
+                            }
+                            this.pollingInterval = setTimeout(pollAction, 15000);
                         }
                         // If pending but has QR Code (user selected Pix in modal OR it's a direct charge)
                         else if (response.qrCode) {
@@ -360,6 +370,46 @@ twIDAQAB
             clearTimeout(this.pollingInterval);
             this.pollingInterval = null;
         }
+        this.stopLocalTimer();
+    }
+
+    stopLocalTimer() {
+        if (this.localTimerInterval) {
+            clearInterval(this.localTimerInterval);
+            this.localTimerInterval = null;
+        }
+    }
+
+    startLocalCountdown(approvedTime: any, usageTimeSeconds: any, serverTime: any) {
+        this.stopLocalTimer();
+        const appTime = Number(approvedTime);
+        const useTime = Number(usageTimeSeconds);
+        const srvTime = Number(serverTime);
+        const serverOffset = srvTime - Date.now();
+        const endTime = appTime + (useTime * 1000);
+
+        const updateTimer = () => {
+            const nowAdjusted = Date.now() + serverOffset;
+            const remainingMs = endTime - nowAdjusted;
+            const remainingSec = Math.max(0, Math.floor(remainingMs / 1000));
+            
+            this.remainingSeconds.set(remainingSec);
+
+            if (remainingSec <= 0) {
+                this.remainingTimeText.set('00:00');
+                this.stopLocalTimer();
+                this.stopPolling();
+            } else {
+                const minutes = Math.floor(remainingSec / 60);
+                const seconds = remainingSec % 60;
+                const minStr = minutes.toString().padStart(2, '0');
+                const secStr = seconds.toString().padStart(2, '0');
+                this.remainingTimeText.set(`${minStr}:${secStr}`);
+            }
+        };
+
+        updateTimer();
+        this.localTimerInterval = setInterval(updateTimer, 1000);
     }
 
     ngOnDestroy() {
@@ -369,7 +419,7 @@ twIDAQAB
     @HostListener('document:visibilitychange', [])
     onVisibilityChange() {
         if (document.visibilityState === 'visible') {
-            if (this.pollingInterval || this.currentState() === 'PENDING') {
+            if (this.pollingInterval || this.currentState() === 'PENDING' || this.currentState() === 'SUCCESS') {
                 console.log('Page became visible, checking payment status immediately...');
                 this.stopPolling();
                 this.startStatusPolling(true);

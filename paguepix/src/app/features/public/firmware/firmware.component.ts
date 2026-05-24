@@ -358,11 +358,11 @@ twIDAQAB
                             console.log("============= RESPONSE =============");
                             console.log(JSON.stringify(response, null, 2));
                             console.log("====================================");
-                            this.stopPolling();
                             this.closeMercadoPagoModal();
                             this.paymentResult.set(response); // Store detailed license data
                             this.showLicenseModal.set(true);  // Show results modal
                             this.currentState.set('SUCCESS');
+                            this.stopPolling();
                         }
                         else if (response.qrCode) {
                             if (this.pixKey() !== response.qrCode) {

@@ -84,4 +84,7 @@ export interface ChargeStatus {
     controllerId?: string;
     activationKey?: string;
     deviceId?: string;
+    approvedTime?: number;
+    serverTime?: number;
+    usageTime?: number;
 }
