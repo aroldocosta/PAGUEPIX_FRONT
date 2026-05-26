@@ -1,4 +1,4 @@
-import { Component, signal, inject, computed, HostListener } from '@angular/core';
+import { Component, signal, inject, computed, HostListener, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PaymentService } from '../../../core/services/payment.service';
@@ -65,6 +65,34 @@ export class ShowerComponent implements OnDestroy {
     durationOptions: DurationOption[] = [];
 
     constructor() {
+        effect(() => {
+            const token = this.deviceId();
+            const state = this.currentState();
+            const charge = this.lastChargeResponse();
+            const key = this.pixKey();
+            const link = this.paymentLink();
+            const type = this.paymentType();
+            const duration = this.selectedDuration();
+
+            if (token) {
+                if (state === 'READY' || state === 'PENDING' || state === 'PROCESSING' || state === 'SUCCESS') {
+                    const stateToSave = {
+                        currentState: state,
+                        lastChargeResponse: charge,
+                        pixKey: key,
+                        paymentLink: link,
+                        paymentType: type,
+                        pollingStartTime: this.pollingStartTime,
+                        selectedDuration: duration,
+                        timestamp: Date.now()
+                    };
+                    this.saveStateToStorage(token, stateToSave);
+                } else if (state === 'IDLE' || state === 'ERROR') {
+                    this.removeStateFromStorage(token);
+                }
+            }
+        });
+
         this.route.paramMap.subscribe(params => {
             const token = params.get('token');
             if (token) {
@@ -84,7 +112,9 @@ export class ShowerComponent implements OnDestroy {
     private handleInitialization(token: string, queryParams: any) {
         if (token && token.length >= 10) {
             this.deviceId.set(token);
-            this.validateDevice(token);
+
+            // Try to restore payment state from localStorage
+            const restored = this.restoreStateFromStorage(token);
 
             // Check if returning from a payment
             const paymentId = queryParams.get('payment_id');
@@ -105,6 +135,12 @@ export class ShowerComponent implements OnDestroy {
 
                 this.closeMercadoPagoModal();
                 setTimeout(() => this.startStatusPolling(true), 500);
+            } else if (!restored) {
+                // Only validate device and reset to IDLE if we didn't restore a state
+                this.validateDevice(token);
+            } else {
+                // If we restored, load device info in background without overriding the currentState
+                this.validateDevice(token, true);
             }
         } else {
             this.currentState.set('ERROR');
@@ -122,8 +158,10 @@ export class ShowerComponent implements OnDestroy {
         }
     }
 
-    private validateDevice(token: string) {
-        this.currentState.set('VALIDATING');
+    private validateDevice(token: string, background: boolean = false) {
+        if (!background) {
+            this.currentState.set('VALIDATING');
+        }
         this.deviceService.getInfoByToken(token).subscribe({
             next: (info) => {
                 this.deviceInfo.set(info);
@@ -149,17 +187,75 @@ export class ShowerComponent implements OnDestroy {
                 }
 
                 // If we were validating and everything is fine, go to IDLE
-                if (this.currentState() === 'VALIDATING') {
+                if (!background && this.currentState() === 'VALIDATING') {
                     this.currentState.set('IDLE');
                 }
             },
             error: (err) => {
                 console.error('Error validating device:', err);
-                const backendMessage = err.error?.message;
-                this.errorMessage.set(backendMessage || 'Dispositivo não reconhecido ou inativo. Por favor, leia novamente o QR Code.');
-                this.currentState.set('ERROR');
+                if (!background) {
+                    const backendMessage = err.error?.message;
+                    this.errorMessage.set(backendMessage || 'Dispositivo não reconhecido ou inativo. Por favor, leia novamente o QR Code.');
+                    this.currentState.set('ERROR');
+                }
             }
         });
+    }
+
+    private saveStateToStorage(token: string, stateToSave: any) {
+        if (typeof window !== 'undefined' && window.localStorage) {
+            try {
+                localStorage.setItem(`paguepix_payment_state_${token}`, JSON.stringify(stateToSave));
+            } catch (e) {
+                console.error('Error saving state to localStorage', e);
+            }
+        }
+    }
+
+    private removeStateFromStorage(token: string) {
+        if (typeof window !== 'undefined' && window.localStorage) {
+            try {
+                localStorage.removeItem(`paguepix_payment_state_${token}`);
+            } catch (e) {
+                console.error('Error removing state from localStorage', e);
+            }
+        }
+    }
+
+    private restoreStateFromStorage(token: string): boolean {
+        if (typeof window !== 'undefined' && window.localStorage) {
+            try {
+                const savedStr = localStorage.getItem(`paguepix_payment_state_${token}`);
+                if (!savedStr) return false;
+
+                const saved = JSON.parse(savedStr);
+                // Check if the saved state is recent (less than 15 minutes)
+                if (Date.now() - saved.timestamp > 900000) {
+                    localStorage.removeItem(`paguepix_payment_state_${token}`);
+                    return false;
+                }
+
+                console.log('Restoring payment state from localStorage:', saved);
+                this.pollingStartTime = saved.pollingStartTime || 0;
+                
+                this.selectedDuration.set(saved.selectedDuration);
+                this.pixKey.set(saved.pixKey);
+                this.paymentLink.set(saved.paymentLink);
+                this.paymentType.set(saved.paymentType);
+                this.lastChargeResponse.set(saved.lastChargeResponse);
+                this.currentState.set(saved.currentState);
+
+                if (saved.currentState === 'READY' || saved.currentState === 'PENDING' || saved.currentState === 'SUCCESS') {
+                    this.startStatusPolling(true);
+                }
+
+                return true;
+            } catch (e) {
+                console.error('Failed to restore state from localStorage:', e);
+                return false;
+            }
+        }
+        return false;
     }
 
     selectDuration(option: DurationOption) {
@@ -173,6 +269,7 @@ export class ShowerComponent implements OnDestroy {
 
         if (state === 'IDLE') {
             this.currentState.set('PROCESSING');
+            this.pollingStartTime = 0; // Reset start time for a new charge
 
             // Call backend createCharge
             const duration = this.selectedDuration();
@@ -258,7 +355,9 @@ twIDAQAB
 
         console.log('Starting status polling...');
 
-        this.pollingStartTime = Date.now();
+        if (!this.pollingStartTime || this.pollingStartTime === 0) {
+            this.pollingStartTime = Date.now();
+        }
 
         const pollAction = () => {
             const elapsedSeconds = Math.floor((Date.now() - this.pollingStartTime) / 1000);
@@ -429,6 +528,7 @@ twIDAQAB
 
     reset() {
         this.stopPolling();
+        this.pollingStartTime = 0;
         this.currentState.set('IDLE');
         this.errorMessage.set('');
     }
