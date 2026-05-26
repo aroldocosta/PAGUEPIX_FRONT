@@ -197,34 +197,33 @@
                     <div class="h-2 w-full bg-emerald-500"></div>
 
                     <div class="p-10 flex flex-col items-center">
-                        <div class="w-10 h-10 bg-emerald-50 rounded-full flex items-center justify-center mb-4 ring-4 ring-emerald-50/50">
-                            <span class="material-icons-outlined text-emerald-500 text-xl">check</span>
+                        <div class="flex items-center gap-3 mb-4 justify-center">
+                            <div
+                                class="w-12 h-12 bg-emerald-50/80 rounded-full flex items-center justify-center ring-4 ring-emerald-50/50 flex-shrink-0">
+                                <span class="material-icons-outlined text-emerald-500 text-2xl font-bold">check</span>
+                            </div>
+                            <h1 class="text-2xl font-black text-[#0f172a] leading-tight">Pagamento Confirmado!</h1>
                         </div>
-
-                        <h1 class="text-2xl font-black text-[#0f172a] mb-2 text-center leading-tight">Pagamento
-                            Confirmado!</h1>
                         <p class="text-slate-500 font-bold text-center mb-6 px-4">Obrigado pela sua compra.</p>
 
                         <!-- Timer container when active -->
-                        <div *ngIf="remainingSeconds() !== null; else waitingRelease"
-                             [ngClass]="{
+                        <div *ngIf="remainingSeconds() !== null; else waitingRelease" [ngClass]="{
                                  'bg-emerald-50/50 border-emerald-100 text-emerald-600': remainingSeconds()! > 60,
                                  'bg-amber-50/50 border-amber-100 text-amber-600': remainingSeconds()! <= 60 && remainingSeconds()! > 30,
                                  'bg-rose-50/50 border-rose-100 text-rose-600 animate-urgent': remainingSeconds()! <= 30 && remainingSeconds()! > 0,
                                  'bg-slate-50 border-slate-200 text-slate-400': remainingSeconds()! === 0
                              }"
-                             class="w-full border rounded-3xl p-6 flex flex-col items-center justify-center mb-6 transition-all duration-300">
-                            
+                            class="w-full border rounded-3xl p-6 flex flex-col items-center justify-center mb-6 transition-all duration-300">
+
                             <div class="flex items-center gap-2 mb-2">
-                                <span class="material-icons-outlined text-lg animate-pulse" 
-                                      [ngClass]="{
+                                <span class="material-icons-outlined text-lg animate-pulse" [ngClass]="{
                                           'text-emerald-500': remainingSeconds()! > 60,
                                           'text-amber-500': remainingSeconds()! <= 60 && remainingSeconds()! > 30,
                                           'text-rose-500': remainingSeconds()! <= 30 && remainingSeconds()! > 0,
                                           'text-slate-400': remainingSeconds()! === 0
                                       }">timer</span>
                                 <span class="text-[11px] font-extrabold uppercase tracking-widest opacity-80">
-                                    {{ remainingSeconds()! > 0 ? 'Tempo Restante de Banho' : 'Banho Finalizado' }}
+                                    {{ remainingSeconds()! > 0 ? 'Tempo Restante' : 'Banho Finalizado' }}
                                 </span>
                             </div>
 
@@ -233,19 +232,25 @@
                             </div>
 
                             <p class="text-xs text-center opacity-75">
-                                {{ remainingSeconds()! > 60 ? 'Aproveite seu banho!' : (remainingSeconds()! > 0 ? 'Seu tempo está acabando!' : 'Obrigado por usar o SmartShower.') }}
+                                {{ remainingSeconds()! > 60 ? 'Aproveite seu banho!' : (remainingSeconds()! > 0 ? 'Seu
+                                tempo está acabando!' : 'Obrigado por usar o SmartShower.') }}
                             </p>
                         </div>
 
                         <ng-template #waitingRelease>
-                            <div class="bg-emerald-50/50 border border-emerald-100 rounded-3xl p-6 flex flex-col items-center justify-center mb-6 w-full">
-                                <div class="w-8 h-8 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin mb-3"></div>
-                                <p class="text-emerald-700 font-bold text-sm tracking-wider uppercase">Liberando equipamento...</p>
+                            <div
+                                class="bg-emerald-50/50 border border-emerald-100 rounded-3xl p-6 flex flex-col items-center justify-center mb-6 w-full">
+                                <div
+                                    class="w-8 h-8 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin mb-3">
+                                </div>
+                                <p class="text-emerald-700 font-bold text-sm tracking-wider uppercase">Liberando
+                                    equipamento...</p>
                             </div>
                         </ng-template>
 
                         <!-- Product Badge -->
-                        <div class="bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 flex items-center gap-3 mb-6 w-full justify-center">
+                        <div
+                            class="bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 flex items-center gap-3 mb-6 w-full justify-center">
                             <span class="material-icons-outlined text-slate-500 text-lg">shopping_bag</span>
                             <span class="font-bold text-slate-600 text-sm">{{ productName() }}</span>
                         </div>
