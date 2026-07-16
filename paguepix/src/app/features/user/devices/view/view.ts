@@ -50,7 +50,13 @@ export class UserDeviceView implements OnInit {
     productLoading = signal(false);
     partnerName = computed(() => this.authService.partnerName());
 
+    deviceQrCode = signal<string | null>(null);
+
     qrUrl = computed(() => {
+        const staticQr = this.deviceQrCode();
+        if (staticQr) {
+            return staticQr;
+        }
         const currentId = this.id();
         return currentId ? `${environment.apiUrl}/devices/qr/${currentId}` : '';
     });
@@ -101,6 +107,7 @@ export class UserDeviceView implements OnInit {
                 }
                 this.deviceProducts.set(device.productList || []);
                 this.channel.set(device.channel !== undefined && device.channel !== null ? device.channel : 1);
+                this.deviceQrCode.set((device as any).qrCode || null);
                 this.loading.set(false);
             },
             error: (err) => {
