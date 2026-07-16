@@ -25,6 +25,7 @@ export class AuthService {
     partnerId = computed(() => this.sessionSignal()?.partnerId);
     partnerName = computed(() => this.sessionSignal()?.partnerName ?? '');
     partnerLogo = computed(() => this.sessionSignal()?.partnerLogo);
+    paymentWorkflowMode = computed(() => this.sessionSignal()?.paymentWorkflowMode ?? 'CENTRALIZED_WEB_CHECKOUT');
 
     isTokenExpired(token: string): boolean {
         try {

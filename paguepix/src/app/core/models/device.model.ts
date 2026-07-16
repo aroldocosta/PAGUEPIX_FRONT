@@ -10,4 +10,6 @@ export interface Device {
     partner?: Partner;
     board?: Board;
     boardId?: number;
+    externalStoreId?: string;
+    externalPosId?: string;
 }

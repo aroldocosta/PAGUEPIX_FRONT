@@ -27,6 +27,8 @@ export class DeviceDetailLayoutComponent {
     type = input<string>('');
     types = input<string[]>([]);
     channel = input<number>(1);
+    externalStoreId = input<string>('');
+    externalPosId = input<string>('');
 
     // Behaviour inputs
     mode = input<'view' | 'edit'>('view');

@@ -6,6 +6,7 @@ export interface LoginResponse {
     partnerId?: string | number;
     partnerName?: string;
     partnerLogo?: string;
+    paymentWorkflowMode?: 'CENTRALIZED_WEB_CHECKOUT' | 'DECENTRALIZED_IN_STORE_QR';
 }
 
 export interface UserSession {
@@ -16,5 +17,6 @@ export interface UserSession {
     partnerId?: string | number;
     partnerName?: string;
     partnerLogo?: string;
+    paymentWorkflowMode?: 'CENTRALIZED_WEB_CHECKOUT' | 'DECENTRALIZED_IN_STORE_QR';
 }
 

@@ -8,6 +8,7 @@ import { SalesChartComponent, DailySales } from '../../../shared/components/sale
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { TopbarComponent } from '../../../shared/components/topbar/topbar.component';
 import { FooterComponent } from '../../../shared/components/footer/footer.component';
+import { PartnerService } from '../../../core/services/partner.service';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -22,6 +23,13 @@ export class UserDashboard implements OnInit {
   private dashboardService = inject(DashboardService);
   private paymentService = inject(PaymentService);
   protected themeService = inject(ThemeService);
+  private partnerService = inject(PartnerService);
+
+  mpUserId = signal<string | null>(null);
+  mpTokenExpiresAt = signal<string | null>(null);
+  partnerGatewayName = signal<string | null>(null);
+  partnerWorkflowModeLabel = signal<string | null>(null);
+  paymentWorkflowMode = computed(() => this.authService.paymentWorkflowMode());
 
   userName = computed(() => this.authService.name());
   partnerName = computed(() => this.authService.partnerName());
@@ -70,6 +78,34 @@ export class UserDashboard implements OnInit {
 
   ngOnInit(): void {
     this.loadDashboard();
+    this.loadPartnerOAuthInfo();
+  }
+
+  loadPartnerOAuthInfo(): void {
+    const partnerId = this.authService.partnerId();
+    if (partnerId) {
+      this.partnerService.getById(partnerId).subscribe({
+        next: (partner) => {
+          this.mpUserId.set(partner.mpUserId || null);
+          this.mpTokenExpiresAt.set(partner.mpTokenExpiresAt || null);
+          
+          if (partner.gateway) {
+            this.partnerGatewayName.set(typeof partner.gateway === 'object' ? partner.gateway.name : partner.gateway);
+          } else {
+            this.partnerGatewayName.set('Não Definido');
+          }
+
+          if (partner.paymentWorkflowMode === 'DECENTRALIZED_IN_STORE_QR') {
+            this.partnerWorkflowModeLabel.set('Código QR Modelo Estático (Mercado Pago)');
+          } else if (partner.paymentWorkflowMode === 'CENTRALIZED_WEB_CHECKOUT') {
+            this.partnerWorkflowModeLabel.set('Checkout Centralizado no SaaS');
+          } else {
+            this.partnerWorkflowModeLabel.set(partner.paymentWorkflowMode || 'Não Definido');
+          }
+        },
+        error: (err) => console.error('Error loading partner OAuth info:', err)
+      });
+    }
   }
 
   selectPeriod(days: number): void {
@@ -196,5 +232,12 @@ export class UserDashboard implements OnInit {
         this.apiResponseMessage.set(`ERRO: ${msg}`);
       }
     });
+  }
+
+  connectMercadoPago(): void {
+    const partnerId = this.authService.partnerId();
+    if (partnerId) {
+      window.location.href = `${environment.apiUrl}/partners/oauth/connect/${partnerId}`;
+    }
   }
 }

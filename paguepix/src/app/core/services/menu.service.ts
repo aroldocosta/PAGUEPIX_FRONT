@@ -79,9 +79,16 @@ export class MenuService {
         }
     ];
 
-    readonly menuCategories = computed(() =>
-        this.authService.role() === 'ADMIN'
-            ? this.adminMenuCategories
-            : this.userMenuCategories
-    );
+    readonly menuCategories = computed(() => {
+        if (this.authService.role() === 'ADMIN') {
+            return this.adminMenuCategories;
+        }
+        if (this.authService.paymentWorkflowMode() === 'DECENTRALIZED_IN_STORE_QR') {
+            return this.userMenuCategories.map(cat => ({
+                ...cat,
+                items: cat.items.filter(item => item.label !== 'Saques')
+            }));
+        }
+        return this.userMenuCategories;
+    });
 }
