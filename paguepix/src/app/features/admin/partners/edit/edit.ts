@@ -31,6 +31,9 @@ export class PartnerEdit implements OnInit {
   documentNumber = signal('');
   payoutMethod = signal('AUTOMATIC_TED');
   commissionRate = signal<number | null>(null);
+  paymentWorkflowMode = signal('CENTRALIZED_WEB_CHECKOUT');
+  mpUserId = signal<string | null>(null);
+  mpTokenExpiresAt = signal<string | null>(null);
   logo = signal<string | null>(null);
   imageError = signal(false);
   gateways = signal<any[]>([]);
@@ -75,6 +78,9 @@ export class PartnerEdit implements OnInit {
         this.documentNumber.set(partner.documentNumber || '');
         this.payoutMethod.set(partner.payoutMethod || 'AUTOMATIC_TED');
         this.commissionRate.set(partner.commissionRate || null);
+        this.paymentWorkflowMode.set(partner.paymentWorkflowMode || 'CENTRALIZED_WEB_CHECKOUT');
+        this.mpUserId.set(partner.mpUserId || null);
+        this.mpTokenExpiresAt.set(partner.mpTokenExpiresAt || null);
         
         if (partner.logo) {
           this.logo.set(`${environment.apiUrl}/partners/${partner.id}/logo`);
@@ -123,7 +129,8 @@ export class PartnerEdit implements OnInit {
       bankAccountType: this.bankAccountType(),
       documentNumber: this.documentNumber(),
       payoutMethod: this.payoutMethod(),
-      commissionRate: this.commissionRate()
+      commissionRate: this.commissionRate(),
+      paymentWorkflowMode: this.paymentWorkflowMode()
     };
 
     this.loading.set(true);
@@ -168,5 +175,11 @@ export class PartnerEdit implements OnInit {
         alert('Erro ao salvar parceiro.');
       }
     });
+  }
+
+  connectMercadoPago() {
+    if (this.id()) {
+      window.location.href = `${environment.apiUrl}/partners/oauth/connect/${this.id()}`;
+    }
   }
 }

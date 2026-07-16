@@ -43,7 +43,8 @@ export class Login implements OnInit {
             name: response.name,
             partnerId: response.partnerId,
             partnerName: response.partnerName,
-            partnerLogo: response.partnerLogo
+            partnerLogo: response.partnerLogo,
+            paymentWorkflowMode: response.paymentWorkflowMode
           });
 
           this.authService.navigateToDashboard();

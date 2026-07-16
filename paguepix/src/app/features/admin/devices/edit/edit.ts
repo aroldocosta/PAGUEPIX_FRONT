@@ -39,6 +39,8 @@ export class DeviceEdit implements OnInit {
     boardId = signal<string | number | null>(null);
     type = signal('');
     channel = signal(1);
+    externalStoreId = signal('');
+    externalPosId = signal('');
     deviceTypes = signal<string[]>([]);
     loading = signal(false);
     hasData = signal(true);
@@ -130,6 +132,8 @@ export class DeviceEdit implements OnInit {
                 this.boardId.set(device.board?.id || null);
                 this.type.set(device.type || '');
                 this.channel.set(device.channel !== undefined && device.channel !== null ? device.channel : 1);
+                this.externalStoreId.set(device.externalStoreId || '');
+                this.externalPosId.set(device.externalPosId || '');
                 this.deviceProducts.set(device.productList || []);
 
                 if (device.partner?.id) {

@@ -1,9 +1,10 @@
-import { Component, Input, Output, EventEmitter, signal, computed } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Product } from '../../../../core/services/product.service';
 import { Board } from '../../../../core/models/board.model';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
     selector: 'app-device-form',
@@ -15,6 +16,9 @@ import { Board } from '../../../../core/models/board.model';
     `]
 })
 export class DeviceFormComponent {
+    private authService = inject(AuthService);
+    isAdmin = computed(() => this.authService.role() === 'ADMIN');
+
     @Input({ required: true }) id!: string;
     @Input() name = '';
     @Input() model = '';
@@ -36,6 +40,8 @@ export class DeviceFormComponent {
     @Input() type = '';
     @Input() types: string[] = [];
     @Input() channel = 1;
+    @Input() externalStoreId = '';
+    @Input() externalPosId = '';
 
     @Output() save = new EventEmitter<any>();
     @Output() releaseManual = new EventEmitter<{ id: string, minutes: number }>();
@@ -53,7 +59,9 @@ export class DeviceFormComponent {
             type: this.type,
             partnerId: this.partnerId,
             boardId: this.boardId,
-            channel: this.channel
+            channel: this.channel,
+            externalStoreId: this.externalStoreId,
+            externalPosId: this.externalPosId
         });
     }
 

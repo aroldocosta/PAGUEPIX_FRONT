@@ -27,6 +27,9 @@ export interface PartnerDetail {
     payoutMethod?: string;
     recipientId?: string;
     commissionRate?: number;
+    paymentWorkflowMode?: 'CENTRALIZED_WEB_CHECKOUT' | 'DECENTRALIZED_IN_STORE_QR';
+    mpUserId?: string;
+    mpTokenExpiresAt?: string;
     userList?: User[];
     paymentList?: Payment[];
     deviceList?: Device[];
