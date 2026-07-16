@@ -21,7 +21,8 @@ export class DemoLogin implements OnInit {
                 name: params['name'],
                 partnerId: params['partnerId'],
                 partnerName: params['partnerName'],
-                partnerLogo: params['partnerLogo']
+                partnerLogo: params['partnerLogo'],
+                paymentWorkflowMode: params['paymentWorkflowMode'] as 'CENTRALIZED_WEB_CHECKOUT' | 'DECENTRALIZED_IN_STORE_QR'
             };
 
             if (session.token && session.userId && session.role) {
