@@ -3,6 +3,28 @@
     emptyStateMessage="Nenhum dispositivo encontrado.">
 
     <ng-template #tableContent>
+        <!-- Paginação -->
+        <div *ngIf="totalPages() > 1"
+            class="flex items-center gap-4 mb-6 px-8 py-4 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
+            <div
+                class="ml-auto flex items-center gap-4 text-sm bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-slate-700 rounded-xl px-2 py-1">
+                <span class="font-medium text-slate-500 dark:text-slate-400 pl-2 pr-1">
+                    Página {{ currentPage() + 1 }} de {{ totalPages() }}
+                </span>
+                <div class="flex items-center gap-1.5 p-0.5">
+                    <button (click)="prevPage()" [disabled]="currentPage() === 0"
+                        class="p-1.5 flex items-center justify-center rounded-md text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+                        <span class="material-icons-outlined text-sm">chevron_left</span>
+                    </button>
+                    <div class="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
+                    <button (click)="nextPage()" [disabled]="currentPage() >= totalPages() - 1"
+                        class="p-1.5 flex items-center justify-center rounded-md text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+                        <span class="material-icons-outlined text-sm">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <app-device-list [devices]="devices()" mode="user" [loading]="loading()" (view)="onView($event)">
         </app-device-list>
     </ng-template>

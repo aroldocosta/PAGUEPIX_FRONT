@@ -27,17 +27,15 @@ export class BoardManagement implements OnInit {
     partners = signal<Partner[]>([]);
     selectedPartnerId = signal<string | number>('all');
     selectedBoard = signal<Board | null>(null);
+    currentPage = signal(0);
+    totalPages = signal(1);
 
     // Modal de Exclusão
     showDeleteModal = signal(false);
     isDeleting = signal(false);
     boardToDelete = signal<Board | null>(null);
 
-    filteredBoards = computed(() => {
-        const pId = this.selectedPartnerId();
-        if (pId === 'all') return this.boards();
-        return this.boards().filter(b => b.partner?.id?.toString() === pId.toString());
-    });
+    filteredBoards = computed(() => this.boards());
 
     hasData = computed(() => this.filteredBoards().length > 0);
     loading = signal(true);
@@ -58,9 +56,11 @@ export class BoardManagement implements OnInit {
 
     loadBoards() {
         this.loading.set(true);
-        this.boardService.findAll().subscribe({
+        const partnerId = this.selectedPartnerId() === 'all' ? undefined : +this.selectedPartnerId();
+        this.boardService.findAll(partnerId, undefined, this.currentPage(), 10).subscribe({
             next: (response) => {
                 this.boards.set(response.content || response);
+                this.totalPages.set(response.totalPages || 1);
                 this.loading.set(false);
             },
             error: (err) => {
@@ -68,6 +68,25 @@ export class BoardManagement implements OnInit {
                 this.loading.set(false);
             }
         });
+    }
+
+    onPartnerChange() {
+        this.currentPage.set(0);
+        this.loadBoards();
+    }
+
+    nextPage() {
+        if (this.currentPage() < this.totalPages() - 1) {
+            this.currentPage.update(p => p + 1);
+            this.loadBoards();
+        }
+    }
+
+    prevPage() {
+        if (this.currentPage() > 0) {
+            this.currentPage.update(p => p - 1);
+            this.loadBoards();
+        }
     }
 
     onView(board: Board) {

@@ -21,6 +21,8 @@ export class PartnerManagement implements OnInit {
     selectedPartner = signal<PartnerDetail | null>(null);
     hasData = computed(() => this.partners().length > 0);
     loading = signal(true);
+    currentPage = signal(0);
+    totalPages = signal(1);
 
     // Modal de Exclusão
     showDeleteModal = signal(false);
@@ -35,9 +37,10 @@ export class PartnerManagement implements OnInit {
 
     loadPartners() {
         this.loading.set(true);
-        this.partnerService.getAll().subscribe({
+        this.partnerService.getAll(this.currentPage(), 10).subscribe({
             next: (response) => {
                 this.partners.set(response.content || response);
+                this.totalPages.set(response.totalPages || 1);
                 console.log('PARTNERS LOADED:', this.partners().map(p => ({ original: p.id, type: typeof p.id })));
                 this.loading.set(false);
             },
@@ -46,6 +49,20 @@ export class PartnerManagement implements OnInit {
                 this.loading.set(false);
             }
         });
+    }
+
+    nextPage() {
+        if (this.currentPage() < this.totalPages() - 1) {
+            this.currentPage.update(p => p + 1);
+            this.loadPartners();
+        }
+    }
+
+    prevPage() {
+        if (this.currentPage() > 0) {
+            this.currentPage.update(p => p - 1);
+            this.loadPartners();
+        }
     }
 
     onView(partner: PartnerSummary) {

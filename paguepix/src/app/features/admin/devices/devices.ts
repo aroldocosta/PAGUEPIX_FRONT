@@ -25,17 +25,15 @@ export class DeviceManagement implements OnInit {
     partners = signal<Partner[]>([]);
     selectedPartnerId = signal<string | number>('all');
     selectedDevice = signal<Device | null>(null);
+    currentPage = signal(0);
+    totalPages = signal(1);
 
     // Modal de Exclusão
     showDeleteModal = signal(false);
     isDeleting = signal(false);
     deviceToDelete = signal<Device | null>(null);
 
-    filteredDevices = computed(() => {
-        const pId = this.selectedPartnerId();
-        if (pId === 'all') return this.devices();
-        return this.devices().filter(d => d.partner?.id?.toString() === pId.toString());
-    });
+    filteredDevices = computed(() => this.devices());
 
     hasData = computed(() => this.filteredDevices().length > 0);
     loading = signal(true);
@@ -57,9 +55,11 @@ export class DeviceManagement implements OnInit {
 
     loadDevices() {
         this.loading.set(true);
-        this.deviceService.findAll().subscribe({
+        const partnerId = this.selectedPartnerId() === 'all' ? undefined : +this.selectedPartnerId();
+        this.deviceService.findAll(partnerId, this.currentPage(), 10).subscribe({
             next: (response) => {
                 this.devices.set(response.content || response);
+                this.totalPages.set(response.totalPages || 1);
                 this.loading.set(false);
             },
             error: (err) => {
@@ -67,6 +67,25 @@ export class DeviceManagement implements OnInit {
                 this.loading.set(false);
             }
         });
+    }
+
+    onPartnerChange() {
+        this.currentPage.set(0);
+        this.loadDevices();
+    }
+
+    nextPage() {
+        if (this.currentPage() < this.totalPages() - 1) {
+            this.currentPage.update(p => p + 1);
+            this.loadDevices();
+        }
+    }
+
+    prevPage() {
+        if (this.currentPage() > 0) {
+            this.currentPage.update(p => p - 1);
+            this.loadDevices();
+        }
     }
 
     onView(id: string) {

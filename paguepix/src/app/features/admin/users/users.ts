@@ -24,17 +24,15 @@ export class UserManagement implements OnInit {
     selectedPartnerId = signal<string | number>('all');
     selectedUser = signal<UserDetailResponse | null>(null);
     loading = signal(true);
+    currentPage = signal(0);
+    totalPages = signal(1);
 
     // Modal de Exclusão
     showDeleteModal = signal(false);
     isDeleting = signal(false);
     userToDelete = signal<UserSummaryResponse | null>(null);
 
-    filteredUsers = computed(() => {
-        const pId = this.selectedPartnerId();
-        if (pId === 'all') return this.users();
-        return this.users().filter(u => u.partner?.id?.toString() === pId.toString());
-    });
+    filteredUsers = computed(() => this.users());
 
     hasData = computed(() => this.filteredUsers().length > 0);
 
@@ -55,9 +53,11 @@ export class UserManagement implements OnInit {
 
     loadUsers() {
         this.loading.set(true);
-        this.userService.getAll().subscribe({
+        const partnerId = this.selectedPartnerId() === 'all' ? undefined : +this.selectedPartnerId();
+        this.userService.getAll(partnerId, this.currentPage(), 10).subscribe({
             next: (response) => {
                 this.users.set(response.content || response);
+                this.totalPages.set(response.totalPages || 1);
                 this.loading.set(false);
             },
             error: (err) => {
@@ -65,6 +65,25 @@ export class UserManagement implements OnInit {
                 this.loading.set(false);
             }
         });
+    }
+
+    onPartnerChange() {
+        this.currentPage.set(0);
+        this.loadUsers();
+    }
+
+    nextPage() {
+        if (this.currentPage() < this.totalPages() - 1) {
+            this.currentPage.update(p => p + 1);
+            this.loadUsers();
+        }
+    }
+
+    prevPage() {
+        if (this.currentPage() > 0) {
+            this.currentPage.update(p => p - 1);
+            this.loadUsers();
+        }
     }
 
     onView(user: UserSummaryResponse) {

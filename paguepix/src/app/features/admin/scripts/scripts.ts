@@ -21,6 +21,8 @@ export class ScriptsManagement implements OnInit {
     private scriptService = inject(ScriptService);
     scripts = signal<ScriptSummaryResponse[]>([]);
     selectedScript = signal<ScriptDetailResponse | null>(null);
+    currentPage = signal(0);
+    totalPages = signal(1);
     hasData = computed(() => this.scripts().length > 0);
     loading = signal(true);
 
@@ -37,9 +39,10 @@ export class ScriptsManagement implements OnInit {
 
     loadScripts() {
         this.loading.set(true);
-        this.scriptService.findAll().subscribe({
+        this.scriptService.findAll(this.currentPage(), 10).subscribe({
             next: (response) => {
                 this.scripts.set(response.content || response);
+                this.totalPages.set(response.totalPages || 1);
                 this.loading.set(false);
             },
             error: (err) => {
@@ -47,6 +50,20 @@ export class ScriptsManagement implements OnInit {
                 this.loading.set(false);
             }
         });
+    }
+
+    nextPage() {
+        if (this.currentPage() < this.totalPages() - 1) {
+            this.currentPage.update(p => p + 1);
+            this.loadScripts();
+        }
+    }
+
+    prevPage() {
+        if (this.currentPage() > 0) {
+            this.currentPage.update(p => p - 1);
+            this.loadScripts();
+        }
     }
 
     onView(script: ScriptSummaryResponse) {

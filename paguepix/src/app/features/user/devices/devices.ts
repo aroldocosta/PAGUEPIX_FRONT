@@ -26,6 +26,8 @@ export class UserDeviceManagement implements OnInit {
     devices = signal<any[]>([]);
     hasData = computed(() => this.devices().length > 0);
     loading = signal(true);
+    currentPage = signal(0);
+    totalPages = signal(1);
     partnerName = computed(() => this.authService.partnerName());
 
     ngOnInit() {
@@ -40,9 +42,10 @@ export class UserDeviceManagement implements OnInit {
         }
 
         this.loading.set(true);
-        this.deviceService.findAll(+partnerId).subscribe({
+        this.deviceService.findAll(+partnerId, this.currentPage(), 10).subscribe({
             next: (response) => {
                 this.devices.set(response.content || response);
+                this.totalPages.set(response.totalPages || 1);
                 this.loading.set(false);
             },
             error: (err) => {
@@ -50,6 +53,20 @@ export class UserDeviceManagement implements OnInit {
                 this.loading.set(false);
             }
         });
+    }
+
+    nextPage() {
+        if (this.currentPage() < this.totalPages() - 1) {
+            this.currentPage.update(p => p + 1);
+            this.loadDevices();
+        }
+    }
+
+    prevPage() {
+        if (this.currentPage() > 0) {
+            this.currentPage.update(p => p - 1);
+            this.loadDevices();
+        }
     }
 
     onView(id: string) {

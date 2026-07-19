@@ -20,6 +20,8 @@ export class LeadsManagement implements OnInit {
 
     leads = signal<LeadSummary[]>([]);
     selectedLead = signal<LeadDetail | null>(null);
+    currentPage = signal(0);
+    totalPages = signal(1);
     hasData = computed(() => this.leads().length > 0);
     loading = signal(true);
 
@@ -34,9 +36,10 @@ export class LeadsManagement implements OnInit {
 
     loadLeads() {
         this.loading.set(true);
-        this.leadService.findAll().subscribe({
+        this.leadService.findAll(this.currentPage(), 10).subscribe({
             next: (response: any) => {
                 this.leads.set(response.content || response);
+                this.totalPages.set(response.totalPages || 1);
                 this.loading.set(false);
             },
             error: (err) => {
@@ -44,6 +47,20 @@ export class LeadsManagement implements OnInit {
                 this.loading.set(false);
             }
         });
+    }
+
+    nextPage() {
+        if (this.currentPage() < this.totalPages() - 1) {
+            this.currentPage.update(p => p + 1);
+            this.loadLeads();
+        }
+    }
+
+    prevPage() {
+        if (this.currentPage() > 0) {
+            this.currentPage.update(p => p - 1);
+            this.loadLeads();
+        }
     }
 
     onView(id: string | number) {

@@ -25,17 +25,15 @@ export class ProductManagement implements OnInit {
     partners = signal<Partner[]>([]);
     selectedPartnerId = signal<string | number>('all');
     selectedProduct = signal<ProductDetailResponse | null>(null);
+    currentPage = signal(0);
+    totalPages = signal(1);
 
     // Modal de Exclusão
     showDeleteModal = signal(false);
     isDeleting = signal(false);
     productToDelete = signal<ProductSummaryResponse | null>(null);
 
-    filteredProducts = computed(() => {
-        const pId = this.selectedPartnerId();
-        if (pId === 'all') return this.products();
-        return this.products().filter(p => p.partner?.id?.toString() === pId.toString());
-    });
+    filteredProducts = computed(() => this.products());
 
     hasData = computed(() => this.filteredProducts().length > 0);
     loading = signal(true);
@@ -54,11 +52,12 @@ export class ProductManagement implements OnInit {
 
     loadProducts() {
         this.loading.set(true);
-        this.productService.findAll().subscribe({
+        const partnerId = this.selectedPartnerId() === 'all' ? undefined : +this.selectedPartnerId();
+        this.productService.findAll(partnerId, this.currentPage(), 10).subscribe({
             next: (response) => {
-                // Backend might return a Page object or a direct List
                 const content = (response as any).content || response;
                 this.products.set(content);
+                this.totalPages.set((response as any).totalPages || 1);
                 this.loading.set(false);
             },
             error: (err) => {
@@ -66,6 +65,25 @@ export class ProductManagement implements OnInit {
                 this.loading.set(false);
             }
         });
+    }
+
+    onPartnerChange() {
+        this.currentPage.set(0);
+        this.loadProducts();
+    }
+
+    nextPage() {
+        if (this.currentPage() < this.totalPages() - 1) {
+            this.currentPage.update(p => p + 1);
+            this.loadProducts();
+        }
+    }
+
+    prevPage() {
+        if (this.currentPage() > 0) {
+            this.currentPage.update(p => p - 1);
+            this.loadProducts();
+        }
     }
 
     onView(product: ProductSummaryResponse) {

@@ -6,7 +6,7 @@
 
     <div headerActions class="flex items-center gap-2">
         <label for="partnerFilter" class="text-xs font-bold text-slate-400 uppercase tracking-widest hidden lg:block">Filtrar:</label>
-        <select id="partnerFilter" [(ngModel)]="selectedPartnerId" 
+        <select id="partnerFilter" [(ngModel)]="selectedPartnerId" (change)="onPartnerChange()"
             class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none">
             <option value="all">Todos os Parceiros</option>
             <option *ngFor="let p of partners()" [value]="p.id">{{ p.name }}</option>
@@ -14,6 +14,28 @@
     </div>
 
     <ng-template #tableContent>
+        <!-- Paginação -->
+        <div *ngIf="totalPages() > 1"
+            class="flex items-center gap-4 mb-6 px-8 py-4 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
+            <div
+                class="ml-auto flex items-center gap-4 text-sm bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-slate-700 rounded-xl px-2 py-1">
+                <span class="font-medium text-slate-500 dark:text-slate-400 pl-2 pr-1">
+                    Página {{ currentPage() + 1 }} de {{ totalPages() }}
+                </span>
+                <div class="flex items-center gap-1.5 p-0.5">
+                    <button (click)="prevPage()" [disabled]="currentPage() === 0"
+                        class="p-1.5 flex items-center justify-center rounded-md text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+                        <span class="material-icons-outlined text-sm">chevron_left</span>
+                    </button>
+                    <div class="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
+                    <button (click)="nextPage()" [disabled]="currentPage() >= totalPages() - 1"
+                        class="p-1.5 flex items-center justify-center rounded-md text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+                        <span class="material-icons-outlined text-sm">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <app-device-list [devices]="filteredDevices()" mode="admin" [loading]="loading()" (view)="onView($event)"
             (edit)="onEdit($event)" (delete)="onDelete($event)">
         </app-device-list>
