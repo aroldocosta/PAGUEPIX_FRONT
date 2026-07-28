@@ -57,7 +57,13 @@ export class DeviceEdit implements OnInit {
     deviceProducts = signal<ProductDetailResponse[]>([]);
     productLoading = signal(false);
 
+    deviceQrCode = signal<string | null>(null);
+
     qrUrl = computed(() => {
+        const staticQr = this.deviceQrCode();
+        if (staticQr) {
+            return staticQr;
+        }
         const currentId = this.id();
         return currentId ? `${environment.apiUrl}/devices/qr/${currentId}` : '';
     });
@@ -135,6 +141,7 @@ export class DeviceEdit implements OnInit {
                 this.externalStoreId.set(device.externalStoreId || '');
                 this.externalPosId.set(device.externalPosId || '');
                 this.deviceProducts.set(device.productList || []);
+                this.deviceQrCode.set(device.qrCode || null);
 
                 if (device.partner?.id) {
                     this.loadProducts(device.partner.id);
