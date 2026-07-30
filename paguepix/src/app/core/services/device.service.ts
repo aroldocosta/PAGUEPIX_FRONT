@@ -66,4 +66,19 @@ export class DeviceService {
     removeProductFromDevice(deviceId: string, productId: string): Observable<any> {
         return this.http.delete<any>(`${this.apiUrl}/${deviceId}/products/${productId}`);
     }
+
+    getDeviceQrCodes(id: string): Observable<DeviceProductQrResponse[]> {
+        return this.http.get<DeviceProductQrResponse[]>(`${this.apiUrl}/${id}/qrcodes`);
+    }
 }
+
+export interface DeviceProductQrResponse {
+    deviceId: number;
+    productId: number;
+    productName: string;
+    price: number;
+    durationInSeconds: number;
+    qrCode: string;
+    externalPosId: string;
+}
+

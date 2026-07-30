@@ -5,6 +5,8 @@ import { ProductService, ProductSummaryResponse, ProductDetailResponse } from '.
 import { AuthService } from '../../../../core/services/auth.service';
 import { DeleteModalComponent } from '../../delete-modal/delete-modal.component';
 
+import { DeviceService, DeviceProductQrResponse } from '../../../../core/services/device.service';
+
 @Component({
     selector: 'app-device-product-manager',
     standalone: true,
@@ -27,8 +29,10 @@ import { DeleteModalComponent } from '../../delete-modal/delete-modal.component'
 })
 export class DeviceProductManagerComponent implements OnInit {
     productService = inject(ProductService);
+    deviceService = inject(DeviceService);
     authService = inject(AuthService);
     deliveryMethods = signal<string[]>([]);
+    deviceId = input<string>('');
     availableProducts = input.required<ProductSummaryResponse[]>();
     deviceProducts = input.required<ProductDetailResponse[]>();
     partners = input<any[]>([]);
@@ -192,6 +196,65 @@ export class DeviceProductManagerComponent implements OnInit {
 
 
 
+    // QR Code Modal State
+    showQrModal = signal<boolean>(false);
+    loadingQr = signal<boolean>(false);
+    selectedProductQr = signal<DeviceProductQrResponse | null>(null);
+    copiedState = signal<boolean>(false);
+
+    onOpenQrModal(product: ProductDetailResponse) {
+        const dId = this.deviceId();
+        if (!dId) return;
+
+        this.loadingQr.set(true);
+        this.selectedProductQr.set(null);
+        this.copiedState.set(false);
+        this.showQrModal.set(true);
+
+        this.deviceService.getDeviceQrCodes(dId).subscribe({
+            next: (qrs) => {
+                const found = qrs.find(q => Number(q.productId) === Number(product.id));
+                if (found) {
+                    this.selectedProductQr.set(found);
+                } else {
+                    this.selectedProductQr.set({
+                        deviceId: Number(dId),
+                        productId: Number(product.id),
+                        productName: product.name,
+                        price: product.price,
+                        durationInSeconds: product.duration,
+                        qrCode: '',
+                        externalPosId: ''
+                    });
+                }
+                this.loadingQr.set(false);
+            },
+            error: (err) => {
+                console.error('Error fetching device QR codes', err);
+                this.loadingQr.set(false);
+            }
+        });
+    }
+
+    onCloseQrModal() {
+        this.showQrModal.set(false);
+        this.selectedProductQr.set(null);
+        this.copiedState.set(false);
+    }
+
+    copyPixCode(code: string) {
+        if (!code) return;
+        navigator.clipboard.writeText(code).then(() => {
+            this.copiedState.set(true);
+            setTimeout(() => this.copiedState.set(false), 2500);
+        });
+    }
+
+    getQrCodeImageUrl(code: string): string {
+        if (!code) return '';
+        return `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(code)}`;
+    }
+
     formatPrice(price: number): string {
         return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
     }
@@ -205,3 +268,4 @@ export class DeviceProductManagerComponent implements OnInit {
         }
     }
 }
+

@@ -66,6 +66,11 @@
 
                 <!-- Ações do Produto -->
                 <div class="flex items-center gap-2">
+                    <button *ngIf="deviceId()" (click)="onOpenQrModal(p)" [disabled]="loading()" title="Ver QR Code Pix do Produto"
+                        class="w-10 h-10 rounded-xl text-emerald-600 dark:text-emerald-400 bg-emerald-50/60 dark:bg-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 transition-all flex items-center justify-center active:scale-95 border border-emerald-100 dark:border-emerald-500/20">
+                        <span class="material-icons-outlined text-xl">qr_code_2</span>
+                    </button>
+
                     <button (click)="onEdit(p)" [disabled]="loading()"
                         class="w-10 h-10 rounded-xl text-slate-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-all flex items-center justify-center active:scale-95">
                         <span class="material-symbols-outlined text-lg">edit_square</span>
@@ -319,6 +324,91 @@
                     <button (click)="saveEdit()"
                         class="flex-1 px-8 h-[54px] bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 rounded-2xl font-bold text-sm uppercase tracking-widest transition-all shadow-sm active:scale-95">
                         Salvar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de QR Code do Produto -->
+    <div *ngIf="showQrModal()"
+        class="fixed inset-0 z-[70] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+        <div
+            class="bg-white dark:bg-slate-900 w-full max-w-md rounded-[32px] shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-300">
+            <div class="p-8">
+                <!-- Cabeçalho -->
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-100 dark:border-emerald-500/20">
+                            <span class="material-icons-outlined text-2xl">qr_code_2</span>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-black text-slate-900 dark:text-white tracking-tight">QR Code Pix</h3>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Produto / Caixa POS</p>
+                        </div>
+                    </div>
+                    <button (click)="onCloseQrModal()"
+                        class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 flex items-center justify-center transition-all">
+                        <span class="material-icons-outlined text-lg">close</span>
+                    </button>
+                </div>
+
+                <!-- Conteúdo com Carregamento -->
+                <div *ngIf="loadingQr()" class="p-12 text-center space-y-4">
+                    <div class="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Gerando / buscando QR Code...</p>
+                </div>
+
+                <div *ngIf="!loadingQr() && selectedProductQr()" class="space-y-6">
+                    <!-- Card de Detalhes do Produto -->
+                    <div class="p-4 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                        <div>
+                            <h4 class="font-black text-slate-900 dark:text-white text-sm">{{ selectedProductQr()?.productName }}</h4>
+                            <span *ngIf="selectedProductQr()?.externalPosId" class="text-[10px] font-bold text-indigo-500 uppercase tracking-wider block mt-0.5">
+                                POS: {{ selectedProductQr()?.externalPosId }}
+                            </span>
+                        </div>
+                        <span class="text-base font-black text-emerald-600 dark:text-emerald-400">
+                            {{ formatPrice(selectedProductQr()?.price || 0) }}
+                        </span>
+                    </div>
+
+                    <!-- Exibição do QR Code -->
+                    <div class="flex flex-col items-center justify-center p-6 bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-inner">
+                        <ng-container *ngIf="selectedProductQr()?.qrCode">
+                            <img [src]="getQrCodeImageUrl(selectedProductQr()!.qrCode)"
+                                alt="QR Code Pix"
+                                class="w-56 h-56 object-contain rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm" />
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-3">Escaneie para pagar via Pix</p>
+                        </ng-container>
+
+                        <ng-container *ngIf="!selectedProductQr()?.qrCode">
+                            <div class="py-8 text-center space-y-2">
+                                <span class="material-icons-outlined text-4xl text-slate-300 dark:text-slate-600">qr_code_scanner</span>
+                                <p class="text-xs font-bold text-slate-500">Nenhum QR Code configurado para este produto.</p>
+                            </div>
+                        </ng-container>
+                    </div>
+
+                    <!-- Pix Copia e Cola -->
+                    <div *ngIf="selectedProductQr()?.qrCode" class="space-y-2">
+                        <label class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Pix Copia e Cola</label>
+                        <div class="flex items-center gap-2">
+                            <input type="text" readonly [value]="selectedProductQr()?.qrCode"
+                                class="w-full pl-4 pr-4 h-[46px] bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-mono text-slate-700 dark:text-slate-300 outline-none select-all" />
+                            <button (click)="copyPixCode(selectedProductQr()!.qrCode)"
+                                class="px-5 h-[46px] rounded-xl font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-sm shrink-0"
+                                [ngClass]="copiedState() ? 'bg-emerald-500 text-white' : 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-500/20 hover:bg-emerald-100'">
+                                <span class="material-icons-outlined text-base">{{ copiedState() ? 'check' : 'content_copy' }}</span>
+                                {{ copiedState() ? 'Copiado!' : 'Copiar' }}
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Botão Fechar -->
+                    <button (click)="onCloseQrModal()"
+                        class="w-full h-[48px] bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-2xl font-bold text-xs uppercase tracking-widest transition-all">
+                        Fechar
                     </button>
                 </div>
             </div>
