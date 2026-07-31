@@ -73,8 +73,8 @@ export class DeviceService {
 }
 
 export interface DeviceProductQrResponse {
-    deviceId: number;
-    productId: number;
+    deviceId: string;
+    productId: string;
     productName: string;
     price: number;
     durationInSeconds: number;

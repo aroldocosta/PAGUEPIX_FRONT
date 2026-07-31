@@ -213,13 +213,13 @@ export class DeviceProductManagerComponent implements OnInit {
 
         this.deviceService.getDeviceQrCodes(dId).subscribe({
             next: (qrs) => {
-                const found = qrs.find(q => Number(q.productId) === Number(product.id));
+                const found = qrs.find(q => String(q.productId) === String(product.id));
                 if (found) {
                     this.selectedProductQr.set(found);
                 } else {
                     this.selectedProductQr.set({
-                        deviceId: Number(dId),
-                        productId: Number(product.id),
+                        deviceId: String(dId),
+                        productId: String(product.id),
                         productName: product.name,
                         price: product.price,
                         durationInSeconds: product.duration,
