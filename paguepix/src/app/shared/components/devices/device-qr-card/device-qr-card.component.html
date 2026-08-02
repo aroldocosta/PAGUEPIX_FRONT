@@ -17,12 +17,20 @@
                 </div>
             </div>
 
-            <!-- Print Button in Header -->
-            <button (click)="printQr()"
-                class="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-900 dark:text-white transition-all group active:scale-95">
-                <span class="material-icons-outlined text-xl">print</span>
-                <span class="font-black text-sm uppercase tracking-wide">Imprimir</span>
-            </button>
+            <!-- Print Actions in Header -->
+            <div class="flex items-center gap-2">
+                <button *ngIf="paymentWorkflowMode === 'DECENTRALIZED_IN_STORE_QR'" (click)="onOpenMatrix()"
+                    class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 transition-all group active:scale-95"
+                    title="Imprimir Matriz de QR Codes dos Produtos (A4)">
+                    <span class="material-icons-outlined text-xl">qr_code_2</span>
+                    <span class="font-black text-sm uppercase tracking-wide">Matriz A4</span>
+                </button>
+                <button (click)="printQr()"
+                    class="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-900 dark:text-white transition-all group active:scale-95">
+                    <span class="material-icons-outlined text-xl">print</span>
+                    <span class="font-black text-sm uppercase tracking-wide">Imprimir</span>
+                </button>
+            </div>
         </div>
 
         <p class="text-[13px] text-slate-400 dark:text-slate-500 mb-8 leading-relaxed font-semibold px-1">
@@ -84,3 +92,7 @@
     </div>
 
 </div>
+
+<app-qr-matrix-modal *ngIf="showQrMatrixModal()" [deviceId]="id"
+    [partnerName]="partnerName || name" [deviceName]="name" (close)="onCloseMatrix()">
+</app-qr-matrix-modal>

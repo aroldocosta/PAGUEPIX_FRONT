@@ -49,6 +49,7 @@ export class UserDeviceView implements OnInit {
     });
     productLoading = signal(false);
     partnerName = computed(() => this.authService.partnerName());
+    paymentWorkflowMode = computed(() => this.authService.paymentWorkflowMode());
 
     deviceQrCode = signal<string | null>(null);
 

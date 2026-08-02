@@ -29,6 +29,8 @@ export class DeviceDetailLayoutComponent {
     channel = input<number>(1);
     externalStoreId = input<string>('');
     externalPosId = input<string>('');
+    partnerName = input<string>('');
+    paymentWorkflowMode = input<string>('');
 
     // Behaviour inputs
     mode = input<'view' | 'edit'>('view');

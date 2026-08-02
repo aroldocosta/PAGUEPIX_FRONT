@@ -1,11 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgxKjuaComponent } from 'ngx-kjua';
+import { QrMatrixModalComponent } from '../../qr-matrix-modal/qr-matrix-modal.component';
 
 @Component({
     selector: 'app-device-qr-card',
     standalone: true,
-    imports: [CommonModule, NgxKjuaComponent],
+    imports: [CommonModule, NgxKjuaComponent, QrMatrixModalComponent],
     templateUrl: './device-qr-card.component.html',
     styles: [`
         :host { display: block; }
@@ -17,11 +18,22 @@ export class DeviceQrCardComponent {
     @Input({ required: true }) model!: string;
     @Input({ required: true }) id!: string;
     @Input() showTip: boolean = true;
+    @Input() partnerName: string = '';
+    @Input() paymentWorkflowMode: string = '';
 
     showTipModal = false;
+    showQrMatrixModal = signal(false);
 
     toggleTipModal() {
         this.showTipModal = !this.showTipModal;
+    }
+
+    onOpenMatrix() {
+        this.showQrMatrixModal.set(true);
+    }
+
+    onCloseMatrix() {
+        this.showQrMatrixModal.set(false);
     }
 
     printQr() {
