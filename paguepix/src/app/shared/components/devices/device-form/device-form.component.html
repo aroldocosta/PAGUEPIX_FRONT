@@ -114,29 +114,35 @@
             <!-- ID da Loja Física (externalStoreId) - ADMIN APENAS -->
             <div class="space-y-2" *ngIf="isAdmin()">
                 <label for="externalStoreId" class="flex items-center gap-2 text-sm font-bold text-gray-700 dark:text-slate-300">
-                    ID da Loja (Mercado Pago)
+                    Nome da Loja (Mercado Pago)
                     <span *ngIf="mode === 'view'" class="material-icons-outlined text-xs text-slate-400">lock</span>
                 </label>
                 <div class="relative group">
                     <span
                         class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">storefront</span>
                     <input id="externalStoreId" name="externalStoreId" type="text" [(ngModel)]="externalStoreId" [readonly]="mode === 'view'"
-                        [class]="getFieldClasses()" placeholder="Ex: STORE12345">
+                        [class]="getFieldClasses()" placeholder="Ex: Loja Centro">
                 </div>
+                <p class="text-[11px] text-slate-400 font-medium px-1">
+                    Nome amigável da loja. O identificador único técnico será gerado com o ID do parceiro.
+                </p>
             </div>
 
             <!-- ID do POS/Caixa (externalPosId) - ADMIN APENAS -->
             <div class="space-y-2" *ngIf="isAdmin()">
                 <label for="externalPosId" class="flex items-center gap-2 text-sm font-bold text-gray-700 dark:text-slate-300">
-                    ID do POS / Caixa (Mercado Pago)
+                    Nome do POS / Caixa (Mercado Pago)
                     <span *ngIf="mode === 'view'" class="material-icons-outlined text-xs text-slate-400">lock</span>
                 </label>
                 <div class="relative group">
                     <span
                         class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">point_of_sale</span>
                     <input id="externalPosId" name="externalPosId" type="text" [(ngModel)]="externalPosId" [readonly]="mode === 'view'"
-                        [class]="getFieldClasses()" placeholder="Ex: POS12345">
+                        [class]="getFieldClasses()" placeholder="Ex: Caixa 01">
                 </div>
+                <p class="text-[11px] text-slate-400 font-medium px-1">
+                    Nome amigável do caixa. O identificador único técnico será gerado com o ID do dispositivo.
+                </p>
             </div>
 
         </div>
