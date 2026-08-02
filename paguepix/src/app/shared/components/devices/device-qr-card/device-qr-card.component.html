@@ -20,12 +20,12 @@
             <!-- Print Actions in Header -->
             <div class="flex items-center gap-2">
                 <button *ngIf="paymentWorkflowMode === 'DECENTRALIZED_IN_STORE_QR'" (click)="onOpenMatrix()"
-                    class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 transition-all group active:scale-95"
+                    class="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition-all group active:scale-95 shadow-md shadow-emerald-500/20"
                     title="Imprimir Matriz de QR Codes dos Produtos (A4)">
                     <span class="material-icons-outlined text-xl">qr_code_2</span>
                     <span class="font-black text-sm uppercase tracking-wide">Matriz A4</span>
                 </button>
-                <button (click)="printQr()"
+                <button *ngIf="paymentWorkflowMode !== 'DECENTRALIZED_IN_STORE_QR'" (click)="printQr()"
                     class="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-900 dark:text-white transition-all group active:scale-95">
                     <span class="material-icons-outlined text-xl">print</span>
                     <span class="font-black text-sm uppercase tracking-wide">Imprimir</span>
@@ -34,11 +34,46 @@
         </div>
 
         <p class="text-[13px] text-slate-400 dark:text-slate-500 mb-8 leading-relaxed font-semibold px-1">
-            Aponte para levar o cliente direto à página de vendas deste terminal.
+            <ng-container *ngIf="paymentWorkflowMode === 'DECENTRALIZED_IN_STORE_QR'">
+                Matriz de QR Codes dos produtos vinculados a este terminal.
+            </ng-container>
+            <ng-container *ngIf="paymentWorkflowMode !== 'DECENTRALIZED_IN_STORE_QR'">
+                Aponte para levar o cliente direto à página de vendas deste terminal.
+            </ng-container>
         </p>
 
-        <!-- QR Code Display Box -->
-        <div
+        <!-- QR Code Display Box for Static Mode (Matrix Illustrative Icon) -->
+        <div *ngIf="paymentWorkflowMode === 'DECENTRALIZED_IN_STORE_QR'"
+            (click)="onOpenMatrix()"
+            class="w-full aspect-square bg-[#f8fafc] dark:bg-slate-800/30 rounded-[48px] border border-slate-100/50 dark:border-slate-800/50 flex flex-col items-center justify-center p-6 mb-6 cursor-pointer hover:border-emerald-300 dark:hover:border-emerald-700 transition-all group">
+            
+            <!-- 2x2 Matrix Graphic (Identic to user reference image) -->
+            <div class="grid grid-cols-2 gap-3 p-3 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm group-hover:scale-105 transition-transform">
+                <div class="p-2 border-2 border-slate-800 dark:border-slate-200 rounded-2xl bg-white dark:bg-slate-800 flex items-center justify-center">
+                    <ngx-kjua [text]="'https://paguepix.com/sample1'" [render]="'svg'" [size]="64" [back]="'transparent'"></ngx-kjua>
+                </div>
+                <div class="p-2 border-2 border-slate-800 dark:border-slate-200 rounded-2xl bg-white dark:bg-slate-800 flex items-center justify-center">
+                    <ngx-kjua [text]="'https://paguepix.com/sample2'" [render]="'svg'" [size]="64" [back]="'transparent'"></ngx-kjua>
+                </div>
+                <div class="p-2 border-2 border-slate-800 dark:border-slate-200 rounded-2xl bg-white dark:bg-slate-800 flex items-center justify-center">
+                    <ngx-kjua [text]="'https://paguepix.com/sample3'" [render]="'svg'" [size]="64" [back]="'transparent'"></ngx-kjua>
+                </div>
+                <div class="p-2 border-2 border-slate-800 dark:border-slate-200 rounded-2xl bg-white dark:bg-slate-800 flex items-center justify-center">
+                    <ngx-kjua [text]="'https://paguepix.com/sample4'" [render]="'svg'" [size]="64" [back]="'transparent'"></ngx-kjua>
+                </div>
+            </div>
+
+            <!-- Explanatory Label -->
+            <div class="w-full text-center mt-4 px-2">
+                <p class="text-[12px] font-bold text-emerald-700 dark:text-emerald-400 flex items-center justify-center gap-1">
+                    <span class="material-icons-outlined text-sm">print</span>
+                    <span>Clique para Gerar Matriz A4</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- QR Code Display Box for Single Dynamic Mode -->
+        <div *ngIf="paymentWorkflowMode !== 'DECENTRALIZED_IN_STORE_QR'"
             class="w-full aspect-square bg-[#f8fafc] dark:bg-slate-800/30 rounded-[48px] border border-slate-100/50 dark:border-slate-800/50 flex flex-col items-center justify-center p-8 mb-6">
             <div class="flex-1 flex items-center justify-center w-full">
                 <ngx-kjua [text]="qrUrl" [render]="'svg'" [size]="240" [back]="'transparent'" [rounded]="25"></ngx-kjua>
