@@ -1,6 +1,6 @@
 import { Component, input, output, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DeviceService, DeviceProductQrResponse } from '../../../../core/services/device.service';
+import { DeviceService, DeviceProductQrResponse } from '../../../core/services/device.service';
 
 @Component({
     selector: 'app-qr-matrix-modal',
@@ -75,11 +75,11 @@ export class QrMatrixModalComponent implements OnInit {
 
         this.loading.set(true);
         this.deviceService.getDeviceQrCodes(id).subscribe({
-            next: (data) => {
+            next: (data: DeviceProductQrResponse[]) => {
                 this.productQrs.set(data || []);
                 this.loading.set(false);
             },
-            error: (err) => {
+            error: (err: any) => {
                 console.error('Erro ao carregar QR codes para impressão da matriz', err);
                 this.loading.set(false);
             }

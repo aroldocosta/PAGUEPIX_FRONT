@@ -9,6 +9,7 @@ export interface PartnerSummary {
     gateway?: any;
     pixKey?: string;
     commissionRate?: number;
+    paymentWorkflowMode?: 'CENTRALIZED_WEB_CHECKOUT' | 'DECENTRALIZED_IN_STORE_QR';
 }
 
 export interface PartnerDetail {

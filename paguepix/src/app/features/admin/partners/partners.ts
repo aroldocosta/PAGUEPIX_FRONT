@@ -1,5 +1,8 @@
 import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ManagementLayoutComponent } from '../../../shared/components/management-layout/management-layout.component';
+import { PartnerDetailComponent } from '../../../shared/components/partners/partner-detail/partner-detail.component';
+import { DeleteModalComponent } from '../../../shared/components/delete-modal/delete-modal.component';
 import { QrMatrixModalComponent } from '../../../shared/components/qr-matrix-modal/qr-matrix-modal.component';
 import { DeviceService } from '../../../core/services/device.service';
 import { PartnerService } from '../../../core/services/partner.service';
