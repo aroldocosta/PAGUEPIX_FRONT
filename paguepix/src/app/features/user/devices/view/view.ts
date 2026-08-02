@@ -48,8 +48,12 @@ export class UserDeviceView implements OnInit {
         return this.allProductsRaw().filter(p => p.partner?.id === pid);
     });
     productLoading = signal(false);
-    partnerName = computed(() => this.authService.partnerName());
-    paymentWorkflowMode = computed(() => this.authService.paymentWorkflowMode());
+    partnerName = computed(() => this.partners()[0]?.name || this.authService.partnerName());
+    paymentWorkflowMode = computed(() => {
+        const pMode = this.partners()[0]?.paymentWorkflowMode;
+        if (pMode) return pMode;
+        return this.authService.paymentWorkflowMode();
+    });
 
     deviceQrCode = signal<string | null>(null);
 
