@@ -18,11 +18,18 @@
                 </div>
             </div>
 
-            <button (click)="onOpenAddModal()" [disabled]="loading()"
-                class="px-6 h-[44px] bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 rounded-2xl font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-sm active:scale-95">
-                <span class="material-icons-outlined text-lg">add</span>
-                Adicionar Produto
-            </button>
+            <div class="flex items-center gap-2">
+                <button (click)="onOpenCreateModal()" [disabled]="loading()"
+                    class="px-5 h-[44px] bg-emerald-50/60 dark:bg-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-500/20 rounded-2xl font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-95">
+                    <span class="material-icons-outlined text-lg">add_circle_outline</span>
+                    Novo Produto
+                </button>
+                <button (click)="onOpenAddModal()" [disabled]="loading()"
+                    class="px-5 h-[44px] bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 rounded-2xl font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-95">
+                    <span class="material-icons-outlined text-lg">add</span>
+                    Adicionar Produto
+                </button>
+            </div>
         </div>
 
         <div class="divide-y divide-slate-50 dark:divide-slate-800/50">
@@ -85,7 +92,7 @@
         </div>
     </div>
 
-    <!-- Modal de Adição de Produto -->
+    <!-- Modal de Seleção de Produto Existente -->
     <div *ngIf="showAddModal()"
         class="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
         <div
@@ -99,9 +106,7 @@
                     <div>
                         <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Adicionar
                             Produto</h3>
-                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Vincule um novo
-                            produto
-                            a este dispositivo</p>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Vincule um produto existente a este dispositivo</p>
                     </div>
                 </div>
 
@@ -124,9 +129,17 @@
                                 class="material-icons-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
                         </div>
                     </div>
+
+                    <div class="pt-2 text-center">
+                        <button type="button" (click)="onOpenCreateModal()"
+                            class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center justify-center gap-1 mx-auto">
+                            <span class="material-icons-outlined text-sm">add_circle_outline</span>
+                            Não encontrou? Clique aqui para cadastrar um novo produto
+                        </button>
+                    </div>
                 </div>
 
-                <div class="flex gap-4 mt-10">
+                <div class="flex gap-4 mt-8">
                     <button (click)="onCloseAddModal()"
                         class="flex-1 px-8 h-[54px] bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 rounded-2xl font-bold text-sm uppercase tracking-widest transition-all active:scale-95">
                         Cancelar
@@ -134,6 +147,135 @@
                     <button (click)="onConfirmAdd()" [disabled]="!selectedProductId() || loading()"
                         class="flex-1 px-8 h-[54px] bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 rounded-2xl font-bold text-sm uppercase tracking-widest transition-all shadow-sm active:scale-95 disabled:opacity-50">
                         Confirmar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Criação de Novo Produto pelo Logista -->
+    <div *ngIf="showCreateModal()"
+        class="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+        <div
+            class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[32px] shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-300">
+            <div class="p-8">
+                <!-- Cabeçalho -->
+                <div class="flex items-center gap-4 mb-8">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                        <span class="material-icons-outlined text-2xl">add_box</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                            Cadastrar Novo Produto</h3>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Crie um novo produto para o seu terminal</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Nome do Produto -->
+                    <div class="space-y-2">
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Nome
+                            do Produto</label>
+                        <div class="relative group">
+                            <span
+                                class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 transition-colors">sell</span>
+                            <input type="text" [(ngModel)]="createName" name="createName"
+                                class="w-full pl-12 pr-4 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-emerald-500"
+                                placeholder="Ex: 10 Minutos">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- Preço -->
+                        <div class="space-y-2">
+                            <label
+                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Preço
+                                (R$)</label>
+                            <div class="relative group">
+                                <input type="text" [value]="createPriceDisplay()" (input)="onCreatePriceInput($event)"
+                                    name="createPriceDisplay"
+                                    class="w-full pl-4 pr-4 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-emerald-500"
+                                    placeholder="R$ 5,00">
+                            </div>
+                        </div>
+
+                        <!-- Método de Entrega -->
+                        <div class="space-y-2">
+                            <label
+                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Método
+                                de Entrega</label>
+                            <div class="relative group">
+                                <span
+                                    class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 transition-colors">delivery_dining</span>
+                                <select [(ngModel)]="createDeliveryMethod" name="createDeliveryMethod"
+                                    class="w-full pl-12 pr-10 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-emerald-500 appearance-none cursor-pointer">
+                                    <option *ngFor="let method of deliveryMethods()" [value]="method">{{ method }}</option>
+                                </select>
+                                <span
+                                    class="material-icons-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Campos específicos para MQTT (Duração e Unidade) -->
+                    <div *ngIf="createDeliveryMethod() === 'MQTT_TIME' || createDeliveryMethod() === 'MQTT_PULSE'"
+                        class="flex gap-4">
+                        <!-- Duração -->
+                        <div class="space-y-2 flex-1">
+                            <label
+                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Duração</label>
+                            <div class="relative group">
+                                <span
+                                    class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 transition-colors">timer</span>
+                                <input type="number" [(ngModel)]="createDuration" min="1" max="1000" name="createDuration"
+                                    class="w-full pl-12 pr-4 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-emerald-500"
+                                    placeholder="10">
+                            </div>
+                        </div>
+
+                        <!-- Unidade -->
+                        <div class="space-y-2 flex-1">
+                            <label
+                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Unidade</label>
+                            <div class="relative group">
+                                <select [(ngModel)]="createDurationUnit" name="createDurationUnit"
+                                    class="w-full pl-4 pr-10 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-emerald-500 appearance-none cursor-pointer">
+                                    <option value="SECONDS">SEG</option>
+                                    <option value="MINUTES">MIN</option>
+                                    <option value="HOURS">HRS</option>
+                                </select>
+                                <span
+                                    class="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Subtítulo (Opcional) -->
+                    <div class="space-y-2">
+                        <label
+                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Subtítulo (Opcional)</label>
+                        <div class="relative group">
+                            <span
+                                class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 transition-colors">rectangle</span>
+                            <input type="text" [(ngModel)]="createSubtitle" name="createSubtitle"
+                                class="w-full pl-12 pr-4 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-emerald-500"
+                                placeholder="Ex: Valor Fixo">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rodapé com Botões -->
+                <div class="flex gap-4 mt-10">
+                    <button (click)="onCloseCreateModal()" [disabled]="creatingProduct()"
+                        class="flex-1 px-8 h-[54px] bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 rounded-2xl font-bold text-sm uppercase tracking-widest transition-all active:scale-95 shadow-sm">
+                        Cancelar
+                    </button>
+                    <button (click)="onConfirmCreate()" [disabled]="creatingProduct() || !createName() || createPrice() <= 0"
+                        class="flex-1 px-8 h-[54px] bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-bold text-sm uppercase tracking-widest transition-all shadow-md shadow-emerald-500/20 active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50">
+                        <span *ngIf="creatingProduct()" class="material-icons-outlined animate-spin text-sm">sync</span>
+                        {{ creatingProduct() ? 'Salvando...' : 'Salvar e Vincular' }}
                     </button>
                 </div>
             </div>

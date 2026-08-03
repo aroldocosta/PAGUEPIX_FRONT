@@ -54,11 +54,23 @@ export class DeviceProductManagerComponent implements OnInit {
 
     // Modal states
     showAddModal = signal<boolean>(false);
+    showCreateModal = signal<boolean>(false);
     showEditModal = signal<boolean>(false);
     showDeleteModal = signal<boolean>(false);
     
     editingProduct = signal<ProductDetailResponse | null>(null);
     productToDelete = signal<ProductDetailResponse | null>(null);
+    creatingProduct = signal<boolean>(false);
+
+    // Form fields for creation
+    createName = signal('');
+    createPrice = signal(0);
+    createPriceDisplay = signal('');
+    createDuration = signal(10);
+    createDurationUnit = signal<ProductDetailResponse['durationUnit']>('MINUTES');
+    createSubtitle = signal('');
+    createDescription = signal('');
+    createDeliveryMethod = signal('MQTT_TIME');
 
     // Form fields for editing
     editName = signal('');
@@ -98,6 +110,72 @@ export class DeviceProductManagerComponent implements OnInit {
 
     onCloseAddModal() {
         this.showAddModal.set(false);
+    }
+
+    onOpenCreateModal() {
+        this.createName.set('');
+        this.createPrice.set(0);
+        this.createPriceDisplay.set('');
+        this.createDuration.set(10);
+        this.createDurationUnit.set('MINUTES');
+        this.createSubtitle.set('');
+        this.createDescription.set('');
+        this.createDeliveryMethod.set('MQTT_TIME');
+        this.showCreateModal.set(true);
+        this.showAddModal.set(false);
+    }
+
+    onCloseCreateModal() {
+        this.showCreateModal.set(false);
+    }
+
+    onCreatePriceInput(event: Event) {
+        const input = event.target as HTMLInputElement;
+        let value = input.value.replace(/\D/g, '');
+        const numericValue = value ? parseInt(value, 10) / 100 : 0;
+        this.createPrice.set(numericValue);
+        this.createPriceDisplay.set(this.formatPrice(numericValue));
+    }
+
+    onConfirmCreate() {
+        if (!this.createName() || this.createPrice() <= 0) {
+            alert('Por favor, preencha o nome e o preço do produto.');
+            return;
+        }
+
+        const partnerId = this.authService.partnerId() || (this.partners().length > 0 ? this.partners()[0].id : null);
+        if (!partnerId) {
+            alert('Não foi possível identificar o parceiro associado.');
+            return;
+        }
+
+        this.creatingProduct.set(true);
+        const request = {
+            name: this.createName(),
+            price: this.createPrice(),
+            duration: this.createDuration(),
+            durationUnit: this.createDurationUnit(),
+            subtitle: this.createSubtitle(),
+            description: this.createDescription(),
+            deliveryMethod: this.createDeliveryMethod(),
+            active: true,
+            partnerId: partnerId
+        };
+
+        this.productService.create(request as any).subscribe({
+            next: (created) => {
+                this.creatingProduct.set(false);
+                this.showCreateModal.set(false);
+                if (created && created.id) {
+                    this.add.emit(String(created.id));
+                }
+            },
+            error: (err) => {
+                console.error('Error creating product', err);
+                this.creatingProduct.set(false);
+                alert('Erro ao criar o produto. Tente novamente.');
+            }
+        });
     }
 
     onConfirmAdd() {
