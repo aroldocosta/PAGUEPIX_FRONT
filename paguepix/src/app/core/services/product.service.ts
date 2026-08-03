@@ -69,6 +69,10 @@ export class ProductService {
         return this.http.get<ProductDetailResponse>(`${this.apiUrl}/${id}`);
     }
 
+    create(product: any): Observable<ProductDetailResponse> {
+        return this.http.post<ProductDetailResponse>(this.apiUrl, product);
+    }
+
     save(product: Product): Observable<ProductDetailResponse> {
         return this.http.post<ProductDetailResponse>(this.apiUrl, product);
     }
