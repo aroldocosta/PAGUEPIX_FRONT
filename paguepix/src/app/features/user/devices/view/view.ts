@@ -43,9 +43,9 @@ export class UserDeviceView implements OnInit {
     allProductsRaw = signal<ProductSummaryResponse[]>([]);
     deviceTypes = signal<string[]>([]);
     allProducts = computed(() => {
-        const pid = this.partnerId();
+        const pid = this.partnerId() || this.authService.partnerId();
         if (!pid) return [];
-        return this.allProductsRaw().filter(p => p.partner?.id === pid);
+        return this.allProductsRaw().filter(p => p.partner?.id?.toString() === pid.toString());
     });
     productLoading = signal(false);
     partnerName = computed(() => this.partners()[0]?.name || this.authService.partnerName());
@@ -71,13 +71,17 @@ export class UserDeviceView implements OnInit {
         if (idParam) {
             this.id.set(idParam);
             this.loadDevice(idParam);
-            this.loadProducts();
             this.loadDeviceTypes();
         }
     }
 
-    loadProducts() {
-        this.productService.findAll(0, 100).subscribe({
+    loadProducts(partnerId?: string | number) {
+        const pid = partnerId || this.partnerId() || this.authService.partnerId();
+        if (!pid) {
+            this.allProductsRaw.set([]);
+            return;
+        }
+        this.productService.findAll(pid, 0, 100).subscribe({
             next: (response) => {
                 const content = (response as any).content || response;
                 this.allProductsRaw.set(content);
@@ -113,6 +117,13 @@ export class UserDeviceView implements OnInit {
                 this.deviceProducts.set(device.productList || []);
                 this.channel.set(device.channel !== undefined && device.channel !== null ? device.channel : 1);
                 this.deviceQrCode.set((device as any).qrCode || null);
+
+                if (device.partner?.id) {
+                    this.loadProducts(device.partner.id);
+                } else if (this.authService.partnerId()) {
+                    this.loadProducts(this.authService.partnerId()!);
+                }
+
                 this.loading.set(false);
             },
             error: (err) => {
