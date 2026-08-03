@@ -11,6 +11,10 @@ import { DeviceService, DeviceProductQrResponse } from '../../../core/services/d
         :host { display: block; }
         
         @media print {
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
             body * {
                 visibility: hidden !important;
             }
@@ -31,13 +35,16 @@ import { DeviceService, DeviceProductQrResponse } from '../../../core/services/d
             }
             .a4-page {
                 width: 210mm !important;
-                height: 295mm !important;
+                max-width: 210mm !important;
+                height: 297mm !important;
+                max-height: 297mm !important;
                 page-break-after: always !important;
                 break-after: page !important;
                 box-sizing: border-box !important;
-                padding: 10mm !important;
+                padding: 8mm 10mm !important;
                 margin: 0 auto !important;
                 background: white !important;
+                overflow: hidden !important;
             }
         }
     `]
