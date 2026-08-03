@@ -61,9 +61,9 @@ export class QrMatrixModalComponent implements OnInit {
     loading = signal<boolean>(true);
     productQrs = signal<DeviceProductQrResponse[]>([]);
 
-    // Divide em fatias de até 6 produtos por página A4 (2 colunas x 3 linhas)
+    // Divide em fatias de até 6 produtos por página A4 (2 colunas x 3 linhas), ordenados por valor crescente
     pages = computed(() => {
-        const list = this.productQrs();
+        const list = [...this.productQrs()].sort((a, b) => (Number(a.price) || 0) - (Number(b.price) || 0));
         const chunkSize = 6;
         const result: DeviceProductQrResponse[][] = [];
         for (let i = 0; i < list.length; i += chunkSize) {
