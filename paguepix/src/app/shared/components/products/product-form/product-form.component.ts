@@ -23,6 +23,7 @@ export class ProductFormComponent implements OnInit {
     @Input() subtitle = '';
     @Input() description = '';
     @Input() deliveryMethod = 'MQTT_TIME';
+    @Input() freq: number = 100;
     @Input() mode: 'view' | 'edit' = 'view';
     @Input() loading = false;
     @Input() partners: any[] = [];
@@ -71,18 +72,25 @@ export class ProductFormComponent implements OnInit {
 
     onSave() {
         if (this.mode === 'view') return;
-        this.save.emit({
+        const payload: any = {
             id: this.id,
             name: this.name,
             duration: this.duration,
-            durationUnit: this.durationUnit,
+            durationUnit: this.durationUnit || 'SECONDS',
             price: this.price,
             active: this.active,
             subtitle: this.subtitle,
             description: this.description,
             deliveryMethod: this.deliveryMethod,
             partner: this.partnerId ? { id: this.partnerId.toString() } as any : undefined
-        });
+        };
+
+        if (this.deliveryMethod === 'MQTT_PULSE') {
+            payload.qtd = Number(this.duration) || 0;
+            payload.freq = Number(this.freq) || 100;
+        }
+
+        this.save.emit(payload);
     }
 
     onCancel() {

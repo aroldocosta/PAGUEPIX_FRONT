@@ -111,37 +111,43 @@
             </div>
         </div>
 
-        <!-- Duração (Conditional Row) -->
+        <!-- Duração / Quantidade (Conditional Row) -->
         <div *ngIf="deliveryMethod === 'MQTT_TIME' || deliveryMethod === 'MQTT_PULSE'"
             class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Duração -->
+            <!-- Duração ou Quantidade -->
             <div class="space-y-2">
                 <label class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">
-                    Duração
+                    {{ deliveryMethod === 'MQTT_PULSE' ? 'Quantidade (Pulsos)' : 'Duração' }}
                 </label>
                 <div class="relative group">
                     <span
-                        class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">timer</span>
+                        class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">
+                        {{ deliveryMethod === 'MQTT_PULSE' ? 'numbers' : 'timer' }}
+                    </span>
                     <input type="number" [(ngModel)]="duration" name="duration" required [disabled]="mode === 'view'"
-                        [class]="getFieldClasses()" placeholder="0">
+                        [class]="getFieldClasses()" [placeholder]="deliveryMethod === 'MQTT_PULSE' ? 'Ex: 10' : '0'">
                 </div>
             </div>
 
-            <!-- Unidade de Duração -->
+            <!-- Unidade de Duração ou Frequência -->
             <div class="space-y-2">
                 <label class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">
-                    Unidade
+                    {{ deliveryMethod === 'MQTT_PULSE' ? 'Pulsos/seg' : 'Unidade' }}
                 </label>
                 <div class="relative group">
                     <span
-                        class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">schedule</span>
-                    <select [(ngModel)]="durationUnit" name="durationUnit" required [disabled]="mode === 'view'"
-                        [class]="getFieldClasses(true)">
+                        class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">
+                        {{ deliveryMethod === 'MQTT_PULSE' ? 'tune' : 'schedule' }}
+                    </span>
+                    <select *ngIf="deliveryMethod !== 'MQTT_PULSE'" [(ngModel)]="durationUnit" name="durationUnit"
+                        required [disabled]="mode === 'view'" [class]="getFieldClasses(true)">
                         <option value="SECONDS">Segundos</option>
                         <option value="MINUTES">Minutos</option>
                         <option value="HOURS">Horas</option>
                     </select>
-                    <span *ngIf="mode === 'edit'"
+                    <input *ngIf="deliveryMethod === 'MQTT_PULSE'" type="number" [(ngModel)]="freq" name="freq" required
+                        [disabled]="mode === 'view'" [class]="getFieldClasses()" placeholder="100">
+                    <span *ngIf="mode === 'edit' && deliveryMethod !== 'MQTT_PULSE'"
                         class="material-icons-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
                 </div>
             </div>

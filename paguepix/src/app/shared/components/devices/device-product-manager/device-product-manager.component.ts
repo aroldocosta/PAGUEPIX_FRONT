@@ -68,6 +68,7 @@ export class DeviceProductManagerComponent implements OnInit {
     createPriceDisplay = signal('');
     createDuration = signal(10);
     createDurationUnit = signal<ProductDetailResponse['durationUnit']>('MINUTES');
+    createFreq = signal<number>(100);
     createSubtitle = signal('');
     createDescription = signal('');
     createDeliveryMethod = signal('MQTT_TIME');
@@ -77,8 +78,8 @@ export class DeviceProductManagerComponent implements OnInit {
     editPrice = signal(0);
     editPriceDisplay = signal('');
     editDuration = signal(0);
-
     editDurationUnit = signal<ProductDetailResponse['durationUnit']>('MINUTES');
+    editFreq = signal<number>(100);
     editSubtitle = signal('');
     editDescription = signal('');
     editDeliveryMethod = signal('MQTT_TIME');
@@ -150,7 +151,7 @@ export class DeviceProductManagerComponent implements OnInit {
         }
 
         this.creatingProduct.set(true);
-        const request = {
+        const request: any = {
             name: this.createName(),
             price: this.createPrice(),
             duration: this.createDuration(),
@@ -161,6 +162,11 @@ export class DeviceProductManagerComponent implements OnInit {
             active: true,
             partnerId: partnerId
         };
+
+        if (this.createDeliveryMethod() === 'MQTT_PULSE') {
+            request.qtd = Number(this.createDuration()) || 0;
+            request.freq = Number(this.createFreq()) || 100;
+        }
 
         this.productService.create(request as any).subscribe({
             next: (created) => {
@@ -212,7 +218,7 @@ export class DeviceProductManagerComponent implements OnInit {
         this.editDuration.set(product.duration);
 
         this.editDurationUnit.set(product.durationUnit);
-        this.editSubtitle.set(product.subtitle || '');
+        this.editFreq.set((product as any).freq || 100);
         this.editSubtitle.set(product.subtitle || '');
         this.editDescription.set(product.description || '');
         this.editDeliveryMethod.set(product.deliveryMethod || 'MQTT_TIME');
@@ -230,7 +236,7 @@ export class DeviceProductManagerComponent implements OnInit {
     saveEdit() {
         const current = this.editingProduct();
         if (current) {
-            const updatedProduct: ProductDetailResponse = {
+            const updatedProduct: any = {
                 ...current,
                 name: this.editName(),
                 price: this.editPrice(),
@@ -242,6 +248,11 @@ export class DeviceProductManagerComponent implements OnInit {
                 active: this.editActive(),
                 partner: this.editPartnerId() ? { id: this.editPartnerId() } as any : undefined
             };
+
+            if (this.editDeliveryMethod() === 'MQTT_PULSE') {
+                updatedProduct.qtd = Number(this.editDuration()) || 0;
+                updatedProduct.freq = Number(this.editFreq()) || 100;
+            }
 
             this.edit.emit(updatedProduct);
             this.showEditModal.set(false);
