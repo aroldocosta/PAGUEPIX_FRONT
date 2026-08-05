@@ -51,8 +51,14 @@ export class DeviceService {
         return this.http.post<any>(`${this.apiUrl}/${id}/release`, {});
     }
 
-    releaseManual(id: string, minutes: number, channel?: number): Observable<any> {
-        let params: any = { minutes: minutes.toString() };
+    releaseManual(id: string, minutes?: number, channel?: number, productId?: string): Observable<any> {
+        let params: any = {};
+        if (minutes !== undefined && minutes !== null) {
+            params.minutes = minutes.toString();
+        }
+        if (productId) {
+            params.productId = productId;
+        }
         if (channel !== undefined && channel !== null) {
             params.channel = channel.toString();
         }

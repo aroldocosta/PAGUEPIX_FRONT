@@ -44,12 +44,13 @@ export class DeviceFormComponent {
     @Input() externalPosId = '';
 
     @Output() save = new EventEmitter<any>();
-    @Output() releaseManual = new EventEmitter<{ id: string, minutes: number }>();
+    @Output() releaseManual = new EventEmitter<{ id: string, minutes?: number, productId?: string }>();
     @Output() cancel = new EventEmitter<void>();
 
     showReleaseModal = signal(false);
     selectedReleaseMinutes = signal(1);
-    releaseOptions = signal<{ label: string, value: number }[]>([]);
+    selectedProductId = signal<string | null>(null);
+    releaseOptions = signal<{ label: string, value: string | number, minutes?: number, productId?: string }[]>([]);
 
     onSave() {
         if (this.mode === 'view') return;
@@ -72,11 +73,13 @@ export class DeviceFormComponent {
     updateReleaseOptions() {
         if (!this.deviceProducts || this.deviceProducts.length === 0) {
             this.releaseOptions.set([
-                { label: '1 MIN', value: 1 },
-                { label: '3 MIN', value: 3 },
-                { label: '5 MIN', value: 5 },
-                { label: '10 MIN', value: 10 }
+                { label: '1 MIN', value: 1, minutes: 1 },
+                { label: '3 MIN', value: 3, minutes: 3 },
+                { label: '5 MIN', value: 5, minutes: 5 },
+                { label: '10 MIN', value: 10, minutes: 10 }
             ]);
+            this.selectedProductId.set(null);
+            this.selectedReleaseMinutes.set(1);
             return;
         }
 
@@ -91,21 +94,37 @@ export class DeviceFormComponent {
             const unitLabel = product.durationUnit === 'SECONDS' ? 'SEG' :
                               product.durationUnit === 'HOURS' ? 'HORAS' : 'MIN';
 
+            const priceLabel = product.price != null ? ` - ${this.formatPrice(product.price)}` : '';
+
             return {
-                label: `${product.name} (${product.duration} ${unitLabel})`,
-                value: minutes
+                label: `${product.name}${priceLabel} (${product.duration} ${unitLabel})`,
+                value: String(product.id),
+                minutes: minutes,
+                productId: String(product.id)
             };
         });
 
         this.releaseOptions.set(mapped);
+        if (mapped.length > 0) {
+            this.selectedProductId.set(String(mapped[0].value));
+            if (mapped[0].minutes) {
+                this.selectedReleaseMinutes.set(mapped[0].minutes);
+            }
+        }
+    }
+
+    onSelectProduct(val: string | number) {
+        const strVal = String(val);
+        this.selectedProductId.set(strVal);
+        const found = this.releaseOptions().find(o => String(o.value) === strVal);
+        if (found && found.minutes) {
+            this.selectedReleaseMinutes.set(found.minutes);
+        }
     }
 
     onOpenReleaseModal() {
         this.releaseError = null;
-        const options = this.releaseOptions();
-        if (options.length > 0) {
-            this.selectedReleaseMinutes.set(options[0].value);
-        }
+        this.updateReleaseOptions();
         this.showReleaseModal.set(true);
     }
 
@@ -117,7 +136,8 @@ export class DeviceFormComponent {
     confirmRelease() {
         this.releaseManual.emit({
             id: this.id,
-            minutes: this.selectedReleaseMinutes()
+            minutes: this.selectedReleaseMinutes(),
+            productId: this.selectedProductId() ?? undefined
         });
     }
 

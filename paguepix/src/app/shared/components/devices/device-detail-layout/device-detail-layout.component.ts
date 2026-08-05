@@ -44,7 +44,7 @@ export class DeviceDetailLayoutComponent {
 
     // Outputs
     save = output<any>();
-    releaseManual = output<{ id: string; minutes: number }>();
+    releaseManual = output<{ id: string; minutes?: number; productId?: string }>();
     cancel = output<void>();
 
     addProduct = output<string>();

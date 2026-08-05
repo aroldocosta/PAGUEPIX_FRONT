@@ -135,11 +135,11 @@ export class UserDeviceView implements OnInit {
         });
     }
 
-    onReleaseManual(event: { id: string, minutes: number }) {
+    onReleaseManual(event: { id: string, minutes?: number, productId?: string }) {
         this.releasing.set(true);
         this.releaseError.set(null);
 
-        this.deviceService.releaseManual(event.id, event.minutes).subscribe({
+        this.deviceService.releaseManual(event.id, event.minutes, undefined, event.productId).subscribe({
             next: () => {
                 this.releasing.set(false);
                 this.detailLayout.deviceForm.showReleaseModal.set(false);
