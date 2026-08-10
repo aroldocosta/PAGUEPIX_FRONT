@@ -1,7 +1,7 @@
 <form (ngSubmit)="onSave()" #productForm="ngForm" class="space-y-8">
     <div class="space-y-6">
         <!-- Nome do Produto e Status Ativo -->
-        <div class="grid grid-cols-1 md:grid-cols-[1fr,200px] gap-6 items-end">
+        <div class="grid grid-cols-1 md:grid-cols-[1fr,200px] gap-6">
             <!-- Nome do Produto -->
             <div class="space-y-2">
                 <label class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">
@@ -15,20 +15,25 @@
                 </div>
             </div>
 
-            <!-- Status Ativo (Toggle Switch) -->
-            <div
-                class="p-4 bg-slate-50/50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-center justify-between h-[54px]">
-                <span
-                    class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Ativo</span>
-                <label class="relative inline-flex items-center cursor-pointer group">
-                    <input type="checkbox" [(ngModel)]="active" name="active" [disabled]="mode === 'view'"
-                        class="sr-only peer">
-                    <div
-                        class="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full transition-all duration-300 
-                                peer-checked:bg-emerald-500 dark:peer-checked:bg-emerald-600
-                                after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full">
-                    </div>
+            <!-- Status do Produto (Toggle Switch) -->
+            <div class="space-y-2">
+                <label class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">
+                    Status do Produto
                 </label>
+                <div
+                    class="p-4 bg-slate-50/50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-center justify-between h-[54px]">
+                    <span class="text-sm font-bold text-slate-900 dark:text-white">{{ active ? 'Ativo' : 'Inativo'
+                        }}</span>
+                    <label class="relative inline-flex items-center cursor-pointer group">
+                        <input type="checkbox" [(ngModel)]="active" name="active" [disabled]="mode === 'view'"
+                            class="sr-only peer">
+                        <div
+                            class="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full transition-all duration-300 
+                                    peer-checked:bg-emerald-500 dark:peer-checked:bg-emerald-600
+                                    after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full">
+                        </div>
+                    </label>
+                </div>
             </div>
         </div>
 
@@ -112,7 +117,7 @@
         </div>
 
         <!-- Duração / Quantidade (Conditional Row) -->
-        <div *ngIf="deliveryMethod === 'MQTT_TIME' || deliveryMethod === 'MQTT_PULSE'"
+        <div *ngIf="deliveryMethod === 'MQTT_TIMER' || deliveryMethod === 'MQTT_PULSE'"
             class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Duração ou Quantidade -->
             <div class="space-y-2">
@@ -132,7 +137,7 @@
             <!-- Unidade de Duração ou Frequência -->
             <div class="space-y-2">
                 <label class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">
-                    {{ deliveryMethod === 'MQTT_PULSE' ? 'Pulsos/seg' : 'Unidade' }}
+                    {{ deliveryMethod === 'MQTT_PULSE' ? 'Freq(Pulsos/s)' : 'Unidade' }}
                 </label>
                 <div class="relative group">
                     <span

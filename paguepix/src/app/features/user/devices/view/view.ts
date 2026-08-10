@@ -194,11 +194,12 @@ export class UserDeviceView implements OnInit {
         this.loading.set(true);
         this.productService.update(product.id, product as any).subscribe({
             next: (updated) => {
-                // Update local list
-                this.deviceProducts.update(products => 
-                    products.map(p => p.id === updated.id ? updated : p)
-                );
-                this.loading.set(false);
+                const currentId = this.id();
+                if (currentId) {
+                    this.loadDevice(currentId);
+                } else {
+                    this.loading.set(false);
+                }
             },
             error: (err) => {
                 console.error('Error updating product', err);

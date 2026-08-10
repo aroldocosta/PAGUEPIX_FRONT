@@ -25,8 +25,12 @@ export interface ProductDetailResponse {
     subtitle?: string;
     description?: string;
     deliveryMethod?: string;
+    deliveryConfig?: any;
+    freq?: number;
+    qtd?: number;
     partner?: Partner;
     boardChannel?: number;
+    channel?: number;
 }
 
 export interface Product extends ProductDetailResponse {}

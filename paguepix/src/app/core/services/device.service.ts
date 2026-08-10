@@ -65,8 +65,17 @@ export class DeviceService {
         return this.http.post<any>(`${this.apiUrl}/${id}/release-manual`, {}, { params });
     }
 
-    addProductToDevice(deviceId: string, productId: string): Observable<any> {
-        return this.http.post<any>(`${this.apiUrl}/${deviceId}/products/${productId}`, {});
+    addProductToDevice(deviceId: string, productId: string, channel?: number): Observable<any> {
+        let params = new HttpParams();
+        if (channel !== undefined && channel !== null) {
+            params = params.set('channel', channel.toString());
+        }
+        return this.http.post<any>(`${this.apiUrl}/${deviceId}/products/${productId}`, {}, { params });
+    }
+
+    updateDeviceProductChannel(deviceId: string, productId: string, channel: number): Observable<any> {
+        let params = new HttpParams().set('channel', channel.toString());
+        return this.http.put<any>(`${this.apiUrl}/${deviceId}/products/${productId}`, {}, { params });
     }
 
     removeProductFromDevice(deviceId: string, productId: string): Observable<any> {

@@ -71,7 +71,7 @@ export class DeviceProductManagerComponent implements OnInit {
     createFreq = signal<number>(100);
     createSubtitle = signal('');
     createDescription = signal('');
-    createDeliveryMethod = signal('MQTT_TIME');
+    createDeliveryMethod = signal('MQTT_TIMER');
 
     // Form fields for editing
     editName = signal('');
@@ -82,9 +82,15 @@ export class DeviceProductManagerComponent implements OnInit {
     editFreq = signal<number>(100);
     editSubtitle = signal('');
     editDescription = signal('');
-    editDeliveryMethod = signal('MQTT_TIME');
+    editDeliveryMethod = signal('MQTT_TIMER');
     editActive = signal(true);
     editPartnerId = signal('');
+    editChannel = signal<number>(1);
+
+    // Release state for Edit Modal
+    releasingProduct = signal<boolean>(false);
+    releaseStatusMessage = signal<string | null>(null);
+    releaseStatusError = signal<boolean>(false);
 
 
     ngOnInit() {
@@ -121,7 +127,7 @@ export class DeviceProductManagerComponent implements OnInit {
         this.createDurationUnit.set('MINUTES');
         this.createSubtitle.set('');
         this.createDescription.set('');
-        this.createDeliveryMethod.set('MQTT_TIME');
+        this.createDeliveryMethod.set('MQTT_TIMER');
         this.showCreateModal.set(true);
         this.showAddModal.set(false);
     }
@@ -218,12 +224,23 @@ export class DeviceProductManagerComponent implements OnInit {
         this.editDuration.set(product.duration);
 
         this.editDurationUnit.set(product.durationUnit);
-        this.editFreq.set((product as any).freq || 100);
+        
+        let pulseFreq = 100;
+        if (product.deliveryConfig && (product.deliveryConfig as any).frequency) {
+            pulseFreq = (product.deliveryConfig as any).frequency;
+        } else if ((product as any).freq) {
+            pulseFreq = (product as any).freq;
+        }
+        this.editFreq.set(pulseFreq);
+
         this.editSubtitle.set(product.subtitle || '');
         this.editDescription.set(product.description || '');
-        this.editDeliveryMethod.set(product.deliveryMethod || 'MQTT_TIME');
+        this.editDeliveryMethod.set(product.deliveryMethod || 'MQTT_TIMER');
         this.editActive.set(product.active);
         this.editPartnerId.set(String(product.partner?.id || ''));
+        this.editChannel.set(product.channel || 1);
+        this.releaseStatusMessage.set(null);
+        this.releaseStatusError.set(false);
         this.showEditModal.set(true);
     }
 
@@ -231,6 +248,7 @@ export class DeviceProductManagerComponent implements OnInit {
     cancelEdit() {
         this.showEditModal.set(false);
         this.editingProduct.set(null);
+        this.releaseStatusMessage.set(null);
     }
 
     saveEdit() {
@@ -246,18 +264,122 @@ export class DeviceProductManagerComponent implements OnInit {
                 description: this.editDescription(),
                 deliveryMethod: this.editDeliveryMethod(),
                 active: this.editActive(),
-                partner: this.editPartnerId() ? { id: this.editPartnerId() } as any : undefined
+                partner: this.editPartnerId() ? { id: this.editPartnerId() } as any : undefined,
+                channel: Number(this.editChannel()) || 1
             };
 
             if (this.editDeliveryMethod() === 'MQTT_PULSE') {
                 updatedProduct.qtd = Number(this.editDuration()) || 0;
                 updatedProduct.freq = Number(this.editFreq()) || 100;
+                updatedProduct.deliveryConfig = {
+                    pulseCount: Number(this.editDuration()) || 0,
+                    frequency: Number(this.editFreq()) || 100
+                };
+            }
+
+            const dId = this.deviceId();
+            if (dId && current.id) {
+                this.deviceService.updateDeviceProductChannel(dId, String(current.id), Number(this.editChannel())).subscribe({
+                    next: () => console.log('DeviceProduct channel updated successfully'),
+                    error: (err) => console.error('Error updating DeviceProduct channel', err)
+                });
             }
 
             this.edit.emit(updatedProduct);
             this.showEditModal.set(false);
             this.editingProduct.set(null);
+            this.releaseStatusMessage.set(null);
         }
+    }
+
+    onReleaseProduct() {
+        const dId = this.deviceId();
+        const current = this.editingProduct();
+        if (!dId || !current || !current.id) return;
+
+        this.releasingProduct.set(true);
+        this.releaseStatusMessage.set(null);
+        this.releaseStatusError.set(false);
+
+        const editP = this.editPartnerId();
+        let partnerIdVal: number | undefined = undefined;
+        if (editP && !isNaN(Number(editP)) && Number(editP) > 0) {
+            partnerIdVal = Number(editP);
+        } else if (current.partner?.id && !isNaN(Number(current.partner.id)) && Number(current.partner.id) > 0) {
+            partnerIdVal = Number(current.partner.id);
+        }
+
+        const updatedProductPayload: any = {
+            id: current.id,
+            name: this.editName(),
+            price: this.editPrice(),
+            duration: Number(this.editDuration()) || 1,
+            durationUnit: this.editDurationUnit(),
+            subtitle: this.editSubtitle(),
+            description: this.editDescription(),
+            deliveryMethod: this.editDeliveryMethod(),
+            active: this.editActive(),
+            partnerId: partnerIdVal
+        };
+
+        if (this.editDeliveryMethod() === 'MQTT_PULSE') {
+            updatedProductPayload.qtd = Number(this.editDuration()) || 0;
+            updatedProductPayload.freq = Number(this.editFreq()) || 100;
+            updatedProductPayload.deliveryConfig = {
+                pulseCount: Number(this.editDuration()) || 0,
+                frequency: Number(this.editFreq()) || 100
+            };
+        }
+
+        const ch = Number(this.editChannel()) || 1;
+
+        // 1. Atualizar o produto no backend sem fechar o modal
+        this.productService.update(current.id, updatedProductPayload).subscribe({
+            next: (updatedProd) => {
+                this.editingProduct.set(updatedProd);
+
+                // 2. Atualizar o canal do DeviceProduct se houver deviceId
+                this.deviceService.updateDeviceProductChannel(dId, String(current.id), ch).subscribe({
+                    next: () => {
+                        // 3. Executar o acionamento manual com as configurações salvas
+                        let minutes = this.editDuration() || 1;
+                        if (this.editDurationUnit() === 'SECONDS') {
+                            minutes = Math.max(1, Math.round(this.editDuration() / 60));
+                        } else if (this.editDurationUnit() === 'HOURS') {
+                            minutes = this.editDuration() * 60;
+                        }
+
+                        this.deviceService.releaseManual(dId, minutes, ch, String(current.id)).subscribe({
+                            next: () => {
+                                this.releasingProduct.set(false);
+                                this.releaseStatusError.set(false);
+                                this.releaseStatusMessage.set(`Comando enviado com sucesso para o Canal ${ch}!`);
+                                setTimeout(() => this.releaseStatusMessage.set(null), 5000);
+                            },
+                            error: (err) => {
+                                console.error('Error releasing product manual', err);
+                                this.releasingProduct.set(false);
+                                this.releaseStatusError.set(true);
+                                this.releaseStatusMessage.set('Erro ao enviar comando de liberação.');
+                                setTimeout(() => this.releaseStatusMessage.set(null), 5000);
+                            }
+                        });
+                    },
+                    error: (err) => {
+                        console.error('Error updating channel', err);
+                        this.releasingProduct.set(false);
+                        this.releaseStatusError.set(true);
+                        this.releaseStatusMessage.set('Erro ao atualizar canal do produto.');
+                    }
+                });
+            },
+            error: (err) => {
+                console.error('Error updating product before release', err);
+                this.releasingProduct.set(false);
+                this.releaseStatusError.set(true);
+                this.releaseStatusMessage.set('Erro ao salvar produto antes do acionamento.');
+            }
+        });
     }
 
     onPriceInput(event: Event) {

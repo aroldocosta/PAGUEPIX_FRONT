@@ -22,7 +22,7 @@ export class ProductFormComponent implements OnInit {
     @Input() active = true;
     @Input() subtitle = '';
     @Input() description = '';
-    @Input() deliveryMethod = 'MQTT_TIME';
+    @Input() deliveryMethod = 'MQTT_TIMER';
     @Input() freq: number = 100;
     @Input() mode: 'view' | 'edit' = 'view';
     @Input() loading = false;

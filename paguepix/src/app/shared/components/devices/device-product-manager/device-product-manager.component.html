@@ -61,7 +61,7 @@
                         <div class="flex items-center gap-3 mt-1">
                             <span class="text-sm font-bold text-indigo-600 dark:text-indigo-400">{{ formatPrice(p.price)
                                 }}</span>
-                            <ng-container *ngIf="p.deliveryMethod === 'MQTT_TIME' || p.deliveryMethod === 'MQTT_PULSE'">
+                            <ng-container *ngIf="p.deliveryMethod === 'MQTT_TIMER' || p.deliveryMethod === 'MQTT_PULSE'">
                                 <span class="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700"></span>
                                 <span
                                     class="text-[11px] text-slate-400 dark:text-slate-500 uppercase font-black tracking-widest">{{
@@ -224,7 +224,7 @@
                     </div>
 
                     <!-- Campos específicos para MQTT (Duração/Quantidade e Unidade/Frequência) -->
-                    <div *ngIf="createDeliveryMethod() === 'MQTT_TIME' || createDeliveryMethod() === 'MQTT_PULSE'"
+                    <div *ngIf="createDeliveryMethod() === 'MQTT_TIMER' || createDeliveryMethod() === 'MQTT_PULSE'"
                         class="flex gap-4">
                         <!-- Duração / Quantidade -->
                         <div class="space-y-2 flex-1">
@@ -248,7 +248,7 @@
                         <div class="space-y-2 flex-1">
                             <label
                                 class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">
-                                {{ createDeliveryMethod() === 'MQTT_PULSE' ? 'Pulsos/seg' : 'Unidade' }}
+                                {{ createDeliveryMethod() === 'MQTT_PULSE' ? 'Freq(Pulsos/s)' : 'Unidade' }}
                             </label>
                             <div class="relative group">
                                 <select *ngIf="createDeliveryMethod() !== 'MQTT_PULSE'" [(ngModel)]="createDurationUnit"
@@ -310,110 +310,107 @@
     <div *ngIf="showEditModal()"
         class="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
         <div
-            class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[32px] shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-300">
-            <div class="p-8">
+            class="bg-white dark:bg-slate-900 w-full max-w-3xl rounded-[32px] shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-300 flex flex-col max-h-[95vh]">
+            <div class="p-8 flex-1 overflow-y-auto">
                 <!-- Cabeçalho do Modal -->
-                <div class="flex items-center gap-4 mb-8">
-                    <div
-                        class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-2xl">edit_square</span>
+                <div class="flex items-center justify-between mb-8">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-2xl">edit_square</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                                Editar Produto</h3>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Personalize os
+                                detalhes do item e acionamento IoT</p>
+                        </div>
                     </div>
-
-                    <div>
-                        <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
-                            Editar Produto</h3>
-                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Personalize os
-                            detalhes
-                            do item</p>
-                    </div>
+                    <button (click)="cancelEdit()"
+                        class="w-9 h-9 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 flex items-center justify-center transition-all">
+                        <span class="material-icons-outlined text-lg">close</span>
+                    </button>
                 </div>
 
+                <!-- Grid de Campos (Layout exato da imagem) -->
                 <div class="space-y-6">
-                    <!-- Nome do Produto e Status Ativo -->
-                    <div class="grid grid-cols-[1fr,auto] gap-6 items-end">
-                        <div class="space-y-2">
+
+                    <!-- LINHA 1: NOME DO PRODUTO (2 colunas) + CANAL (RELÉ) (1 coluna) -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Nome do Produto -->
+                        <div class="space-y-2 md:col-span-2">
                             <label
-                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Nome
-                                do Produto</label>
+                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">
+                                Nome do Produto
+                            </label>
                             <div class="relative group">
                                 <span
                                     class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">sell</span>
                                 <input type="text" [(ngModel)]="editName" name="name"
                                     class="w-full pl-12 pr-4 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"
-                                    placeholder="Ex: Banho Quente 10 Min">
+                                    placeholder="Ex: 2 Minutos">
                             </div>
                         </div>
 
-                        <div class="space-y-2">
+                        <!-- Canal (Relé) -->
+                        <div class="space-y-2" *ngIf="deviceId()">
                             <label
-                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 text-center block">Ativo</label>
-                            <div
-                                class="h-[54px] px-4 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl flex items-center justify-center">
-                                <label class="relative inline-flex items-center cursor-pointer group">
-                                    <input type="checkbox" [(ngModel)]="editActive" name="active" class="sr-only peer">
-                                    <div
-                                        class="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500">
-                                    </div>
-                                </label>
+                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">
+                                Canal (Relé)
+                            </label>
+                            <div class="relative group">
+                                <span
+                                    class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">tag</span>
+                                <select [(ngModel)]="editChannel" name="channel"
+                                    class="w-full pl-12 pr-10 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer">
+                                    <option *ngFor="let num of [1, 2, 3, 4, 5, 6, 7, 8]" [value]="num">Canal {{ num }}
+                                    </option>
+                                </select>
+                                <span
+                                    class="material-icons-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Subtítulo -->
-                    <div class="space-y-2">
-                        <label
-                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Subtítulo</label>
-                        <div class="relative group">
-                            <span
-                                class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">rectangle</span>
-                            <input type="text" [(ngModel)]="editSubtitle" name="subtitle"
-                                (input)="onSubtitleInput($event)"
-                                class="w-full pl-12 pr-4 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"
-                                placeholder="Ex: Promoção de Verão">
+                    <!-- LINHA 2: SUBTÍTULO (1 coluna) + DESCRIÇÃO (2 colunas) -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Subtítulo -->
+                        <div class="space-y-2 md:col-span-1">
+                            <label
+                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Subtítulo</label>
+                            <div class="relative group">
+                                <span
+                                    class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">check_box_outline_blank</span>
+                                <input type="text" [(ngModel)]="editSubtitle" name="subtitle"
+                                    (input)="onSubtitleInput($event)"
+                                    class="w-full pl-12 pr-4 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"
+                                    placeholder="Ex: Banho rápido">
+                            </div>
+                        </div>
+
+                        <!-- Descrição -->
+                        <div class="space-y-2 md:col-span-2">
+                            <label
+                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Descrição</label>
+                            <div class="relative group">
+                                <span
+                                    class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">description</span>
+                                <input type="text" [(ngModel)]="editDescription" name="description"
+                                    (input)="onDescriptionInput($event)"
+                                    class="w-full pl-12 pr-4 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"
+                                    placeholder="Ex: Tempo de chuveiro">
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Descrição -->
-                    <div class="space-y-2">
-                        <label
-                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Descrição</label>
-                        <div class="relative group">
-                            <span
-                                class="material-icons-outlined absolute left-4 top-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors">description</span>
-                            <textarea [(ngModel)]="editDescription" name="description"
-                                (input)="onDescriptionInput($event)"
-                                class="w-full pl-12 pr-4 py-4 min-h-[100px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
-                                placeholder="Descreva detalhes do produto..."></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Parceiro Responsável -->
-                    <div class="space-y-2" *ngIf="partners().length > 0">
-                        <label
-                            class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">
-                            Parceiro Responsável
-                        </label>
-                        <div class="relative group">
-                            <span
-                                class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">handshake</span>
-                            <select [(ngModel)]="editPartnerId" name="partnerId"
-                                [disabled]="authService.role() !== 'ADMIN'"
-                                class="w-full pl-12 pr-10 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed">
-                                <option value="">Selecione um parceiro...</option>
-                                <option *ngFor="let p of partners()" [value]="p.id">{{ p.name }}</option>
-                            </select>
-                            <span
-                                class="material-icons-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
-                        </div>
-                    </div>
-
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <!-- Preço -->
+                    <!-- LINHA 3: PREÇO (R$) + MÉTODO DE ENTREGA + STATUS DO PRODUTO -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Preço (R$) -->
                         <div class="space-y-2">
                             <label
-                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Preço
-                                (R$)</label>
+                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">
+                                Preço (R$)
+                            </label>
                             <div class="relative group">
                                 <input type="text" [value]="editPriceDisplay()" (input)="onPriceInput($event)"
                                     (blur)="onPriceBlur()" name="priceDisplay"
@@ -425,8 +422,9 @@
                         <!-- Método de Entrega -->
                         <div class="space-y-2">
                             <label
-                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Método
-                                de Entrega</label>
+                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">
+                                Método de Entrega
+                            </label>
                             <div class="relative group">
                                 <span
                                     class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">delivery_dining</span>
@@ -439,33 +437,53 @@
                                     class="material-icons-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Campos específicos para MQTT (Duração/Quantidade e Unidade/Frequência) -->
-                    <div *ngIf="editDeliveryMethod() === 'MQTT_TIME' || editDeliveryMethod() === 'MQTT_PULSE'"
-                        class="flex gap-4">
-                        <!-- Duração / Quantidade -->
-                        <div class="space-y-2 flex-1">
+                        <!-- Status do Produto (Toggle Switch) -->
+                        <div class="space-y-2">
                             <label
                                 class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">
-                                {{ editDeliveryMethod() === 'MQTT_PULSE' ? 'Quantidade (Pulsos)' : 'Duração' }}
+                                Status do Produto
+                            </label>
+                            <div
+                                class="h-[54px] px-4 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl flex items-center justify-between">
+                                <span class="text-sm font-bold text-slate-900 dark:text-white">{{ editActive() ? 'Ativo'
+                                    : 'Inativo' }}</span>
+                                <label class="relative inline-flex items-center cursor-pointer group">
+                                    <input type="checkbox" [(ngModel)]="editActive" name="active" class="sr-only peer">
+                                    <div
+                                        class="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500">
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LINHA 4: DURAÇÃO/QUANTIDADE + UNIDADE/PULSOS + PARCEIRO RESPONSÁVEL -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Duração / Quantidade -->
+                        <div class="space-y-2"
+                            *ngIf="editDeliveryMethod() === 'MQTT_TIMER' || editDeliveryMethod() === 'MQTT_PULSE'">
+                            <label
+                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">
+                                {{ editDeliveryMethod() === 'MQTT_PULSE' ? 'QUANTIDADE (PULSOS)' : 'DURAÇÃO' }}
                             </label>
                             <div class="relative group">
                                 <span
                                     class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">
-                                    {{ editDeliveryMethod() === 'MQTT_PULSE' ? 'numbers' : 'timer' }}
+                                    {{ editDeliveryMethod() === 'MQTT_PULSE' ? 'tag' : 'timer' }}
                                 </span>
                                 <input type="number" [(ngModel)]="editDuration" min="1" max="1000" name="duration"
                                     class="w-full pl-12 pr-4 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"
-                                    [placeholder]="editDeliveryMethod() === 'MQTT_PULSE' ? '10' : '0'">
+                                    [placeholder]="editDeliveryMethod() === 'MQTT_PULSE' ? '16' : '0'">
                             </div>
                         </div>
 
                         <!-- Unidade / Frequência -->
-                        <div class="space-y-2 flex-1">
+                        <div class="space-y-2"
+                            *ngIf="editDeliveryMethod() === 'MQTT_TIMER' || editDeliveryMethod() === 'MQTT_PULSE'">
                             <label
                                 class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">
-                                {{ editDeliveryMethod() === 'MQTT_PULSE' ? 'Pulsos/seg' : 'Unidade' }}
+                                {{ editDeliveryMethod() === 'MQTT_PULSE' ? 'Freq(PULSOS/S)' : 'UNIDADE' }}
                             </label>
                             <div class="relative group">
                                 <select *ngIf="editDeliveryMethod() !== 'MQTT_PULSE'" [(ngModel)]="editDurationUnit"
@@ -480,23 +498,64 @@
                                     class="w-full pl-4 pr-4 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"
                                     placeholder="100">
                                 <span *ngIf="editDeliveryMethod() !== 'MQTT_PULSE'"
-                                    class="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+                                    class="material-icons-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+                            </div>
+                        </div>
+
+                        <!-- Parceiro Responsável -->
+                        <div class="space-y-2" *ngIf="partners().length > 0">
+                            <label
+                                class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">
+                                PARCEIRO RESPONSÁVEL
+                            </label>
+                            <div class="relative group">
+                                <span
+                                    class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">handshake</span>
+                                <select [(ngModel)]="editPartnerId" name="partnerId"
+                                    [disabled]="authService.role() !== 'ADMIN'"
+                                    class="w-full pl-12 pr-10 h-[54px] bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl transition-all text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed">
+                                    <option value="">Selecione um parceiro...</option>
+                                    <option *ngFor="let p of partners()" [value]="p.id">{{ p.name }}</option>
+                                </select>
+                                <span
+                                    class="material-icons-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
                             </div>
                         </div>
                     </div>
 
                 </div>
 
-                <!-- Rodapé com Botões -->
-                <div class="flex gap-4 mt-10">
+                <!-- LINHA 5: RODAPÉ COM BOTÕES -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                    <!-- Botão ACIONAR -->
+                    <button *ngIf="deviceId() && editingProduct()" type="button" (click)="onReleaseProduct()"
+                        [disabled]="releasingProduct()"
+                        class="px-6 h-[54px] bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2">
+                        <span *ngIf="!releasingProduct()" class="material-icons-outlined text-lg">bolt</span>
+                        <span *ngIf="releasingProduct()"
+                            class="material-icons-outlined animate-spin text-lg">sync</span>
+                        {{ releasingProduct() ? 'Acionando...' : 'Acionar' }}
+                    </button>
+                    <div *ngIf="!deviceId() || !editingProduct()"></div>
+
+                    <!-- Botão CANCELAR -->
                     <button (click)="cancelEdit()"
-                        class="flex-1 px-8 h-[54px] bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 rounded-2xl font-bold text-sm uppercase tracking-widest transition-all active:scale-95 shadow-sm">
+                        class="px-6 h-[54px] bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 rounded-2xl font-black text-xs uppercase tracking-widest transition-all active:scale-95 shadow-sm text-center">
                         Cancelar
                     </button>
+
+                    <!-- Botão SALVAR -->
                     <button (click)="saveEdit()"
-                        class="flex-1 px-8 h-[54px] bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 rounded-2xl font-bold text-sm uppercase tracking-widest transition-all shadow-sm active:scale-95">
+                        class="px-6 h-[54px] bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-sm active:scale-95 text-center">
                         Salvar
                     </button>
+                </div>
+
+                <!-- Alerta de Feedback de Acionamento -->
+                <div *ngIf="releaseStatusMessage()"
+                    class="mt-4 p-4 rounded-2xl text-center text-xs font-bold transition-all border animate-in fade-in duration-300"
+                    [ngClass]="releaseStatusError() ? 'bg-rose-50 border-rose-200 text-rose-600 dark:bg-rose-900/20 dark:border-rose-900/40 dark:text-rose-400' : 'bg-emerald-50 border-emerald-200 text-emerald-600 dark:bg-emerald-900/20 dark:border-emerald-900/40 dark:text-emerald-400'">
+                    {{ releaseStatusMessage() }}
                 </div>
             </div>
         </div>

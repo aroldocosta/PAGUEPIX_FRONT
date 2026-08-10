@@ -21,7 +21,7 @@
                     [durationUnit]="productData()?.durationUnit || 'MINUTES'" [price]="productData()?.price || 0"
                     [active]="productData()?.active ?? true" [subtitle]="productData()?.subtitle || ''"
                     [description]="productData()?.description || ''" 
-                    [deliveryMethod]="productData()?.deliveryMethod || 'MQTT_TIME'"
+                    [deliveryMethod]="productData()?.deliveryMethod || 'MQTT_TIMER'"
                     [partners]="partners()" [partnerId]="productData()?.partner?.id?.toString() || ''"
                     [mode]="mode()" [loading]="loading()"
                     (save)="onSave($event)" (cancel)="onCancel()">
