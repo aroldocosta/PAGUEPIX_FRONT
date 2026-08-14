@@ -26,6 +26,7 @@ export class BoardEdit implements OnInit {
   clientId = signal('');
   model = signal('');
   description = signal('');
+  partnerCode = signal('');
   scriptId = signal<string | number | null>(null);
 
   scripts = signal<any[]>([]);
@@ -81,6 +82,7 @@ export class BoardEdit implements OnInit {
         this.clientId.set(board.mqttId || board.clientId || '');
         this.model.set(board.model || '');
         this.description.set(board.description || '');
+        this.partnerCode.set(board.partnerCode || '');
         this.scriptId.set(board.script?.id || null);
 
         if (board.device) {
@@ -179,6 +181,7 @@ export class BoardEdit implements OnInit {
       mqttId: this.clientId(),
       model: this.model(),
       description: this.description(),
+      partnerCode: this.partnerCode(),
       scriptId: this.scriptId()!
     };
 
