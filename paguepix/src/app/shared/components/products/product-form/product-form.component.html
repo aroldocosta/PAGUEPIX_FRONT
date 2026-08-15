@@ -150,9 +150,11 @@
                         <option value="MINUTES">Minutos</option>
                         <option value="HOURS">Horas</option>
                     </select>
-                    <input *ngIf="deliveryMethod === 'MQTT_PULSE'" type="number" [(ngModel)]="freq" name="freq" required
-                        [disabled]="mode === 'view'" [class]="getFieldClasses()" placeholder="100">
-                    <span *ngIf="mode === 'edit' && deliveryMethod !== 'MQTT_PULSE'"
+                    <select *ngIf="deliveryMethod === 'MQTT_PULSE'" [(ngModel)]="freq" name="freq" required
+                        [disabled]="mode === 'view'" [class]="getFieldClasses(true)">
+                        <option *ngFor="let f of frequencyOptions" [ngValue]="f">{{ f }} pulsos/s</option>
+                    </select>
+                    <span *ngIf="mode === 'edit'"
                         class="material-icons-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
                 </div>
             </div>

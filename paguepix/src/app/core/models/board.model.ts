@@ -10,6 +10,7 @@ export interface Board {
     mqttClientId?: string;
     model: string;
     description: string;
+    partnerCode?: string;
     script?: Script;
     device?: Device;
     partner?: Partner;
@@ -23,6 +24,7 @@ export interface BoardRequest {
     mqttClientId?: string;
     model: string;
     description: string;
+    partnerCode?: string;
 }
 
 export interface BoardResponse extends Board { }
