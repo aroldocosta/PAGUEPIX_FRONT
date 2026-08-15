@@ -7,6 +7,21 @@ import { DeleteModalComponent } from '../../delete-modal/delete-modal.component'
 
 import { DeviceService, DeviceProductQrResponse } from '../../../../core/services/device.service';
 
+export const ALLOWED_FREQUENCIES: number[] = [1, 2, 4, 5, 10, 25, 50];
+
+export function getClosestFrequency(freq: number | null | undefined): number {
+    if (freq == null || isNaN(Number(freq)) || Number(freq) <= 0) {
+        return 10;
+    }
+    const val = Number(freq);
+    if (ALLOWED_FREQUENCIES.includes(val)) {
+        return val;
+    }
+    return ALLOWED_FREQUENCIES.reduce((prev, curr) =>
+        Math.abs(curr - val) < Math.abs(prev - val) ? curr : prev
+    );
+}
+
 @Component({
     selector: 'app-device-product-manager',
     standalone: true,
@@ -32,6 +47,7 @@ export class DeviceProductManagerComponent implements OnInit {
     deviceService = inject(DeviceService);
     authService = inject(AuthService);
     deliveryMethods = signal<string[]>([]);
+    frequencyOptions = ALLOWED_FREQUENCIES;
     deviceId = input<string>('');
     availableProducts = input.required<ProductSummaryResponse[]>();
     deviceProducts = input.required<ProductDetailResponse[]>();
@@ -68,7 +84,7 @@ export class DeviceProductManagerComponent implements OnInit {
     createPriceDisplay = signal('');
     createDuration = signal(10);
     createDurationUnit = signal<ProductDetailResponse['durationUnit']>('MINUTES');
-    createFreq = signal<number>(100);
+    createFreq = signal<number>(10);
     createSubtitle = signal('');
     createDescription = signal('');
     createDeliveryMethod = signal('MQTT_TIMER');
@@ -79,7 +95,7 @@ export class DeviceProductManagerComponent implements OnInit {
     editPriceDisplay = signal('');
     editDuration = signal(0);
     editDurationUnit = signal<ProductDetailResponse['durationUnit']>('MINUTES');
-    editFreq = signal<number>(100);
+    editFreq = signal<number>(10);
     editSubtitle = signal('');
     editDescription = signal('');
     editDeliveryMethod = signal('MQTT_TIMER');
@@ -125,6 +141,7 @@ export class DeviceProductManagerComponent implements OnInit {
         this.createPriceDisplay.set('');
         this.createDuration.set(10);
         this.createDurationUnit.set('MINUTES');
+        this.createFreq.set(10);
         this.createSubtitle.set('');
         this.createDescription.set('');
         this.createDeliveryMethod.set('MQTT_TIMER');
@@ -170,8 +187,9 @@ export class DeviceProductManagerComponent implements OnInit {
         };
 
         if (this.createDeliveryMethod() === 'MQTT_PULSE') {
+            const freqVal = getClosestFrequency(this.createFreq());
             request.qtd = Number(this.createDuration()) || 0;
-            request.freq = Number(this.createFreq()) || 100;
+            request.freq = freqVal;
         }
 
         this.productService.create(request as any).subscribe({
@@ -225,13 +243,13 @@ export class DeviceProductManagerComponent implements OnInit {
 
         this.editDurationUnit.set(product.durationUnit);
         
-        let pulseFreq = 100;
+        let pulseFreq = 10;
         if (product.deliveryConfig && (product.deliveryConfig as any).frequency) {
             pulseFreq = (product.deliveryConfig as any).frequency;
         } else if ((product as any).freq) {
             pulseFreq = (product as any).freq;
         }
-        this.editFreq.set(pulseFreq);
+        this.editFreq.set(getClosestFrequency(pulseFreq));
 
         this.editSubtitle.set(product.subtitle || '');
         this.editDescription.set(product.description || '');
@@ -269,11 +287,12 @@ export class DeviceProductManagerComponent implements OnInit {
             };
 
             if (this.editDeliveryMethod() === 'MQTT_PULSE') {
+                const freqVal = getClosestFrequency(this.editFreq());
                 updatedProduct.qtd = Number(this.editDuration()) || 0;
-                updatedProduct.freq = Number(this.editFreq()) || 100;
+                updatedProduct.freq = freqVal;
                 updatedProduct.deliveryConfig = {
                     pulseCount: Number(this.editDuration()) || 0,
-                    frequency: Number(this.editFreq()) || 100
+                    frequency: freqVal
                 };
             }
 
@@ -323,11 +342,12 @@ export class DeviceProductManagerComponent implements OnInit {
         };
 
         if (this.editDeliveryMethod() === 'MQTT_PULSE') {
+            const freqVal = getClosestFrequency(this.editFreq());
             updatedProductPayload.qtd = Number(this.editDuration()) || 0;
-            updatedProductPayload.freq = Number(this.editFreq()) || 100;
+            updatedProductPayload.freq = freqVal;
             updatedProductPayload.deliveryConfig = {
                 pulseCount: Number(this.editDuration()) || 0,
-                frequency: Number(this.editFreq()) || 100
+                frequency: freqVal
             };
         }
 

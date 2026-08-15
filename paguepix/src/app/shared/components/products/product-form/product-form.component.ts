@@ -4,6 +4,21 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ProductService, Product } from '../../../../core/services/product.service';
 
+export const ALLOWED_FREQUENCIES: number[] = [1, 2, 4, 5, 10, 25, 50];
+
+export function getClosestFrequency(freq: number | null | undefined): number {
+    if (freq == null || isNaN(Number(freq)) || Number(freq) <= 0) {
+        return 10;
+    }
+    const val = Number(freq);
+    if (ALLOWED_FREQUENCIES.includes(val)) {
+        return val;
+    }
+    return ALLOWED_FREQUENCIES.reduce((prev, curr) =>
+        Math.abs(curr - val) < Math.abs(prev - val) ? curr : prev
+    );
+}
+
 @Component({
     selector: 'app-product-form',
     standalone: true,
@@ -23,7 +38,7 @@ export class ProductFormComponent implements OnInit {
     @Input() subtitle = '';
     @Input() description = '';
     @Input() deliveryMethod = 'MQTT_TIMER';
-    @Input() freq: number = 100;
+    @Input() freq: number = 10;
     @Input() mode: 'view' | 'edit' = 'view';
     @Input() loading = false;
     @Input() partners: any[] = [];
@@ -34,11 +49,13 @@ export class ProductFormComponent implements OnInit {
 
     productService = inject(ProductService);
     deliveryMethods: string[] = [];
+    frequencyOptions = ALLOWED_FREQUENCIES;
     priceDisplay = '';
 
     ngOnInit() {
         this.loadDeliveryMethods();
         this.formatInitialPrice();
+        this.freq = getClosestFrequency(this.freq);
     }
 
     formatInitialPrice() {
@@ -87,7 +104,7 @@ export class ProductFormComponent implements OnInit {
 
         if (this.deliveryMethod === 'MQTT_PULSE') {
             payload.qtd = Number(this.duration) || 0;
-            payload.freq = Number(this.freq) || 100;
+            payload.freq = getClosestFrequency(this.freq);
         }
 
         this.save.emit(payload);
