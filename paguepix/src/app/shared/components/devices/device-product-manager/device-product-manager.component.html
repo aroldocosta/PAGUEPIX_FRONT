@@ -310,7 +310,7 @@
     <div *ngIf="showEditModal()"
         class="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
         <div
-            class="bg-white dark:bg-slate-900 w-full max-w-3xl rounded-[32px] shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-300 flex flex-col max-h-[95vh]">
+            class="bg-white dark:bg-slate-900 w-full max-w-3xl rounded-[32px] shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-300 flex flex-col max-h-[95vh] relative">
             <div class="p-8 flex-1 overflow-y-auto">
                 <!-- Cabeçalho do Modal -->
                 <div class="flex items-center justify-between mb-8">
@@ -527,14 +527,39 @@
 
                 <!-- LINHA 5: RODAPÉ COM BOTÕES -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-                    <!-- Botão ACIONAR -->
+                    <!-- Botão ACIONAR com micro-feedback de status -->
                     <button *ngIf="deviceId() && editingProduct()" type="button" (click)="onReleaseProduct()"
                         [disabled]="releasingProduct()"
-                        class="px-6 h-[54px] bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2">
-                        <span *ngIf="!releasingProduct()" class="material-icons-outlined text-lg">bolt</span>
-                        <span *ngIf="releasingProduct()"
-                            class="material-icons-outlined animate-spin text-lg">sync</span>
-                        {{ releasingProduct() ? 'Acionando...' : 'Acionar' }}
+                        class="px-3 h-[54px] rounded-2xl font-black text-xs uppercase tracking-wider transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2 border whitespace-nowrap"
+                        [ngClass]="{
+                            'bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/20': !releasingProduct() && !releaseResult(),
+                            'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20 cursor-wait': releasingProduct(),
+                            'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30': releaseResult() === 'SUCCESS',
+                            'bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-500/30': releaseResult() === 'ERROR'
+                        }">
+                        <!-- Estado Normal -->
+                        <ng-container *ngIf="!releasingProduct() && !releaseResult()">
+                            <span class="material-icons-outlined text-lg">bolt</span>
+                            <span>Acionar</span>
+                        </ng-container>
+
+                        <!-- Estado Carregando (ACIONANDO...) -->
+                        <ng-container *ngIf="releasingProduct()">
+                            <span class="material-icons-outlined animate-spin text-lg">sync</span>
+                            <span>Acionando...</span>
+                        </ng-container>
+
+                        <!-- Estado Sucesso -->
+                        <ng-container *ngIf="releaseResult() === 'SUCCESS'">
+                            <span class="material-icons-outlined text-lg">check_circle</span>
+                            <span>{{ releaseResultText() || 'Acionado!' }}</span>
+                        </ng-container>
+
+                        <!-- Estado Erro -->
+                        <ng-container *ngIf="releaseResult() === 'ERROR'">
+                            <span class="material-icons-outlined text-lg">error_outline</span>
+                            <span>{{ releaseResultText() || 'Falha ao acionar' }}</span>
+                        </ng-container>
                     </button>
                     <div *ngIf="!deviceId() || !editingProduct()"></div>
 
@@ -549,13 +574,6 @@
                         class="px-6 h-[54px] bg-indigo-50/50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-[#6366f1] dark:text-[#818cf8] border border-indigo-100 dark:border-indigo-500/20 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-sm active:scale-95 text-center">
                         Salvar
                     </button>
-                </div>
-
-                <!-- Alerta de Feedback de Acionamento -->
-                <div *ngIf="releaseStatusMessage()"
-                    class="mt-4 p-4 rounded-2xl text-center text-xs font-bold transition-all border animate-in fade-in duration-300"
-                    [ngClass]="releaseStatusError() ? 'bg-rose-50 border-rose-200 text-rose-600 dark:bg-rose-900/20 dark:border-rose-900/40 dark:text-rose-400' : 'bg-emerald-50 border-emerald-200 text-emerald-600 dark:bg-emerald-900/20 dark:border-emerald-900/40 dark:text-emerald-400'">
-                    {{ releaseStatusMessage() }}
                 </div>
             </div>
         </div>
