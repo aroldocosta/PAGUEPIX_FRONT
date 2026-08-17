@@ -105,8 +105,8 @@ export class DeviceProductManagerComponent implements OnInit {
 
     // Release state for Edit Modal
     releasingProduct = signal<boolean>(false);
-    releaseStatusMessage = signal<string | null>(null);
-    releaseStatusError = signal<boolean>(false);
+    releaseResult = signal<'SUCCESS' | 'ERROR' | null>(null);
+    releaseResultText = signal<string>('');
 
 
     ngOnInit() {
@@ -257,8 +257,9 @@ export class DeviceProductManagerComponent implements OnInit {
         this.editActive.set(product.active);
         this.editPartnerId.set(String(product.partner?.id || ''));
         this.editChannel.set(product.channel || 1);
-        this.releaseStatusMessage.set(null);
-        this.releaseStatusError.set(false);
+        this.releaseResult.set(null);
+        this.releaseResultText.set('');
+        this.releasingProduct.set(false);
         this.showEditModal.set(true);
     }
 
@@ -266,7 +267,9 @@ export class DeviceProductManagerComponent implements OnInit {
     cancelEdit() {
         this.showEditModal.set(false);
         this.editingProduct.set(null);
-        this.releaseStatusMessage.set(null);
+        this.releaseResult.set(null);
+        this.releaseResultText.set('');
+        this.releasingProduct.set(false);
     }
 
     saveEdit() {
@@ -307,7 +310,9 @@ export class DeviceProductManagerComponent implements OnInit {
             this.edit.emit(updatedProduct);
             this.showEditModal.set(false);
             this.editingProduct.set(null);
-            this.releaseStatusMessage.set(null);
+            this.releaseResult.set(null);
+            this.releaseResultText.set('');
+            this.releasingProduct.set(false);
         }
     }
 
@@ -316,9 +321,27 @@ export class DeviceProductManagerComponent implements OnInit {
         const current = this.editingProduct();
         if (!dId || !current || !current.id) return;
 
+        const startTime = Date.now();
         this.releasingProduct.set(true);
-        this.releaseStatusMessage.set(null);
-        this.releaseStatusError.set(false);
+        this.releaseResult.set(null);
+        this.releaseResultText.set('');
+
+        const finishRelease = (success: boolean, resultText: string) => {
+            const elapsed = Date.now() - startTime;
+            // Tempo mínimo de 2 segundos para o usuário ler "Acionando..." com tranquilidade
+            const remaining = Math.max(0, 2000 - elapsed);
+            setTimeout(() => {
+                this.releasingProduct.set(false);
+                this.releaseResult.set(success ? 'SUCCESS' : 'ERROR');
+                this.releaseResultText.set(resultText);
+                setTimeout(() => {
+                    if (this.releaseResultText() === resultText) {
+                        this.releaseResult.set(null);
+                        this.releaseResultText.set('');
+                    }
+                }, 2500);
+            }, remaining);
+        };
 
         const editP = this.editPartnerId();
         let partnerIdVal: number | undefined = undefined;
@@ -371,33 +394,23 @@ export class DeviceProductManagerComponent implements OnInit {
 
                         this.deviceService.releaseManual(dId, minutes, ch, String(current.id)).subscribe({
                             next: () => {
-                                this.releasingProduct.set(false);
-                                this.releaseStatusError.set(false);
-                                this.releaseStatusMessage.set(`Comando enviado com sucesso para o Canal ${ch}!`);
-                                setTimeout(() => this.releaseStatusMessage.set(null), 5000);
+                                finishRelease(true, `Canal ${ch} Acionado!`);
                             },
                             error: (err) => {
                                 console.error('Error releasing product manual', err);
-                                this.releasingProduct.set(false);
-                                this.releaseStatusError.set(true);
-                                this.releaseStatusMessage.set('Erro ao enviar comando de liberação.');
-                                setTimeout(() => this.releaseStatusMessage.set(null), 5000);
+                                finishRelease(false, 'Falha ao acionar');
                             }
                         });
                     },
                     error: (err) => {
                         console.error('Error updating channel', err);
-                        this.releasingProduct.set(false);
-                        this.releaseStatusError.set(true);
-                        this.releaseStatusMessage.set('Erro ao atualizar canal do produto.');
+                        finishRelease(false, 'Erro no canal');
                     }
                 });
             },
             error: (err) => {
                 console.error('Error updating product before release', err);
-                this.releasingProduct.set(false);
-                this.releaseStatusError.set(true);
-                this.releaseStatusMessage.set('Erro ao salvar produto antes do acionamento.');
+                finishRelease(false, 'Erro ao salvar');
             }
         });
     }
