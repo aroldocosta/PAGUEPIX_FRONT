@@ -114,3 +114,14 @@ Foi implementada uma estratégia de **"Sealed Envelope"** (Envelope Selado) para
 
 > [!IMPORTANT]
 > A implementação utiliza **RSA-OAEP** com hash **SHA-256**. A chave pública deve ser configurada no `SalesTimeComponent`.
+
+---
+
+## Gestão de Dispositivos e Checklist de Prontidão
+
+Para garantir que o administrador e os instaladores em campo tenham visão clara do estado de cada ponto de venda, a interface de dispositivos incorpora um **Semáforo de Prontidão**:
+
+1. 🔌 **Hardware (IoT)**: Indica se a placa física (`Board`) está associada, online e recebendo telemetria via MQTT, disponibilizando botão de teste de disparo de relé em 1 clique.
+2. 🏷️ **Serviços & Produtos**: Valida se há produtos cadastrados e associados ao canal do dispositivo.
+3. 💳 **Checkout Centralizado**: Exibe o link e QR Code prontos para impressão e fixação na máquina física.
+4. 🟢 **Status Geral**: Diferencia máquinas "Prontas para Vender" de máquinas "Aguardando Instalação Física".
