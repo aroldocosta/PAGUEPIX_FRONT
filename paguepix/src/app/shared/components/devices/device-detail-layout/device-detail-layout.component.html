@@ -1,6 +1,49 @@
 <div class="px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
     <!-- Coluna da Esquerda (Formulário + Produtos) -->
     <div class="lg:col-span-2 space-y-8">
+        <!-- Checklist / Semáforo de Prontidão da Máquina -->
+        <div *ngIf="id()" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-3xl shadow-sm space-y-3">
+            <h3 class="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                <span class="material-icons-outlined text-indigo-500 text-lg">fact_check</span>
+                Status de Prontidão da Máquina
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <!-- 1. Hardware IoT -->
+                <div class="p-3 rounded-2xl border transition-all"
+                     [ngClass]="boardId() ? 'bg-emerald-50/50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20' : 'bg-rose-50/50 dark:bg-rose-500/10 border-rose-200 dark:border-rose-500/20'">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="material-icons-outlined text-sm" [ngClass]="boardId() ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'">router</span>
+                        <span class="text-xs font-bold" [ngClass]="boardId() ? 'text-emerald-700 dark:text-emerald-300' : 'text-rose-700 dark:text-rose-300'">Placa IoT</span>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">
+                        {{ boardId() ? 'Placa Vinculada' : 'Aguardando Instalação' }}
+                    </p>
+                </div>
+
+                <!-- 2. Produtos & Serviços -->
+                <div class="p-3 rounded-2xl border transition-all"
+                     [ngClass]="deviceProducts() && deviceProducts().length > 0 ? 'bg-emerald-50/50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20' : 'bg-amber-50/50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/20'">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="material-icons-outlined text-sm" [ngClass]="deviceProducts() && deviceProducts().length > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'">category</span>
+                        <span class="text-xs font-bold" [ngClass]="deviceProducts() && deviceProducts().length > 0 ? 'text-emerald-700 dark:text-emerald-300' : 'text-amber-700 dark:text-amber-300'">Produtos</span>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                        {{ deviceProducts() && deviceProducts().length > 0 ? deviceProducts().length + ' Configurados' : 'Sem Produtos' }}
+                    </p>
+                </div>
+
+                <!-- 3. Checkout SaaS -->
+                <div class="p-3 rounded-2xl bg-emerald-50/50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="material-icons-outlined text-sm text-emerald-600 dark:text-emerald-400">qr_code_2</span>
+                        <span class="text-xs font-bold text-emerald-700 dark:text-emerald-300">Checkout SaaS</span>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                        QR Code Ativo
+                    </p>
+                </div>
+            </div>
+        </div>
         <!-- Formulário -->
         <app-device-form [id]="id() ?? ''" [name]="name()" [model]="model()"
             [partnerId]="partnerId()" [partners]="partners()" [mode]="mode()" [loading]="releasing()"

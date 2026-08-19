@@ -1,4 +1,6 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -13,13 +15,17 @@ import { environment } from '../../../../../environments/environment';
   templateUrl: './edit.html',
   styleUrl: './edit.scss'
 })
-export class PartnerEdit implements OnInit {
+export class PartnerEdit implements OnInit, OnDestroy {
+  private nameInput$ = new Subject<string>();
+  private nameSub?: Subscription;
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private partnerService = inject(PartnerService);
 
   id = signal<string | number | null>(null);
   name = signal('');
+  partnerCode = signal('');
+  isPartnerCodeManual = signal(false);
   description = signal('');
   gateway = signal('');
   pixKey = signal('');
@@ -44,6 +50,24 @@ export class PartnerEdit implements OnInit {
   hasData = signal(true);
 
   ngOnInit() {
+    this.nameSub = this.nameInput$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(newName => {
+        if (!this.id() && !this.isPartnerCodeManual() && newName && newName.trim()) {
+          return this.partnerService.suggestCode(newName.trim(), this.id() || undefined);
+        }
+        return [];
+      })
+    ).subscribe({
+      next: (resp) => {
+        if (resp && resp.code && !this.isPartnerCodeManual()) {
+          this.partnerCode.set(resp.code);
+        }
+      },
+      error: (err) => console.error('Error suggesting partner code', err)
+    });
+
     this.partnerService.getGateways().subscribe({
       next: (g) => this.gateways.set(g),
       error: (e) => console.error('Error fetching gateways', e)
@@ -61,6 +85,8 @@ export class PartnerEdit implements OnInit {
     this.partnerService.getById(id).subscribe({
       next: (partner) => {
         this.name.set(partner.name || '');
+        this.partnerCode.set(partner.partnerCode || '');
+        this.isPartnerCodeManual.set(true);
         this.description.set(partner.description || '');
         
         let initialGateway = '';
@@ -115,10 +141,59 @@ export class PartnerEdit implements OnInit {
     }
   }
 
+  ngOnDestroy() {
+    this.nameSub?.unsubscribe();
+  }
+
+  onNameInput(newName: string) {
+    this.name.set(newName);
+    if (!this.id() && !this.isPartnerCodeManual()) {
+      if (!newName || !newName.trim()) {
+        this.partnerCode.set("");
+        return;
+      }
+      // Instant preliminary local preview
+      const clean = newName
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, "");
+      if (clean.length > 0) {
+        let slug = clean;
+        if (slug.length > 8) {
+          slug = slug.substring(0, 8);
+        } else if (slug.length < 8) {
+          slug = slug + "1".padStart(8 - slug.length, "0");
+        }
+        this.partnerCode.set(slug);
+      } else {
+        this.partnerCode.set("");
+      }
+
+      // Check collision in real-time with backend
+      this.nameInput$.next(newName);
+    }
+  }
+
+  onPartnerCodeInput(newCode: string) {
+    const upper = (newCode || '').toUpperCase();
+    if (!upper.trim()) {
+      this.isPartnerCodeManual.set(false);
+      this.partnerCode.set('');
+      if (this.name()) {
+        this.onNameInput(this.name());
+      }
+    } else {
+      this.isPartnerCodeManual.set(true);
+      this.partnerCode.set(upper);
+    }
+  }
+
   onSave() {
     const partnerData = {
       id: this.id() ? this.id() : undefined,
       name: this.name(),
+      partnerCode: this.partnerCode() ? this.partnerCode().trim().toUpperCase() : undefined,
       description: this.description(),
       gateway: this.gateway(),
       pixKey: this.pixKey(),
