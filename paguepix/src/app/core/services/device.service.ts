@@ -11,7 +11,7 @@ export class DeviceService {
 
     constructor(private http: HttpClient) { }
 
-    findAll(partnerId?: number, page: number = 0, size: number = 10): Observable<any> {
+    findAll(partnerId?: string | number, page: number = 0, size: number = 10): Observable<any> {
         let params = new HttpParams()
             .set('page', page.toString())
             .set('size', size.toString());

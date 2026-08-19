@@ -42,7 +42,7 @@ export class UserDeviceManagement implements OnInit {
         }
 
         this.loading.set(true);
-        this.deviceService.findAll(+partnerId, this.currentPage(), 10).subscribe({
+        this.deviceService.findAll(partnerId.toString(), this.currentPage(), 10).subscribe({
             next: (response) => {
                 this.devices.set(response.content || response);
                 this.totalPages.set(response.totalPages || 1);

@@ -344,11 +344,11 @@ export class DeviceProductManagerComponent implements OnInit {
         };
 
         const editP = this.editPartnerId();
-        let partnerIdVal: number | undefined = undefined;
-        if (editP && !isNaN(Number(editP)) && Number(editP) > 0) {
-            partnerIdVal = Number(editP);
-        } else if (current.partner?.id && !isNaN(Number(current.partner.id)) && Number(current.partner.id) > 0) {
-            partnerIdVal = Number(current.partner.id);
+        let partnerIdVal: string | undefined = undefined;
+        if (editP && editP.trim() !== "") {
+            partnerIdVal = editP.toString();
+        } else if (current.partner?.id) {
+            partnerIdVal = current.partner.id.toString();
         }
 
         const updatedProductPayload: any = {

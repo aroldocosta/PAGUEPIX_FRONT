@@ -11,7 +11,7 @@ export class BoardService {
 
     constructor(private http: HttpClient) { }
 
-    findAll(partnerId?: number, scriptId?: number, page: number = 0, size: number = 10) {
+    findAll(partnerId?: string | number, scriptId?: string | number, page: number = 0, size: number = 10) {
         let params = new HttpParams()
             .set('page', page.toString())
             .set('size', size.toString());

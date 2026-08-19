@@ -52,7 +52,7 @@ export class ProductManagement implements OnInit {
 
     loadProducts() {
         this.loading.set(true);
-        const partnerId = this.selectedPartnerId() === 'all' ? undefined : +this.selectedPartnerId();
+        const partnerId = this.selectedPartnerId() === 'all' ? undefined : this.selectedPartnerId().toString();
         this.productService.findAll(partnerId, this.currentPage(), 10).subscribe({
             next: (response) => {
                 const content = (response as any).content || response;
