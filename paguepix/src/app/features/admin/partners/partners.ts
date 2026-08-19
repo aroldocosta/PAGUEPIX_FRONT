@@ -94,7 +94,7 @@ export class PartnerManagement implements OnInit {
 
     onOpenMatrix(partner: PartnerSummary) {
         this.loading.set(true);
-        this.deviceService.findAll(Number(partner.id)).subscribe({
+        this.deviceService.findAll(partner.id.toString()).subscribe({
             next: (resp) => {
                 const list = resp.content || resp;
                 if (list && list.length > 0) {

@@ -53,7 +53,7 @@ export class UserManagement implements OnInit {
 
     loadUsers() {
         this.loading.set(true);
-        const partnerId = this.selectedPartnerId() === 'all' ? undefined : +this.selectedPartnerId();
+        const partnerId = this.selectedPartnerId() === 'all' ? undefined : this.selectedPartnerId().toString();
         this.userService.getAll(partnerId, this.currentPage(), 10).subscribe({
             next: (response) => {
                 this.users.set(response.content || response);

@@ -26,7 +26,7 @@ export interface UserRequest {
     login: string;
     password?: string;
     role: 'ADMIN' | 'PARTNER';
-    partnerId?: number | null;
+    partnerId?: string | number | null;
 }
 
 export interface User extends UserDetailResponse {}

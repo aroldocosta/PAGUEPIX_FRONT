@@ -55,7 +55,7 @@ export class DeviceManagement implements OnInit {
 
     loadDevices() {
         this.loading.set(true);
-        const partnerId = this.selectedPartnerId() === 'all' ? undefined : +this.selectedPartnerId();
+        const partnerId = this.selectedPartnerId() === 'all' ? undefined : this.selectedPartnerId().toString();
         this.deviceService.findAll(partnerId, this.currentPage(), 10).subscribe({
             next: (response) => {
                 this.devices.set(response.content || response);

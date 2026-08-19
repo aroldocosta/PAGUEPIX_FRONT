@@ -56,7 +56,7 @@ export class BoardManagement implements OnInit {
 
     loadBoards() {
         this.loading.set(true);
-        const partnerId = this.selectedPartnerId() === 'all' ? undefined : +this.selectedPartnerId();
+        const partnerId = this.selectedPartnerId() === 'all' ? undefined : this.selectedPartnerId().toString();
         this.boardService.findAll(partnerId, undefined, this.currentPage(), 10).subscribe({
             next: (response) => {
                 this.boards.set(response.content || response);

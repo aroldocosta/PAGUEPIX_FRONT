@@ -12,7 +12,7 @@ export class UserService {
 
     constructor(private http: HttpClient) { }
 
-    getAll(partnerId?: number, page: number = 0, size: number = 10): Observable<any> {
+    getAll(partnerId?: string | number, page: number = 0, size: number = 10): Observable<any> {
         let params = new HttpParams()
             .set('page', page.toString())
             .set('size', size.toString());
