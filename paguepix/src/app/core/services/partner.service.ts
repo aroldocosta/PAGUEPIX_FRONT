@@ -39,6 +39,14 @@ export class PartnerService {
         return this.http.delete<PartnerDetail>(`${this.apiUrl}/${id}`);
     }
 
+    suggestCode(name: string, partnerId?: string | number): Observable<{ code: string }> {
+        let params = new HttpParams().set('name', name);
+        if (partnerId) {
+            params = params.set('partnerId', partnerId.toString());
+        }
+        return this.http.get<{ code: string }>(`${this.apiUrl}/suggest-code`, { params });
+    }
+
     uploadLogo(id: string | number, file: File): Observable<PartnerDetail> {
         const formData = new FormData();
         formData.append('file', file);

@@ -10,7 +10,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Nome -->
-                    <div class="space-y-2 md:col-span-2">
+                    <div class="space-y-2">
                         <label for="name" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
                             Nome Fantasia / Razão Social
                         </label>
@@ -18,9 +18,24 @@
                             <span
                                 class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors">store</span>
                             <input id="name" name="name" type="text" [ngModel]="name()"
-                                (ngModelChange)="name.set($event)" required
+                                (ngModelChange)="onNameInput($event)" required
                                 class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white"
                                 placeholder="Ex: Loja do João Ltda">
+                        </div>
+                    </div>
+
+                    <!-- Código do Parceiro (8 caracteres) -->
+                    <div class="space-y-2">
+                        <label for="partnerCode" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
+                            Código do Parceiro
+                        </label>
+                        <div class="relative group">
+                            <span
+                                class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors">qr_code</span>
+                            <input id="partnerCode" name="partnerCode" type="text" [ngModel]="partnerCode()"
+                                (ngModelChange)="onPartnerCodeInput($event)" maxlength="8"
+                                class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white font-mono uppercase font-bold"
+                                placeholder="Ex: CHAFPIX1">
                         </div>
                     </div>
 
@@ -60,17 +75,20 @@
 
                     <!-- Modo de Entrada / Fluxo de Pagamento -->
                     <div class="space-y-2">
-                        <label for="paymentWorkflowMode" class="block text-sm font-bold text-gray-700 dark:text-slate-300">
+                        <label for="paymentWorkflowMode"
+                            class="block text-sm font-bold text-gray-700 dark:text-slate-300">
                             Modo de Entrada / Fluxo de Pagamento
                         </label>
                         <div class="relative group">
                             <span
                                 class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors">sync_alt</span>
-                            <select id="paymentWorkflowMode" name="paymentWorkflowMode" [ngModel]="paymentWorkflowMode()"
-                                (ngModelChange)="paymentWorkflowMode.set($event)" required
+                            <select id="paymentWorkflowMode" name="paymentWorkflowMode"
+                                [ngModel]="paymentWorkflowMode()" (ngModelChange)="paymentWorkflowMode.set($event)"
+                                required
                                 class="w-full pl-10 pr-10 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white appearance-none">
                                 <option value="CENTRALIZED_WEB_CHECKOUT">Checkout Centralizado no SaaS</option>
-                                <option value="DECENTRALIZED_IN_STORE_QR">Código QR Modelo Estático (Mercado Pago)</option>
+                                <option value="DECENTRALIZED_IN_STORE_QR">Código QR Modelo Estático (Mercado Pago)
+                                </option>
                             </select>
                             <span
                                 class="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">expand_more</span>
@@ -116,38 +134,44 @@
                             </h3>
 
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <label class="relative flex flex-col p-4 border rounded-2xl cursor-pointer transition-all"
+                                <label
+                                    class="relative flex flex-col p-4 border rounded-2xl cursor-pointer transition-all"
                                     [class.border-indigo-500]="payoutMethod() === 'AUTOMATIC_TED'"
                                     [class.bg-indigo-50]="payoutMethod() === 'AUTOMATIC_TED'"
                                     [class.dark:bg-indigo-500/10]="payoutMethod() === 'AUTOMATIC_TED'"
                                     [class.border-slate-200]="payoutMethod() !== 'AUTOMATIC_TED'"
                                     [class.dark:border-slate-800]="payoutMethod() !== 'AUTOMATIC_TED'">
-                                    <input type="radio" name="payoutMethod" value="AUTOMATIC_TED" [ngModel]="payoutMethod()"
-                                        (ngModelChange)="payoutMethod.set($event)" class="absolute opacity-0">
+                                    <input type="radio" name="payoutMethod" value="AUTOMATIC_TED"
+                                        [ngModel]="payoutMethod()" (ngModelChange)="payoutMethod.set($event)"
+                                        class="absolute opacity-0">
                                     <span class="font-bold text-slate-900 dark:text-white">TED Automático</span>
                                     <span class="text-xs text-slate-500">Repasse via API (D+1)</span>
                                 </label>
 
-                                <label class="relative flex flex-col p-4 border rounded-2xl cursor-pointer transition-all"
+                                <label
+                                    class="relative flex flex-col p-4 border rounded-2xl cursor-pointer transition-all"
                                     [class.border-emerald-500]="payoutMethod() === 'AUTOMATIC_PIX'"
                                     [class.bg-emerald-50]="payoutMethod() === 'AUTOMATIC_PIX'"
                                     [class.dark:bg-emerald-500/10]="payoutMethod() === 'AUTOMATIC_PIX'"
                                     [class.border-slate-200]="payoutMethod() !== 'AUTOMATIC_PIX'"
                                     [class.dark:border-slate-800]="payoutMethod() !== 'AUTOMATIC_PIX'">
-                                    <input type="radio" name="payoutMethod" value="AUTOMATIC_PIX" [ngModel]="payoutMethod()"
-                                        (ngModelChange)="payoutMethod.set($event)" class="absolute opacity-0">
+                                    <input type="radio" name="payoutMethod" value="AUTOMATIC_PIX"
+                                        [ngModel]="payoutMethod()" (ngModelChange)="payoutMethod.set($event)"
+                                        class="absolute opacity-0">
                                     <span class="font-bold text-slate-900 dark:text-white">Pix Automático</span>
                                     <span class="text-xs text-slate-500">Disponível em breve</span>
                                 </label>
 
-                                <label class="relative flex flex-col p-4 border rounded-2xl cursor-pointer transition-all"
+                                <label
+                                    class="relative flex flex-col p-4 border rounded-2xl cursor-pointer transition-all"
                                     [class.border-amber-500]="payoutMethod() === 'MANUAL_PIX'"
                                     [class.bg-amber-50]="payoutMethod() === 'MANUAL_PIX'"
                                     [class.dark:bg-amber-500/10]="payoutMethod() === 'MANUAL_PIX'"
                                     [class.border-slate-200]="payoutMethod() !== 'MANUAL_PIX'"
                                     [class.dark:border-slate-800]="payoutMethod() !== 'MANUAL_PIX'">
-                                    <input type="radio" name="payoutMethod" value="MANUAL_PIX" [ngModel]="payoutMethod()"
-                                        (ngModelChange)="payoutMethod.set($event)" class="absolute opacity-0">
+                                    <input type="radio" name="payoutMethod" value="MANUAL_PIX"
+                                        [ngModel]="payoutMethod()" (ngModelChange)="payoutMethod.set($event)"
+                                        class="absolute opacity-0">
                                     <span class="font-bold text-slate-900 dark:text-white">Pix Manual</span>
                                     <span class="text-xs text-slate-500">Fluxo de contingência</span>
                                 </label>
@@ -178,7 +202,8 @@
                                 <!-- Banco -->
                                 <div class="space-y-2">
                                     <label for="bankCode"
-                                        class="block text-sm font-bold text-gray-700 dark:text-slate-300">Cód. Banco</label>
+                                        class="block text-sm font-bold text-gray-700 dark:text-slate-300">Cód.
+                                        Banco</label>
                                     <input id="bankCode" name="bankCode" type="text" [ngModel]="bankCode()"
                                         (ngModelChange)="bankCode.set($event)"
                                         class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900 dark:text-white"
@@ -240,26 +265,33 @@
                         </h3>
 
                         <!-- Status: CONECTADO -->
-                        <div *ngIf="mpUserId()" class="p-6 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 rounded-3xl flex items-center justify-between">
+                        <div *ngIf="mpUserId()"
+                            class="p-6 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 rounded-3xl flex items-center justify-between">
                             <div class="flex items-center gap-3">
                                 <span class="material-icons-outlined text-emerald-500 text-3xl">check_circle</span>
                                 <div>
-                                    <p class="text-sm font-bold text-emerald-800 dark:text-emerald-300">Conta Mercado Pago Conectada</p>
-                                    <p class="text-xs text-emerald-600 dark:text-emerald-400">ID da Conta: {{ mpUserId() }} • Expira em: {{ mpTokenExpiresAt() | date:'dd/MM/yyyy HH:mm' }}</p>
+                                    <p class="text-sm font-bold text-emerald-800 dark:text-emerald-300">Conta Mercado
+                                        Pago Conectada</p>
+                                    <p class="text-xs text-emerald-600 dark:text-emerald-400">ID da Conta: {{ mpUserId()
+                                        }} • Expira em: {{ mpTokenExpiresAt() | date:'dd/MM/yyyy HH:mm' }}</p>
                                 </div>
                             </div>
-                            <button type="button" (click)="connectMercadoPago()" class="px-5 py-3 bg-white dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm">
+                            <button type="button" (click)="connectMercadoPago()"
+                                class="px-5 py-3 bg-white dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm">
                                 Reautenticar
                             </button>
                         </div>
 
                         <!-- Status: REQUER CONEXÃO -->
-                        <div *ngIf="!mpUserId()" class="p-6 bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 rounded-3xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                        <div *ngIf="!mpUserId()"
+                            class="p-6 bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 rounded-3xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                             <div>
                                 <p class="text-sm font-bold text-amber-800 dark:text-amber-300">Conexão Pendente</p>
-                                <p class="text-xs text-amber-600 dark:text-amber-400">Você precisa conectar a conta Mercado Pago para receber pagamentos diretamente.</p>
+                                <p class="text-xs text-amber-600 dark:text-amber-400">Você precisa conectar a conta
+                                    Mercado Pago para receber pagamentos diretamente.</p>
                             </div>
-                            <button type="button" (click)="connectMercadoPago()" class="px-6 py-4 bg-[#009ee3] hover:bg-[#008ad6] text-white text-sm font-bold rounded-2xl transition-all flex items-center gap-2 shadow-sm">
+                            <button type="button" (click)="connectMercadoPago()"
+                                class="px-6 py-4 bg-[#009ee3] hover:bg-[#008ad6] text-white text-sm font-bold rounded-2xl transition-all flex items-center gap-2 shadow-sm">
                                 <span class="material-icons-outlined text-lg">link</span>
                                 Conectar Mercado Pago
                             </button>
@@ -269,10 +301,12 @@
                     <!-- Mercado Pago OAuth Connection (Novo Parceiro) -->
                     <div class="md:col-span-2 pt-6 border-t border-slate-100 dark:border-slate-800"
                         *ngIf="paymentWorkflowMode() === 'DECENTRALIZED_IN_STORE_QR' && !id()">
-                        <div class="p-6 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/30 rounded-3xl flex items-center gap-3">
+                        <div
+                            class="p-6 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/30 rounded-3xl flex items-center gap-3">
                             <span class="material-icons-outlined text-indigo-500 text-2xl">info</span>
                             <p class="text-xs text-indigo-800 dark:text-indigo-300 font-medium">
-                                Após salvar este novo parceiro pela primeira vez, a seção de conexão com o Mercado Pago estará disponível para vincular a conta de recebimento.
+                                Após salvar este novo parceiro pela primeira vez, a seção de conexão com o Mercado Pago
+                                estará disponível para vincular a conta de recebimento.
                             </p>
                         </div>
                     </div>

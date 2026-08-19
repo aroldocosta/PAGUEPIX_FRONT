@@ -5,6 +5,7 @@ import { Payment } from './payment.model';
 export interface PartnerSummary {
     id: string | number;
     name: string;
+    partnerCode?: string;
     logo?: string;
     gateway?: any;
     pixKey?: string;
@@ -15,6 +16,7 @@ export interface PartnerSummary {
 export interface PartnerDetail {
     id: string | number;
     name: string;
+    partnerCode?: string;
     logo?: string;
     description?: string;
     gateway?: any;
