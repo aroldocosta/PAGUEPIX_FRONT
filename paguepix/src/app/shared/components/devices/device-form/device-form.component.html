@@ -62,7 +62,7 @@
                         class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">handshake</span>
                     <select id="partner" name="partner" [(ngModel)]="partnerId" [disabled]="mode === 'view'"
                         [class]="getFieldClasses(true)">
-                        <option [value]="null">Nenhum parceiro vinculado</option>
+                        <option [ngValue]="null">Nenhum parceiro vinculado</option>
                         <option *ngFor="let partner of partners" [value]="partner.id">
                             {{ partner.name }}
                         </option>
@@ -91,7 +91,7 @@
                         class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">memory</span>
                     <select id="board" name="board" [(ngModel)]="boardId" [disabled]="mode === 'view'"
                         [class]="getFieldClasses(true)">
-                        <option [value]="null">Nenhuma placa selecionada</option>
+                        <option [ngValue]="null">Nenhuma placa selecionada</option>
                         <option *ngFor="let board of boards" [value]="board.id">
                             {{ board.mqttId || board.name }}
                         </option>
