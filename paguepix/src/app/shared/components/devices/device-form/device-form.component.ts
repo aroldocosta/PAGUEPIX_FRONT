@@ -58,12 +58,15 @@ export class DeviceFormComponent {
 
     onSave() {
         if (this.mode === 'view') return;
+        const normalizedBoardId = (this.boardId === 'null' || this.boardId === '' || !this.boardId) ? null : this.boardId;
+        const normalizedPartnerId = (this.partnerId === 'null' || this.partnerId === '' || !this.partnerId) ? null : this.partnerId;
+
         this.save.emit({
             name: this.name,
             model: this.model,
             type: this.type,
-            partnerId: this.partnerId,
-            boardId: this.boardId,
+            partnerId: normalizedPartnerId,
+            boardId: normalizedBoardId,
             channel: this.channel,
             externalStoreId: this.externalStoreId,
             externalPosId: this.externalPosId
