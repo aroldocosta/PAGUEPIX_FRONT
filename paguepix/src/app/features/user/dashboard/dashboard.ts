@@ -1,4 +1,6 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
 import { ThemeService } from '../../../core/services/theme.service';
@@ -14,7 +16,7 @@ import { environment } from '../../../../environments/environment';
 @Component({
   selector: 'app-user-dashboard',
   standalone: true,
-  imports: [CommonModule, SalesChartComponent, SidebarComponent, TopbarComponent, FooterComponent],
+  imports: [CommonModule, FormsModule, SalesChartComponent, SidebarComponent, TopbarComponent, FooterComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss'
 })
@@ -24,6 +26,14 @@ export class UserDashboard implements OnInit {
   private paymentService = inject(PaymentService);
   protected themeService = inject(ThemeService);
   private partnerService = inject(PartnerService);
+  private http = inject(HttpClient);
+
+  // Signals para Desvinculação com Segurança
+  showDisconnectModal = signal(false);
+  disconnectLogin = signal('');
+  disconnectPassword = signal('');
+  disconnectError = signal<string | null>(null);
+  isDisconnectingMP = signal(false);
 
   mpUserId = signal<string | null>(null);
   mpTokenExpiresAt = signal<string | null>(null);
@@ -68,6 +78,7 @@ export class UserDashboard implements OnInit {
 
   selectedDays = signal(1);
   loading = signal(false);
+  isConnectingMP = signal(false);
   showWithdrawModal = signal(false);
   apiResponseMessage = signal<string | null>(null);
   apiResponseCode = signal<number | null>(null);
@@ -237,7 +248,77 @@ export class UserDashboard implements OnInit {
   connectMercadoPago(): void {
     const partnerId = this.authService.partnerId();
     if (partnerId) {
-      window.location.href = `${environment.apiUrl}/partners/oauth/connect/${partnerId}`;
+      this.isConnectingMP.set(true);
+      // Pequeno delay para garantir que o indicador renderize antes do redirect
+      setTimeout(() => {
+        window.location.href = `${environment.apiUrl}/partners/oauth/connect/${partnerId}`;
+      }, 150);
     }
+  }
+
+  openDisconnectModal(): void {
+    this.disconnectLogin.set('');
+    this.disconnectPassword.set('');
+    this.disconnectError.set(null);
+    this.showDisconnectModal.set(true);
+  }
+
+  closeDisconnectModal(): void {
+    if (!this.isDisconnectingMP()) {
+      this.showDisconnectModal.set(false);
+      this.disconnectError.set(null);
+    }
+  }
+
+  confirmDisconnect(): void {
+    const login = this.disconnectLogin().trim();
+    const pwd = this.disconnectPassword();
+    const partnerId = this.authService.partnerId();
+
+    if (!login || !pwd) {
+      this.disconnectError.set('Por favor, informe seu usuário e senha.');
+      return;
+    }
+
+    if (!partnerId) {
+      this.disconnectError.set('Identificador do parceiro não encontrado na sessão.');
+      return;
+    }
+
+    this.isDisconnectingMP.set(true);
+    this.disconnectError.set(null);
+
+    // 1. Valida as credenciais da plataforma via /auth/login
+    this.http.post<any>(`${environment.apiUrl}/auth/login`, { login, password: pwd }).subscribe({
+      next: (authRes) => {
+        // Validação adicional de segurança: se não for ADMIN, valida se o usuário autenticado pertence a este parceiro
+        if (authRes.role !== 'ADMIN' && authRes.partnerId && Number(authRes.partnerId) !== Number(partnerId)) {
+          this.isDisconnectingMP.set(false);
+          this.disconnectError.set('Credenciais não autorizadas para este parceiro.');
+          return;
+        }
+
+        // 2. Executa a desvinculação da conta MP no backend
+        this.http.post<any>(`${environment.apiUrl}/mercadopago/reset/partner/${partnerId}`, {}).subscribe({
+          next: () => {
+            this.isDisconnectingMP.set(false);
+            this.mpUserId.set(null);
+            this.mpTokenExpiresAt.set(null);
+            this.showDisconnectModal.set(false);
+            this.loadPartnerOAuthInfo();
+          },
+          error: (resetErr) => {
+            console.error('Erro ao desvincular conta Mercado Pago:', resetErr);
+            this.isDisconnectingMP.set(false);
+            this.disconnectError.set('Erro ao desvincular no servidor. Tente novamente.');
+          }
+        });
+      },
+      error: (loginErr) => {
+        console.error('Erro de autenticação para desvinculação:', loginErr);
+        this.isDisconnectingMP.set(false);
+        this.disconnectError.set('Credenciais inválidas. Verifique seu login e senha.');
+      }
+    });
   }
 }

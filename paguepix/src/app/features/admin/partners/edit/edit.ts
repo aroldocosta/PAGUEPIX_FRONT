@@ -47,6 +47,7 @@ export class PartnerEdit implements OnInit, OnDestroy {
   selectedFile: File | null = null;
 
   loading = signal(false);
+  isConnectingMP = signal(false);
   hasData = signal(true);
 
   ngOnInit() {
@@ -258,7 +259,11 @@ export class PartnerEdit implements OnInit, OnDestroy {
 
   connectMercadoPago() {
     if (this.id()) {
-      window.location.href = `${environment.apiUrl}/partners/oauth/connect/${this.id()}`;
+      this.isConnectingMP.set(true);
+      // Pequeno delay para garantir que o indicador renderize antes do redirect
+      setTimeout(() => {
+        window.location.href = `${environment.apiUrl}/partners/oauth/connect/${this.id()}`;
+      }, 150);
     }
   }
 }
