@@ -82,6 +82,7 @@
 
                 <!-- Mercado Pago OAuth Connection (Lojista Panel) -->
                 <section *ngIf="paymentWorkflowMode() === 'DECENTRALIZED_IN_STORE_QR'">
+
                     <!-- Status: CONECTADO -->
                     <div *ngIf="mpUserId()" class="p-6 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 rounded-3xl flex items-center justify-between">
                         <div class="flex items-center gap-3">
@@ -91,9 +92,21 @@
                                 <p class="text-xs text-emerald-600 dark:text-emerald-400">ID da Conta MP: {{ mpUserId() }} • Token ativo. Expira em: {{ mpTokenExpiresAt() | date:'dd/MM/yyyy HH:mm' }}</p>
                             </div>
                         </div>
-                        <button type="button" (click)="connectMercadoPago()" class="px-5 py-3 bg-white dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm">
-                            Atualizar Conexão
-                        </button>
+                        <div class="flex items-center gap-2.5">
+                            <button type="button" (click)="connectMercadoPago()" [disabled]="isConnectingMP()"
+                                class="px-5 py-3 bg-white dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2">
+                                <svg *ngIf="isConnectingMP()" class="animate-spin w-4 h-4 text-slate-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                </svg>
+                                {{ isConnectingMP() ? 'Redirecionando...' : 'Atualizar Conexão' }}
+                            </button>
+                            <button type="button" (click)="openDisconnectModal()" [disabled]="isConnectingMP() || isDisconnectingMP()"
+                                class="px-5 py-3 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/30 dark:hover:bg-rose-900/40 text-xs font-bold text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800/50 rounded-xl transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-1.5">
+                                <span class="material-icons-outlined text-base">link_off</span>
+                                Desvincular conta
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Status: PENDENTE -->
@@ -105,9 +118,14 @@
                                 <p class="text-xs text-amber-600 dark:text-amber-400">Você precisa conectar a sua conta do Mercado Pago para ativar o recebimento de Pix diretamente em sua conta.</p>
                             </div>
                         </div>
-                        <button type="button" (click)="connectMercadoPago()" class="px-6 py-4 bg-[#009ee3] hover:bg-[#008ad6] text-white text-sm font-bold rounded-2xl transition-all flex items-center gap-2 shadow-sm">
-                            <span class="material-icons-outlined text-lg">link</span>
-                            Conectar Mercado Pago
+                        <button type="button" (click)="connectMercadoPago()" [disabled]="isConnectingMP()"
+                            class="px-6 py-4 bg-[#009ee3] hover:bg-[#008ad6] disabled:bg-[#009ee3]/60 text-white text-sm font-bold rounded-2xl transition-all flex items-center gap-2 shadow-sm disabled:cursor-not-allowed min-w-[220px]">
+                            <svg *ngIf="isConnectingMP()" class="animate-spin w-5 h-5 text-white flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                            <span *ngIf="!isConnectingMP()" class="material-icons-outlined text-lg">link</span>
+                            <span>{{ isConnectingMP() ? 'Aguarde, redirecionando...' : 'Conectar Mercado Pago' }}</span>
                         </button>
                     </div>
                 </section>
@@ -456,3 +474,96 @@
         </div>
     </div>
 </div>
+        <!-- Modal de Confirmação de Desvinculação do Mercado Pago -->
+        <div *ngIf="showDisconnectModal()"
+            class="fixed inset-0 z-[1000] flex items-center justify-center p-4 sm:p-6 overflow-x-hidden overflow-y-auto">
+
+            <!-- Backdrop -->
+            <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity"
+                (click)="!isDisconnectingMP() && closeDisconnectModal()"></div>
+
+            <!-- Modal Content -->
+            <div
+                class="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-[32px] shadow-2xl border border-slate-100 dark:border-slate-800 p-8 transform transition-all">
+
+                <!-- Close Button -->
+                <button (click)="closeDisconnectModal()" [disabled]="isDisconnectingMP()"
+                    class="absolute top-6 right-6 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 transition-colors disabled:opacity-40">
+                    <span class="material-icons-outlined">close</span>
+                </button>
+
+                <!-- Modal Header -->
+                <div class="text-center">
+                    <div
+                        class="mx-auto w-16 h-16 bg-rose-50 dark:bg-rose-500/10 text-rose-500 rounded-[24px] flex items-center justify-center mb-5">
+                        <span class="material-icons-outlined text-3xl">link_off</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight mb-2">
+                        Desvincular Mercado Pago
+                    </h3>
+                    <p class="text-slate-500 dark:text-slate-400 font-normal text-xs px-2 leading-relaxed">
+                        Ao desvincular, os dispositivos e caixas configurados para o Mercado Pago deixarão de receber pagamentos por este canal.
+                    </p>
+                </div>
+
+                <!-- Security Notice -->
+                <div
+                    class="mt-5 p-3.5 bg-amber-50 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-900/30 rounded-2xl flex items-start gap-3">
+                    <span class="material-icons-outlined text-amber-500 text-lg flex-shrink-0 mt-0.5">lock</span>
+                    <p class="text-[12px] text-amber-800 dark:text-amber-300 leading-snug">
+                        Para sua segurança, confirme as <strong>credenciais da sua conta</strong> na plataforma para autorizar a desvinculação.
+                    </p>
+                </div>
+
+                <!-- Credentials Form -->
+                <form (ngSubmit)="confirmDisconnect()" class="mt-5 space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                            Usuário / E-mail da Plataforma
+                        </label>
+                        <div class="relative">
+                            <span class="material-icons-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">person</span>
+                            <input type="text" [ngModel]="disconnectLogin()" (ngModelChange)="disconnectLogin.set($event)" name="disconnectLogin" [disabled]="isDisconnectingMP()"
+                                placeholder="Seu e-mail ou usuário" required
+                                class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all disabled:opacity-50" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                            Senha de Acesso
+                        </label>
+                        <div class="relative">
+                            <span class="material-icons-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">lock</span>
+                            <input type="password" [ngModel]="disconnectPassword()" (ngModelChange)="disconnectPassword.set($event)" name="disconnectPassword" [disabled]="isDisconnectingMP()"
+                                placeholder="Sua senha" required
+                                class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all disabled:opacity-50" />
+                        </div>
+                    </div>
+
+                    <!-- Error Alert -->
+                    <div *ngIf="disconnectError()"
+                        class="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 rounded-xl flex items-center gap-2 text-red-600 dark:text-red-400 text-xs font-medium">
+                        <span class="material-icons-outlined text-base flex-shrink-0">error_outline</span>
+                        <span>{{ disconnectError() }}</span>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="pt-2 flex flex-col gap-2.5">
+                        <button type="submit" [disabled]="isDisconnectingMP() || !disconnectLogin() || !disconnectPassword()"
+                            class="w-full py-3.5 bg-rose-600 hover:bg-rose-700 disabled:bg-rose-400 text-white rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-sm disabled:cursor-not-allowed">
+                            <svg *ngIf="isDisconnectingMP()" class="animate-spin w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                            <span>{{ isDisconnectingMP() ? 'Validando e desvinculando...' : 'Confirmar Desvinculação' }}</span>
+                        </button>
+
+                        <button type="button" (click)="closeDisconnectModal()" [disabled]="isDisconnectingMP()"
+                            class="w-full py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-xl font-bold text-sm transition-all disabled:opacity-50">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
