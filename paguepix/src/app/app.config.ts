@@ -8,6 +8,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { jsonBigIntInterceptor } from './core/interceptors/json-bigint.interceptor';
+import { camelCaseInterceptor } from './core/interceptors/camel-case.interceptor';
 
 registerLocaleData(localePt);
 
@@ -17,7 +18,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(
       withFetch(),
-      withInterceptors([authInterceptor, jsonBigIntInterceptor])
+      withInterceptors([authInterceptor, jsonBigIntInterceptor, camelCaseInterceptor])
     ),
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     provideAnimations()
