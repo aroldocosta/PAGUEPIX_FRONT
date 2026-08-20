@@ -58,7 +58,9 @@
         <!-- Gerenciamento de Produtos / Lista de Produtos -->
         <div *ngIf="id()">
             <app-device-product-manager [deviceId]="id() ?? ''" [availableProducts]="allProducts()" [deviceProducts]="deviceProducts()"
-                [partners]="partners()" [loading]="productLoading()" [viewOnly]="mode() === 'view'" (add)="addProduct.emit($event)"
+                [partners]="partners()" [loading]="productLoading()" [viewOnly]="mode() === 'view'"
+                [paymentWorkflowMode]="paymentWorkflowMode()"
+                (add)="addProduct.emit($event)"
                 (remove)="removeProduct.emit($event)" (edit)="editProduct.emit($event)">
             </app-device-product-manager>
 

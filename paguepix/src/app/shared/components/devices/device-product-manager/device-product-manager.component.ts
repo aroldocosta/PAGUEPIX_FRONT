@@ -54,6 +54,9 @@ export class DeviceProductManagerComponent implements OnInit {
     partners = input<any[]>([]);
     loading = input<boolean>(false);
     viewOnly = input<boolean>(false);
+    paymentWorkflowMode = input<string>('');
+
+    isCentralizedCheckout = computed(() => this.paymentWorkflowMode() === 'CENTRALIZED_WEB_CHECKOUT');
 
     filteredProducts = computed(() => {
         const linkedIds = new Set(this.deviceProducts().map(p => p.id));

@@ -99,7 +99,7 @@ export class ProductFormComponent implements OnInit {
             subtitle: this.subtitle,
             description: this.description,
             deliveryMethod: this.deliveryMethod,
-            partner: this.partnerId ? { id: this.partnerId.toString() } as any : undefined
+            partnerId: this.partnerId ?? undefined
         };
 
         if (this.deliveryMethod === 'MQTT_PULSE') {

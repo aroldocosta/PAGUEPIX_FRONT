@@ -190,6 +190,10 @@ export class PartnerEdit implements OnInit, OnDestroy {
   }
 
   onSave() {
+    if (this.paymentWorkflowMode() === 'DECENTRALIZED_IN_STORE_QR' && this.gateway() !== 'MRCPAGO') {
+      alert("O modelo de Código QR Estático (Descentralizado) está disponível exclusivamente para a integração Mercado Pago.");
+      return;
+    }
     const partnerData = {
       id: this.id() ? this.id() : undefined,
       name: this.name(),

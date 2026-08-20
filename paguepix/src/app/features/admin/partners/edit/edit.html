@@ -87,9 +87,13 @@
                                 required
                                 class="w-full pl-10 pr-10 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-gray-900 dark:text-white appearance-none">
                                 <option value="CENTRALIZED_WEB_CHECKOUT">Checkout Centralizado no SaaS</option>
-                                <option value="DECENTRALIZED_IN_STORE_QR">Código QR Modelo Estático (Mercado Pago)
+                                <option value="DECENTRALIZED_IN_STORE_QR" [disabled]="gateway() !== 'MRCPAGO'">Código QR Modelo Estático (Mercado Pago)
                                 </option>
                             </select>
+                            <span *ngIf="gateway() !== 'MRCPAGO' && paymentWorkflowMode() === 'DECENTRALIZED_IN_STORE_QR'" class="text-xs text-amber-600 dark:text-amber-400 mt-1 font-semibold flex items-center gap-1">
+                                <span class="material-icons-outlined text-xs">warning</span>
+                                O modelo de Código QR Estático está disponível apenas para a integração Mercado Pago.
+                            </span>
                             <span
                                 class="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">expand_more</span>
                         </div>
@@ -258,7 +262,7 @@
 
                     <!-- Mercado Pago OAuth Connection (Parceiro Existente) -->
                     <div class="md:col-span-2 pt-6 border-t border-slate-100 dark:border-slate-800"
-                        *ngIf="paymentWorkflowMode() === 'DECENTRALIZED_IN_STORE_QR' && id()">
+                        *ngIf="gateway() === 'MRCPAGO' && paymentWorkflowMode() === 'DECENTRALIZED_IN_STORE_QR' && id()">
                         <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                             <span class="material-icons-outlined text-indigo-500">sync_alt</span>
                             Conexão com Mercado Pago
@@ -300,7 +304,7 @@
 
                     <!-- Mercado Pago OAuth Connection (Novo Parceiro) -->
                     <div class="md:col-span-2 pt-6 border-t border-slate-100 dark:border-slate-800"
-                        *ngIf="paymentWorkflowMode() === 'DECENTRALIZED_IN_STORE_QR' && !id()">
+                        *ngIf="gateway() === 'MRCPAGO' && paymentWorkflowMode() === 'DECENTRALIZED_IN_STORE_QR' && !id()">
                         <div
                             class="p-6 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/30 rounded-3xl flex items-center gap-3">
                             <span class="material-icons-outlined text-indigo-500 text-2xl">info</span>
