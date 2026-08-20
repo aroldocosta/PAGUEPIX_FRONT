@@ -112,7 +112,7 @@
     </ng-template>
 </app-management-layout>
 
-<app-board-detail *ngIf="selectedBoard()" [board]="selectedBoard()!" (close)="selectedBoard.set(null)">
+<app-board-detail *ngIf="selectedBoard()" [board]="selectedBoard()!" (close)="selectedBoard.set(null)" (unlinked)="loadBoards()">
 </app-board-detail>
 
 <app-delete-modal *ngIf="showDeleteModal()" [objectName]="boardToDelete()?.mqttId || ''"
