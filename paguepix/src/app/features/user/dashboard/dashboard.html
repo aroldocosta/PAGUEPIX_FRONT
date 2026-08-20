@@ -84,7 +84,7 @@
                 <section *ngIf="paymentWorkflowMode() === 'DECENTRALIZED_IN_STORE_QR'">
 
                     <!-- Status: CONECTADO -->
-                    <div *ngIf="mpUserId()" class="p-6 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 rounded-3xl flex items-center justify-between">
+                    <div *ngIf="mpUserId()" class="p-6 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 rounded-3xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                         <div class="flex items-center gap-3">
                             <span class="material-icons-outlined text-emerald-500 text-3xl animate-pulse">check_circle</span>
                             <div>
@@ -92,19 +92,20 @@
                                 <p class="text-xs text-emerald-600 dark:text-emerald-400">ID da Conta MP: {{ mpUserId() }} • Token ativo. Expira em: {{ mpTokenExpiresAt() | date:'dd/MM/yyyy HH:mm' }}</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-2.5">
+                        <div class="flex flex-wrap sm:flex-nowrap items-center gap-3">
                             <button type="button" (click)="connectMercadoPago()" [disabled]="isConnectingMP()"
-                                class="px-5 py-3 bg-white dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2">
+                                class="h-11 w-44 bg-white dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                                 <svg *ngIf="isConnectingMP()" class="animate-spin w-4 h-4 text-slate-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                                 </svg>
-                                {{ isConnectingMP() ? 'Redirecionando...' : 'Atualizar Conexão' }}
+                                <span *ngIf="!isConnectingMP()" class="material-icons-outlined text-base">sync</span>
+                                <span>{{ isConnectingMP() ? 'Redirecionando...' : 'Atualizar Conexão' }}</span>
                             </button>
                             <button type="button" (click)="openDisconnectModal()" [disabled]="isConnectingMP() || isDisconnectingMP()"
-                                class="px-5 py-3 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/30 dark:hover:bg-rose-900/40 text-xs font-bold text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800/50 rounded-xl transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-1.5">
+                                class="h-11 w-44 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/30 dark:hover:bg-rose-900/40 text-xs font-bold text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800/50 rounded-xl transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                                 <span class="material-icons-outlined text-base">link_off</span>
-                                Desvincular conta
+                                <span>Desvincular conta</span>
                             </button>
                         </div>
                     </div>
