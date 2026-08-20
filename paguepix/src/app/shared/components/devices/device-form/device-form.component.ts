@@ -52,6 +52,10 @@ export class DeviceFormComponent {
     selectedProductId = signal<string | null>(null);
     releaseOptions = signal<{ label: string, value: string | number, minutes?: number, productId?: string }[]>([]);
 
+    clearBoard() {
+        this.boardId = null;
+    }
+
     onSave() {
         if (this.mode === 'view') return;
         this.save.emit({

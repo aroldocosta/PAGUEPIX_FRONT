@@ -87,9 +87,26 @@
                         <label
                             class="text-[10px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 ml-1">Dispositivo
                             Vinculado</label>
-                        <div class="mt-2 text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                            <span class="material-icons-outlined text-slate-400 text-lg">devices</span>
-                            {{ board.device?.name || 'Não vinculado' }}
+                        <div class="mt-2 flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200/80 dark:border-slate-700/80">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <div class="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0">
+                                    <span class="material-icons-outlined text-lg">devices</span>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-bold text-slate-700 dark:text-slate-200 truncate">
+                                        {{ board.device?.name || 'Não vinculado' }}
+                                    </p>
+                                    <p *ngIf="board.device?.model" class="text-[10px] text-slate-400 font-medium truncate">
+                                        Modelo: {{ board.device?.model }}
+                                    </p>
+                                </div>
+                            </div>
+                            <button *ngIf="board.device" type="button" (click)="onUnlinkDevice()" [disabled]="unlinking()"
+                                class="flex-shrink-0 px-3 py-1.5 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400 text-xs font-bold rounded-xl border border-rose-200/60 dark:border-rose-800/50 transition-all flex items-center gap-1 disabled:opacity-50 cursor-pointer"
+                                title="Desvincular esta placa do dispositivo">
+                                <span class="material-icons-outlined text-sm">link_off</span>
+                                <span>{{ unlinking() ? 'Desvinculando...' : 'Desvincular' }}</span>
+                            </button>
                         </div>
                     </div>
                 </div>

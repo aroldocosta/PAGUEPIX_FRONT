@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -37,6 +37,24 @@ export class DeviceService {
 
     update(id: string, device: any): Observable<any> {
         return this.http.put<any>(`${this.apiUrl}/${id}`, device);
+    }
+
+    unlinkBoard(deviceId: string | number): Observable<any> {
+        return this.findById(deviceId.toString()).pipe(
+            switchMap(device => {
+                const payload = {
+                    name: device.name,
+                    model: device.model,
+                    type: device.type,
+                    partnerId: device.partner?.id || null,
+                    boardId: null,
+                    channel: device.channel !== undefined && device.channel !== null ? device.channel : 1,
+                    externalStoreId: device.externalStoreId || '',
+                    externalPosId: device.externalPosId || ''
+                };
+                return this.update(deviceId.toString(), payload);
+            })
+        );
     }
 
     delete(id: string): Observable<any> {
