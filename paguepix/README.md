@@ -117,6 +117,8 @@ Foi implementada uma estratégia de **"Sealed Envelope"** (Envelope Selado) para
 
 ---
 
+---
+
 ## Gestão de Dispositivos e Checklist de Prontidão
 
 Para garantir que o administrador e os instaladores em campo tenham visão clara do estado de cada ponto de venda, a interface de dispositivos incorpora um **Semáforo de Prontidão**:
@@ -125,3 +127,92 @@ Para garantir que o administrador e os instaladores em campo tenham visão clara
 2. 🏷️ **Serviços & Produtos**: Valida se há produtos cadastrados e associados ao canal do dispositivo.
 3. 💳 **Checkout Centralizado**: Exibe o link e QR Code prontos para impressão e fixação na máquina física.
 4. 🟢 **Status Geral**: Diferencia máquinas "Prontas para Vender" de máquinas "Aguardando Instalação Física".
+
+---
+
+## Como Criar um Novo Produto / Página de Vendas (Arquitetura Polimórfica)
+
+O frontend utiliza o padrão **Container vs. Presentational com `*ngComponentOutlet`**. Toda a complexa lógica de pagamento (criptografia RSA, polling em tempo real, Mercado Pago Checkout Pro, sincronização do timer regressivo e persistência em `localStorage`) fica centralizada no `SalesComponent`.
+
+Para adicionar um novo produto (ex: `Cadeira de Massagem`, `Lavadora`, `Inflador de Pneus`, etc.), siga os passos abaixo:
+
+### Passo 1: No Backend (`PAGUEPIX_BACK`)
+1. Adicione o novo tipo no enum `DeviceType.java`:
+   ```java
+   public enum DeviceType {
+       PDF,
+       EXCEL,
+       SHOWER,
+       LOCKER,
+       VACUUM,
+       FIRMWARE,
+       CHAFARIZ,
+       MASSAGE  // <-- Novo tipo
+   }
+   ```
+
+---
+
+### Passo 2: No Frontend (`PAGUEPIX_FRONT`)
+
+Você pode escolher entre duas formas de customização:
+
+#### Opção A: Apenas Customização de Tema (Rápida - Sem criar componente visual)
+Se o novo produto seguir o layout padrão de cards de tempo/valor:
+1. Abra `src/app/features/public/sales/sales-theme.config.ts` e adicione o tema no `PRODUCT_THEMES`:
+   ```typescript
+   MASSAGE: {
+       brandPrefix: 'Smart',
+       brandSuffix: 'Massage',
+       icon: 'chair', // Nome do ícone Material ou FontAwesome
+       iconFamily: 'material',
+       productUnitLabel: 'Tempo de Massagem',
+       activeMessage: 'Aproveite sua massagem relaxante!',
+       endingMessage: 'Seu tempo está acabando!',
+       completedMessage: 'Massagem Finalizada',
+       thankYouMessage: 'Obrigado por utilizar a SmartMassage.',
+       fallbackDescriptions: {
+           5: 'Massagem rápida express',
+           10: 'Relaxamento padrão',
+           15: 'Sessão completa antiestresse'
+       }
+   }
+   ```
+
+#### Opção B: Layout Visual Totalmente Exclusivo (Polimorfismo Completo)
+Se o novo produto precisar de uma tela com design, animações e layout HTML/CSS únicos:
+1. Crie o componente em `src/app/features/public/sales/layouts/massage-layout.component.ts`:
+   ```typescript
+   import { Component, Input } from '@angular/core';
+   import { CommonModule } from '@angular/common';
+   import { SalesLayoutProps } from '../sales-layout.types';
+
+   @Component({
+       selector: 'app-massage-layout',
+       standalone: true,
+       imports: [CommonModule],
+       template: `<!-- Seu HTML customizado consumindo [props]="props" -->`
+   })
+   export class MassageLayoutComponent {
+       @Input() props!: SalesLayoutProps;
+   }
+   ```
+2. Registre o novo layout no `src/app/features/public/sales/sales-layout.registry.ts`:
+   ```typescript
+   export const SALES_LAYOUT_REGISTRY: Record<string, Type<any>> = {
+       SHOWER: ShowerLayoutComponent,
+       VACUUM: VacuumLayoutComponent,
+       MASSAGE: MassageLayoutComponent, // <-- Registro
+       DEFAULT: DefaultTimerLayoutComponent
+   };
+   ```
+
+---
+
+### Passo 3: Registrar Rota Dedicada (Opcional)
+Em `src/app/app.routes.ts`, registre a rota pública se desejar uma URL amigável dedicada:
+```typescript
+{ path: 'massage/:token', component: PublicSalesComponent },
+```
+*(Nota: A rota genérica `/p/:token` já atende automaticamente qualquer novo tipo de dispositivo cadastrado).*
+
