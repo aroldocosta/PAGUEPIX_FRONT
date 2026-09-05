@@ -15,6 +15,7 @@ import { PartnerEdit } from './features/admin/partners/edit/edit';
 import { UserDashboard } from './features/user/dashboard/dashboard';
 import { SalesComponent } from './features/user/sales/sales';
 import { ShowerComponent } from './features/public/shower/shower.component';
+import { VacComponent } from './features/public/vac/vac.component';
 import { FirmwareComponent } from './features/public/firmware/firmware.component';
 import { PayoutsManagement } from './features/admin/payouts/payouts';
 import { PartnerPayouts } from './features/user/payout/payouts';
@@ -33,6 +34,8 @@ export const routes: Routes = [
     { path: 'login', component: Login },
     { path: 'auth/demo-login', loadComponent: () => import('./features/auth/demo-login/demo-login').then(m => m.DemoLogin) },
     { path: 'shower/:token', component: ShowerComponent },
+    { path: 'vac/:token', component: VacComponent },
+    { path: 'smartvac/:token', component: VacComponent },
     { path: 'firmware/:token', component: FirmwareComponent },
 
     { path: 'admin/dashboard', component: Dashboard, canActivate: [authGuard] },
