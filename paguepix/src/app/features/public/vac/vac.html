@@ -1,0 +1,314 @@
+<div class="min-h-screen bg-[#f8fafc] font-sans text-[#1e293b] flex flex-col items-center pb-20 md:pb-10">
+    <!-- Header -->
+    <header class="w-full bg-white px-6 py-4 flex items-center justify-between sticky top-0 z-10 shadow-sm">
+        <div class="flex items-center gap-[10px] text-[#008080] font-extrabold text-[1.5rem]"
+            style="font-family: 'Outfit', sans-serif;">
+            <span class="material-symbols-outlined text-[1.8rem]">vacuum</span>
+            <span>Smart<span class="text-[#000080]">Vac</span></span>
+        </div>
+        <div class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center border border-slate-200">
+            <span class="material-icons-outlined text-slate-500 text-xl">person</span>
+        </div>
+    </header>
+
+    <!-- Device Confirmation Bar -->
+    <div *ngIf="deviceInfo()"
+        class="w-full bg-blue-50 border-b border-blue-100 px-6 py-2.5 flex items-center justify-center gap-2 animate-fade-in">
+        <span class="material-icons-outlined text-[#0d7ff2] text-sm">location_on</span>
+        <span class="text-[11px] font-bold text-blue-800 uppercase tracking-wider">
+            {{ deviceInfo().name || deviceInfo().model }} <span class="mx-1 opacity-30">|</span> {{
+            deviceInfo().partner?.name }}
+        </span>
+    </div>
+
+    <main class="flex-1 max-w-lg w-full px-6 py-5 flex flex-col items-center justify-center">
+        <ng-container [ngSwitch]="currentState()">
+
+            <!-- VALIDATING STATE -->
+            <div *ngSwitchCase="'VALIDATING'" class="w-full flex flex-col items-center justify-center py-20">
+                <div class="relative w-20 h-20 mb-8">
+                    <div class="absolute inset-0 border-4 border-slate-100 rounded-full"></div>
+                    <div
+                        class="absolute inset-0 border-4 border-[#0d7ff2] border-t-transparent rounded-full animate-spin">
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="material-icons-outlined text-[#0d7ff2] text-3xl">qr_code_scanner</span>
+                    </div>
+                </div>
+                <h2 class="text-xl font-bold text-[#0f172a] mb-2">Identificando dispositivo...</h2>
+                <p class="text-slate-400 text-center text-sm">Aguarde um momento enquanto validamos o acesso ao
+                    equipamento.</p>
+            </div>
+
+            <!-- SELECTION & PAYMENT FLOW (IDLE, PROCESSING, READY) -->
+            <div *ngSwitchDefault class="w-full flex flex-col items-center">
+                <!-- Title Section -->
+                <section class="w-full text-center mb-5">
+                    <h1 class="text-3xl font-black text-[#0f172a] mb-2">Selecione o tempo</h1>
+                </section>
+
+                <!-- Options List (Grid of 1/2 page cards) -->
+                <div class="grid grid-cols-2 gap-4 w-full mb-10">
+                    <div *ngFor="let option of durationOptions" (click)="selectDuration(option)" [ngClass]="{
+                            'border-[#0d7ff2] ring-2 ring-[#0d7ff2]/10 bg-white selected-option': selectedDuration()?.minutes === option.minutes,
+                            'border-slate-100 bg-white hover:border-[#0d7ff2]/30 shadow-sm': selectedDuration()?.minutes !== option.minutes,
+                            'opacity-40 grayscale pointer-events-none': currentState() !== 'IDLE'
+                        }"
+                        class="p-3 rounded-2xl border transition-all cursor-pointer flex flex-col items-center text-center group min-h-[112px] justify-center">
+
+                        <div class="flex flex-col items-center w-full mb-1">
+                            <div class="flex items-center gap-2 mb-1.5 justify-center">
+                                <div [ngClass]="{
+                                    'bg-[#0d7ff2] text-white': selectedDuration()?.minutes === option.minutes,
+                                    'bg-[#ebf5ff] text-[#0d7ff2]': selectedDuration()?.minutes !== option.minutes
+                                }"
+                                    class="w-6 h-6 rounded-full flex flex-col items-center justify-center font-bold transition-colors overflow-hidden shrink-0">
+                                    <span class="material-icons-outlined text-xs leading-none">timer</span>
+                                    <span class="text-[6px] leading-none mt-0.5">{{ option.minutes }}'</span>
+                                </div>
+                                <h3 class="font-bold text-[#0f172a] text-[14px] leading-tight">{{ option.label }}</h3>
+                            </div>
+                            <p class="text-[10px] text-slate-400 font-medium italic line-clamp-2 px-1">{{
+                                option.description }}</p>
+                        </div>
+
+                        <div class="text-base font-black text-[#0d7ff2]">
+                            {{ option.price | currency:'BRL' }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Multi-State Action Button Section -->
+                <div
+                    class="w-full bg-white rounded-3xl shadow-lg shadow-slate-200/60 border border-slate-50 p-8 flex flex-col items-center mb-8">
+                    <button (click)="handlePrimaryAction()"
+                        [disabled]="currentState() === 'PROCESSING' || !selectedDuration()" [ngClass]="{
+                                'bg-[#f1f5f9] text-[#0f172a] hover:bg-slate-200': currentState() === 'IDLE' || currentState() === 'READY',
+                                'bg-slate-100 text-slate-400 cursor-wait': currentState() === 'PROCESSING'
+                            }"
+                        class="w-full font-bold py-5 px-6 rounded-2xl transition-all flex items-center justify-center gap-3 mb-6 active:scale-[0.98]">
+
+                        <ng-container [ngSwitch]="currentState()">
+                            <div *ngSwitchCase="'IDLE'" class="flex items-center gap-2">
+                                <span class="text-[1.2em]">Confirmar compra</span>
+                            </div>
+
+                            <div *ngSwitchCase="'PROCESSING'" class="flex items-center gap-3">
+                                <div class="w-5 h-5 border-2 border-slate-300 border-t-white rounded-full animate-spin">
+                                </div>
+                                <span class="text-[1.2em]">Processando...</span>
+                            </div>
+
+                            <div *ngSwitchCase="'READY'" class="flex items-center gap-3">
+                                <ng-container *ngIf="paymentType() === 'PIX'">
+                                    <span class="material-icons-outlined text-xl">content_copy</span>
+                                    <span class="text-[1.2em]">Copiar Chave Pix</span>
+                                </ng-container>
+                                <ng-container *ngIf="paymentType() === 'LINK'">
+                                    <span class="material-icons-outlined text-xl">payments</span>
+                                    <span class="text-[1.2em]">PAGAR</span>
+                                </ng-container>
+                            </div>
+                        </ng-container>
+                    </button>
+
+                    <!-- Dynamic Bottom Message -->
+                    <p class="text-[1.0em] font-medium text-center transition-all duration-300" [ngClass]="{
+                           'text-slate-400': currentState() === 'IDLE' || currentState() === 'READY',
+                           'text-[#0d7ff2]': currentState() === 'PROCESSING'
+                       }">
+                        <ng-container [ngSwitch]="currentState()">
+                            <span *ngSwitchCase="'IDLE'">Clique aqui para finalizar a compra</span>
+                            <span *ngSwitchCase="'PROCESSING'">Aguarde processamento...</span>
+                            <span *ngSwitchCase="'READY'">
+                                <ng-container *ngIf="!showCopySuccess()">
+                                    {{ paymentType() === 'PIX' ? 'Efetue o pagamento via Pix Copia e Cola.' : 'Clique
+                                    para abrir o pagamento seguro.' }}
+                                </ng-container>
+                                <span *ngIf="showCopySuccess()"
+                                    class="text-emerald-500 font-bold flex items-center justify-center gap-1">
+                                    <span class="material-icons-outlined text-sm">check_circle</span>
+                                    Chave Pix Copiada!
+                                </span>
+                            </span>
+                        </ng-container>
+                    </p>
+                </div>
+            </div>
+
+            <!-- PENDING STATE -->
+            <div *ngSwitchCase="'PENDING'" class="w-full flex flex-col items-center animate-status-entry">
+                <div
+                    class="w-full bg-white rounded-[2.5rem] shadow-xl shadow-amber-200/20 border border-amber-50 overflow-hidden">
+                    <div class="h-2 w-full bg-amber-400"></div>
+                    <div class="p-10 flex flex-col items-center">
+                        <div
+                            class="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mb-6 ring-8 ring-amber-50/50">
+                            <span
+                                class="material-icons-outlined text-amber-500 text-4xl animate-pulse">pending_actions</span>
+                        </div>
+                        <h1 class="text-2xl font-black text-[#0f172a] mb-2 text-center leading-tight">Pagamento Pendente
+                        </h1>
+                        <p class="text-slate-500 text-center mb-8 px-4">Detectamos que você iniciou o pagamento. Estamos
+                            aguardando a confirmação do banco.</p>
+
+                        <!-- Pix Key Display if available -->
+                        <div *ngIf="paymentType() === 'PIX'"
+                            class="w-full bg-slate-50 rounded-2xl p-6 border border-slate-100 mb-8">
+                            <label
+                                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Chave
+                                Pix Copia e Cola</label>
+                            <div class="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-100">
+                                <span class="text-xs text-slate-500 font-mono truncate flex-1">{{ pixKey() }}</span>
+                                <button (click)="copyPixKey()"
+                                    class="text-[#0d7ff2] hover:bg-blue-50 p-2 rounded-lg transition-colors">
+                                    <span class="material-icons-outlined text-xl">content_copy</span>
+                                </button>
+                            </div>
+                            <p *ngIf="showCopySuccess()"
+                                class="text-[10px] text-emerald-500 font-bold mt-2 text-center">Chave
+                                copiada com
+                                sucesso!</p>
+                        </div>
+
+                        <div class="w-full flex flex-col gap-3">
+                            <div class="flex items-center justify-center gap-2 text-amber-600 font-bold text-sm mb-4">
+                                <div class="w-2 h-2 bg-amber-500 rounded-full animate-ping"></div>
+                                Monitorando status em tempo real...
+                            </div>
+                            <button (click)="openPaymentLink()"
+                                class="w-full bg-[#0d7ff2] text-white font-bold py-5 px-6 rounded-2xl transition-all hover:bg-[#0a6ed1] active:scale-[0.98] shadow-lg shadow-blue-200 mb-4">
+                                Alterar forma de pagamento
+                            </button>
+                            <button (click)="finishAndReturn()"
+                                class="w-full bg-slate-100 text-slate-500 font-bold py-4 px-6 rounded-2xl transition-all hover:bg-slate-200">
+                                Cancelar e Voltar ao Início
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUCCESS STATE -->
+            <div *ngSwitchCase="'SUCCESS'" class="w-full flex flex-col items-center animate-status-entry">
+                <div
+                    class="w-full bg-white rounded-[2.5rem] shadow-xl shadow-emerald-200/20 border border-emerald-50 overflow-hidden">
+                    <!-- Top accent bar -->
+                    <div class="h-2 w-full bg-emerald-500"></div>
+
+                    <div class="p-10 flex flex-col items-center">
+                        <div class="flex items-center gap-3 mb-4 justify-center">
+                            <div
+                                class="w-12 h-12 bg-emerald-50/80 rounded-full flex items-center justify-center ring-4 ring-emerald-50/50 flex-shrink-0">
+                                <span class="material-icons-outlined text-emerald-500 text-2xl font-bold">check</span>
+                            </div>
+                            <h1 class="text-2xl font-black text-[#0f172a] leading-tight">Pagamento Confirmado!</h1>
+                        </div>
+                        <p class="text-slate-500 font-bold text-center mb-6 px-4">Obrigado pela sua compra.</p>
+
+                        <!-- Timer container when active -->
+                        <div *ngIf="remainingSeconds() !== null; else waitingRelease" [ngClass]="{
+                                 'bg-emerald-50/50 border-emerald-100 text-emerald-600': remainingSeconds()! > 60,
+                                 'bg-amber-50/50 border-amber-100 text-amber-600': remainingSeconds()! <= 60 && remainingSeconds()! > 30,
+                                 'bg-rose-50/50 border-rose-100 text-rose-600 animate-urgent': remainingSeconds()! <= 30 && remainingSeconds()! > 0,
+                                 'bg-slate-50 border-slate-200 text-slate-400': remainingSeconds()! === 0
+                             }"
+                            class="w-full border rounded-3xl p-6 flex flex-col items-center justify-center mb-6 transition-all duration-300">
+
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="material-icons-outlined text-lg animate-pulse" [ngClass]="{
+                                          'text-emerald-500': remainingSeconds()! > 60,
+                                          'text-amber-500': remainingSeconds()! <= 60 && remainingSeconds()! > 30,
+                                          'text-rose-500': remainingSeconds()! <= 30 && remainingSeconds()! > 0,
+                                          'text-slate-400': remainingSeconds()! === 0
+                                      }">timer</span>
+                                <span class="text-[11px] font-extrabold uppercase tracking-widest opacity-80">
+                                    {{ remainingSeconds()! > 0 ? 'Tempo Restante' : 'Aspiração Finalizada' }}
+                                </span>
+                            </div>
+
+                            <div class="text-5xl font-black font-mono tracking-wider mb-2">
+                                {{ remainingTimeText() }}
+                            </div>
+
+                            <p class="text-xs text-center opacity-75">
+                                {{ remainingSeconds()! > 60 ? 'Aproveite seu tempo de uso!' : (remainingSeconds()! > 0 ? 'Seu
+                                tempo está acabando!' : 'Obrigado por usar o SmartVac.') }}
+                            </p>
+                        </div>
+
+                        <ng-template #waitingRelease>
+                            <div
+                                class="bg-emerald-50/50 border border-emerald-100 rounded-3xl p-6 flex flex-col items-center justify-center mb-6 w-full">
+                                <div
+                                    class="w-8 h-8 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin mb-3">
+                                </div>
+                                <p class="text-emerald-700 font-bold text-sm tracking-wider uppercase">Liberando
+                                    equipamento...</p>
+                            </div>
+                        </ng-template>
+
+                        <!-- Product Badge -->
+                        <div
+                            class="bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 flex items-center gap-3 mb-6 w-full justify-center">
+                            <span class="material-icons-outlined text-slate-500 text-lg">shopping_bag</span>
+                            <span class="font-bold text-slate-600 text-sm">{{ productName() }}</span>
+                        </div>
+
+                        <div class="w-full flex flex-col gap-3">
+                            <button (click)="finishAndReturn()"
+                                class="w-full bg-[#0f172a] text-white font-bold py-5 px-6 rounded-2xl transition-all hover:bg-slate-800 active:scale-[0.98] shadow-lg shadow-slate-200">
+                                Voltar ao Início
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ERROR STATE -->
+            <div *ngSwitchCase="'ERROR'" class="w-full flex flex-col items-center animate-status-entry">
+                <div
+                    class="w-full bg-white rounded-[2.5rem] shadow-xl shadow-rose-200/20 border border-rose-50 overflow-hidden">
+                    <!-- Top accent bar -->
+                    <div class="h-2 w-full bg-rose-500"></div>
+
+                    <div class="p-10 flex flex-col items-center">
+                        <div
+                            class="w-20 h-20 bg-rose-50 rounded-full flex items-center justify-center mb-6 ring-8 ring-rose-50/50">
+                            <span
+                                class="material-icons-outlined text-rose-500 text-4xl">sentiment_very_dissatisfied</span>
+                        </div>
+
+                        <h1 class="text-2xl font-black text-[#0f172a] mb-2 text-center leading-tight">Ops! Algo deu
+                            errado</h1>
+                        <p class="text-slate-500 text-center mb-8 px-4">Não conseguimos processar o seu pagamento neste
+                            momento.</p>
+
+                        <!-- Error Reason Card -->
+                        <div class="bg-rose-50/50 border border-rose-100 rounded-2xl p-5 mb-10 w-full">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="material-icons-outlined text-rose-400 text-sm">info</span>
+                                <span class="text-[11px] font-bold text-rose-400 uppercase tracking-wider">Motivo
+                                    detectado</span>
+                            </div>
+                            <p class="text-sm font-medium text-rose-700 leading-relaxed">{{ errorMessage() || 'Houve uma
+                                instabilidade temporária. Por favor, tente novamente em alguns instantes.' }}</p>
+                        </div>
+
+                        <div class="w-full flex flex-col gap-4">
+                            <button (click)="handlePrimaryAction()"
+                                class="w-full bg-[#0d7ff2] text-white font-bold py-5 px-6 rounded-2xl transition-all hover:bg-[#0a6ed1] active:scale-[0.98] shadow-lg shadow-blue-200">
+                                Tentar Novamente
+                            </button>
+                            <button (click)="finishAndReturn()"
+                                class="w-full bg-transparent text-slate-400 font-bold py-3 px-6 rounded-xl transition-all hover:text-slate-600">
+                                Cancelar e Voltar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </ng-container>
+    </main>
+</div>

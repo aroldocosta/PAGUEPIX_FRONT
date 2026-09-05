@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { SalesComponent } from '../sales/sales.component';
 
 @Component({
-    selector: 'app-shower',
+    selector: 'app-vac',
     standalone: true,
     imports: [SalesComponent],
-    template: `<app-sales forcedType="SHOWER"></app-sales>`
+    template: `<app-sales forcedType="VACUUM"></app-sales>`
 })
-export class ShowerComponent {}
+export class VacComponent {}
