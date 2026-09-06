@@ -49,7 +49,7 @@ import { SalesLayoutProps } from '../sales-layout.types';
             <!-- SELECTION & PAYMENT FLOW -->
             <div *ngSwitchDefault class="w-full flex flex-col items-center">
                 <section class="w-full text-center mb-5">
-                    <h1 class="text-3xl font-black text-[#0f172a] mb-2">Selecione o tempo de aspiração</h1>
+                    <h1 class="text-[22px] font-black text-[#0f172a] mb-2">Selecione o tempo de aspiração</h1>
                 </section>
 
                 <div class="grid grid-cols-2 gap-4 w-full mb-10">
