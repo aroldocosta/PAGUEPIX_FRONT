@@ -15,7 +15,7 @@ import { PartnerEdit } from './features/admin/partners/edit/edit';
 import { UserDashboard } from './features/user/dashboard/dashboard';
 import { SalesComponent } from './features/user/sales/sales';
 import { ShowerComponent } from './features/public/shower/shower.component';
-import { VacComponent } from './features/public/vac/vac.component';
+import { VacuumComponent } from './features/public/vacuum/vacuum.component';
 import { SalesComponent as PublicSalesComponent } from './features/public/sales/sales.component';
 import { FirmwareComponent } from './features/public/firmware/firmware.component';
 import { PayoutsManagement } from './features/admin/payouts/payouts';
@@ -35,9 +35,9 @@ export const routes: Routes = [
     { path: 'login', component: Login },
     { path: 'auth/demo-login', loadComponent: () => import('./features/auth/demo-login/demo-login').then(m => m.DemoLogin) },
     { path: 'shower/:token', component: ShowerComponent },
-    { path: 'vacuum/:token', component: VacComponent },
-    { path: 'vac/:token', component: VacComponent },
-    { path: 'smartvac/:token', component: VacComponent },
+    { path: 'vacuum/:token', component: VacuumComponent },
+    { path: 'vac/:token', component: VacuumComponent },
+    { path: 'smartvac/:token', component: VacuumComponent },
     { path: 'chafariz/:token', component: PublicSalesComponent },
     { path: 'p/:token', component: PublicSalesComponent },
     { path: 'firmware/:token', component: FirmwareComponent },

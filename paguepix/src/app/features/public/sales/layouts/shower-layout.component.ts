@@ -54,8 +54,8 @@ import { SalesLayoutProps } from '../sales-layout.types';
 
                 <div class="grid grid-cols-2 gap-4 w-full mb-10">
                     <div *ngFor="let option of props.durationOptions" (click)="props.onSelectDuration(option)" [ngClass]="{
-                            'border-[#0d7ff2] ring-2 ring-[#0d7ff2]/10 bg-white selected-option': props.selectedDuration?.minutes === option.minutes,
-                            'border-slate-100 bg-white hover:border-[#0d7ff2]/30 shadow-sm': props.selectedDuration?.minutes !== option.minutes,
+                            'border-[#0d7ff2] ring-2 ring-[#0d7ff2]/10 bg-white selected-option': props.selectedDuration?.id === option.id,
+                            'border-slate-100 bg-white hover:border-[#0d7ff2]/30 shadow-sm': props.selectedDuration?.id !== option.id,
                             'opacity-40 grayscale pointer-events-none': props.currentState !== 'IDLE'
                         }"
                         class="p-3 rounded-2xl border transition-all cursor-pointer flex flex-col items-center text-center group min-h-[112px] justify-center">
@@ -63,8 +63,8 @@ import { SalesLayoutProps } from '../sales-layout.types';
                         <div class="flex flex-col items-center w-full mb-1">
                             <div class="flex items-center gap-2 mb-1.5 justify-center">
                                 <div [ngClass]="{
-                                    'bg-[#0d7ff2] text-white': props.selectedDuration?.minutes === option.minutes,
-                                    'bg-[#ebf5ff] text-[#0d7ff2]': props.selectedDuration?.minutes !== option.minutes
+                                    'bg-[#0d7ff2] text-white': props.selectedDuration?.id === option.id,
+                                    'bg-[#ebf5ff] text-[#0d7ff2]': props.selectedDuration?.id !== option.id
                                 }"
                                     class="w-6 h-6 rounded-full flex flex-col items-center justify-center font-bold transition-colors overflow-hidden shrink-0">
                                     <span class="material-icons-outlined text-xs leading-none">timer</span>
