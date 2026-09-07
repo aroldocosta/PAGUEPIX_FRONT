@@ -35,6 +35,22 @@ export class DeviceEdit implements OnInit {
     model = signal('');
     partnerId = signal<string | null>(null);
     partners = signal<any[]>([]);
+    devicePartner = signal<any>(null);
+
+    selectedPartner = computed(() => {
+        const pid = this.partnerId();
+        if (!pid) return this.devicePartner();
+        const found = this.partners().find(p => p.id?.toString() === pid.toString());
+        return found || this.devicePartner();
+    });
+
+    partnerName = computed(() => this.selectedPartner()?.name || '');
+
+    paymentWorkflowMode = computed(() => {
+        const p = this.selectedPartner();
+        return p?.paymentWorkflowMode || '';
+    });
+
     boards = signal<Board[]>([]);
     boardId = signal<string | number | null>(null);
     type = signal('');
@@ -134,7 +150,8 @@ export class DeviceEdit implements OnInit {
 
                 this.name.set(device.name || '');
                 this.model.set(device.model);
-                this.partnerId.set(device.partner?.id || null);
+                this.partnerId.set(device.partner?.id != null ? device.partner.id.toString() : null);
+                this.devicePartner.set(device.partner || null);
                 this.boardId.set(device.board?.id || null);
                 this.type.set(device.type || '');
                 this.channel.set(device.channel !== undefined && device.channel !== null ? device.channel : 1);
@@ -154,6 +171,16 @@ export class DeviceEdit implements OnInit {
                 this.loading.set(false);
             }
         });
+    }
+
+    onPartnerChange(newPartnerId: string | null) {
+        const normalized = (newPartnerId === 'null' || newPartnerId === '' || !newPartnerId) ? null : newPartnerId.toString();
+        this.partnerId.set(normalized);
+        if (normalized) {
+            this.loadProducts(normalized);
+        } else {
+            this.allProductsRaw.set([]);
+        }
     }
 
     loadPartners() {

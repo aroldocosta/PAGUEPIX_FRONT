@@ -51,6 +51,7 @@
             [boards]="boards()" [boardId]="boardId()"
             [type]="type()" [types]="types()" [channel]="channel()"
             [externalStoreId]="externalStoreId()" [externalPosId]="externalPosId()"
+            (partnerIdChange)="partnerChange.emit($event)"
             (save)="save.emit($event)"
             (releaseManual)="releaseManual.emit($event)" (cancel)="cancel.emit()">
         </app-device-form>

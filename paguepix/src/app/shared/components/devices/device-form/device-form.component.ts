@@ -46,11 +46,18 @@ export class DeviceFormComponent {
     @Output() save = new EventEmitter<any>();
     @Output() releaseManual = new EventEmitter<{ id: string, minutes?: number, productId?: string }>();
     @Output() cancel = new EventEmitter<void>();
+    @Output() partnerIdChange = new EventEmitter<string | null>();
 
     showReleaseModal = signal(false);
     selectedReleaseMinutes = signal(1);
     selectedProductId = signal<string | null>(null);
     releaseOptions = signal<{ label: string, value: string | number, minutes?: number, productId?: string }[]>([]);
+
+    onPartnerChange(value: any) {
+        const normalized = (value === 'null' || value === '' || !value) ? null : value.toString();
+        this.partnerId = normalized;
+        this.partnerIdChange.emit(normalized);
+    }
 
     clearBoard() {
         this.boardId = null;
