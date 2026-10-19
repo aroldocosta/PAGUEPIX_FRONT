@@ -354,7 +354,18 @@ twIDAQAB
                             }
                         }
 
-                        if (response.paid) {
+                        if (response.status === 'REFUNDED') {
+                            this.stopPolling();
+                            this.closeMercadoPagoModal();
+                            this.errorMessage.set('O acionamento não foi confirmado. O valor foi estornado automaticamente via Pix.');
+                            this.currentState.set('ERROR');
+                        } else if (response.status === 'PENDING_RELEASE') {
+                            this.closeMercadoPagoModal();
+                            this.currentState.set('PENDING');
+                            if (this.pollingInterval) {
+                                this.pollingInterval = setTimeout(pollAction, 1000);
+                            }
+                        } else if (response.paid) {
                             console.log("============= RESPONSE =============");
                             console.log(JSON.stringify(response, null, 2));
                             console.log("====================================");

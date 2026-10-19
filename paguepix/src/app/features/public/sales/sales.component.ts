@@ -411,7 +411,18 @@ twIDAQAB
                             }
                         }
 
-                        if (response.paid) {
+                        if (response.status === 'REFUNDED') {
+                            this.stopPolling();
+                            this.closeMercadoPagoModal();
+                            this.errorMessage.set('O equipamento físico não confirmou o acionamento a tempo. O valor foi estornado automaticamente para a sua conta bancária via Pix.');
+                            this.currentState.set('ERROR');
+                        } else if (response.status === 'PENDING_RELEASE') {
+                            this.closeMercadoPagoModal();
+                            this.currentState.set('PENDING');
+                            if (this.pollingInterval) {
+                                this.pollingInterval = setTimeout(pollAction, 1000);
+                            }
+                        } else if (response.paid) {
                             this.closeMercadoPagoModal();
                             this.currentState.set('SUCCESS');
                             if (response.approvedTime && response.usageTime && response.serverTime) {
