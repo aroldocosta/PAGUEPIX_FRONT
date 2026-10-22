@@ -105,29 +105,74 @@
                         <thead
                             class="bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800">
                             <tr>
-                                <th
-                                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                                    Valor
+                                <!-- Valor -->
+                                <th (click)="onSort('amount')"
+                                    class="px-8 py-5 text-[15.6px] font-semibold uppercase tracking-wider cursor-pointer select-none transition-colors group"
+                                    [ngClass]="sortField() === 'amount' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-gray-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
+                                    <div class="inline-flex items-center gap-1.5">
+                                        <span>Valor</span>
+                                        <span *ngIf="sortField() === 'amount'" class="material-icons-outlined text-base">
+                                            {{ sortDirection() === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                                        </span>
+                                        <span *ngIf="sortField() !== 'amount'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            unfold_more
+                                        </span>
+                                    </div>
                                 </th>
-                                <th
-                                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                                    Solicitado em
+
+                                <!-- Solicitado em -->
+                                <th (click)="onSort('createdAt')"
+                                    class="px-8 py-5 text-[15.6px] font-semibold uppercase tracking-wider cursor-pointer select-none transition-colors group"
+                                    [ngClass]="sortField() === 'createdAt' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-gray-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
+                                    <div class="inline-flex items-center gap-1.5">
+                                        <span>Solicitado em</span>
+                                        <span *ngIf="sortField() === 'createdAt'" class="material-icons-outlined text-base">
+                                            {{ sortDirection() === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                                        </span>
+                                        <span *ngIf="sortField() !== 'createdAt'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            unfold_more
+                                        </span>
+                                    </div>
                                 </th>
-                                <th
-                                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                                    Pago em
+
+                                <!-- Pago em -->
+                                <th (click)="onSort('paidAt')"
+                                    class="px-8 py-5 text-[15.6px] font-semibold uppercase tracking-wider cursor-pointer select-none transition-colors group"
+                                    [ngClass]="sortField() === 'paidAt' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-gray-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
+                                    <div class="inline-flex items-center gap-1.5">
+                                        <span>Pago em</span>
+                                        <span *ngIf="sortField() === 'paidAt'" class="material-icons-outlined text-base">
+                                            {{ sortDirection() === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                                        </span>
+                                        <span *ngIf="sortField() !== 'paidAt'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            unfold_more
+                                        </span>
+                                    </div>
                                 </th>
-                                <th
-                                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                                    Status
+
+                                <!-- Status -->
+                                <th (click)="onSort('status')"
+                                    class="px-8 py-5 text-[15.6px] font-semibold uppercase tracking-wider cursor-pointer select-none transition-colors group"
+                                    [ngClass]="sortField() === 'status' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-gray-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
+                                    <div class="inline-flex items-center gap-1.5">
+                                        <span>Status</span>
+                                        <span *ngIf="sortField() === 'status'" class="material-icons-outlined text-base">
+                                            {{ sortDirection() === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                                        </span>
+                                        <span *ngIf="sortField() !== 'status'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            unfold_more
+                                        </span>
+                                    </div>
                                 </th>
+
                                 <th
-                                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider text-center">
-                                    Ações</th>
+                                    class="px-8 py-5 text-[15.6px] font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider text-center">
+                                    Ações
+                                </th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100 dark:divide-slate-800">
-                            <tr *ngFor="let payout of payouts()"
+                            <tr *ngFor="let payout of sortedPayouts()"
                                 class="hover:bg-gray-50/80 dark:hover:bg-slate-800/50 transition-colors group">
                                 <td class="px-8 py-0.5 text-sm font-bold text-gray-900 dark:text-slate-200">
                                     {{ payout.amount | currency:'BRL' }}

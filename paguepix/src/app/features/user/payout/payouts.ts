@@ -8,6 +8,7 @@ import { PayoutService } from '../../../core/services/payout.service';
 import { Payout, PayoutSummaryResponse, PayoutDetailResponse } from '../../../core/models/payout.model';
 import { AuthService } from '../../../core/services/auth.service';
 import { environment } from '../../../../environments/environment';
+import { sortByField, SortDirection } from '../../../core/utils/sort.utils';
 
 @Component({
     selector: 'app-partner-payouts',
@@ -34,6 +35,24 @@ export class PartnerPayouts implements OnInit {
     currentPage = signal(0);
     totalPages = signal(1);
 
+    sortField = signal<string>('id');
+    sortDirection = signal<SortDirection>('desc');
+
+    sortedPayouts = computed(() => {
+        return sortByField(this.payouts(), this.sortField(), this.sortDirection());
+    });
+
+    onSort(field: string) {
+        if (this.sortField() === field) {
+            this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
+        } else {
+            this.sortField.set(field);
+            this.sortDirection.set((field === 'amount' || field === 'createdAt' || field === 'id' || field === 'paidAt') ? 'desc' : 'asc');
+        }
+        this.currentPage.set(0);
+        this.loadPayouts();
+    }
+
     constructor(private payoutService: PayoutService) { }
 
     ngOnInit() {
@@ -56,7 +75,8 @@ export class PartnerPayouts implements OnInit {
 
     loadPayouts() {
         this.loading.set(true);
-        this.payoutService.getAll(undefined, this.currentPage(), 10).subscribe({
+        const sortParam = `${this.sortField()},${this.sortDirection()}`;
+        this.payoutService.getAll(undefined, this.currentPage(), 10, sortParam).subscribe({
             next: (response) => {
                 this.payouts.set(response.content || response);
                 this.totalPages.set(response.totalPages || 1);

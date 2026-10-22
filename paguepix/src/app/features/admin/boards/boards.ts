@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 
 
 import { RouterModule, Router } from '@angular/router';
+import { sortByField, SortDirection } from '../../../core/utils/sort.utils';
 
 @Component({
     selector: 'app-board-management',
@@ -35,11 +36,28 @@ export class BoardManagement implements OnInit {
     isDeleting = signal(false);
     boardToDelete = signal<Board | null>(null);
 
+    sortField = signal<string>('id');
+    sortDirection = signal<SortDirection>('desc');
+
     filteredBoards = computed(() => this.boards());
+
+    sortedBoards = computed(() => {
+        return sortByField(this.filteredBoards(), this.sortField(), this.sortDirection());
+    });
+
+    onSort(field: string) {
+        if (this.sortField() === field) {
+            this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
+        } else {
+            this.sortField.set(field);
+            this.sortDirection.set(field === 'id' ? 'desc' : 'asc');
+        }
+        this.currentPage.set(0);
+        this.loadBoards();
+    }
 
     hasData = computed(() => this.filteredBoards().length > 0);
     loading = signal(true);
-
 
 
     ngOnInit() {
@@ -57,7 +75,8 @@ export class BoardManagement implements OnInit {
     loadBoards() {
         this.loading.set(true);
         const partnerId = this.selectedPartnerId() === 'all' ? undefined : this.selectedPartnerId().toString();
-        this.boardService.findAll(partnerId, undefined, this.currentPage(), 10).subscribe({
+        const sortParam = `${this.sortField()},${this.sortDirection()}`;
+        this.boardService.findAll(partnerId, undefined, this.currentPage(), 10, sortParam).subscribe({
             next: (response) => {
                 this.boards.set(response.content || response);
                 this.totalPages.set(response.totalPages || 1);

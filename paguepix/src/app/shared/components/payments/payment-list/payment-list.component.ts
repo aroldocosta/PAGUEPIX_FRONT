@@ -34,7 +34,7 @@ export class PaymentListComponent {
         if (this.sortField === field) {
             direction = this.sortDirection === 'asc' ? 'desc' : 'asc';
         } else {
-            direction = (field === 'time' || field === 'paidValue') ? 'desc' : 'asc';
+            direction = (field === 'time' || field === 'paidValue' || field === 'id') ? 'desc' : 'asc';
         }
         this.sortChange.emit({ field, direction });
     }

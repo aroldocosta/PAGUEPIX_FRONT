@@ -44,13 +44,17 @@ export class ProductService {
 
     constructor(private http: HttpClient) { }
 
-    findAll(partnerId?: string | number, page: number = 0, size: number = 100): Observable<{ content: ProductSummaryResponse[], totalPages: number } | ProductSummaryResponse[]> {
+    findAll(partnerId?: string | number, page: number = 0, size: number = 100, sort?: string): Observable<{ content: ProductSummaryResponse[], totalPages: number } | ProductSummaryResponse[]> {
         let params = new HttpParams()
             .set('page', page.toString())
             .set('size', size.toString());
 
         if (partnerId) {
             params = params.set('partnerId', partnerId.toString());
+        }
+
+        if (sort) {
+            params = params.set('sort', sort);
         }
 
         return this.http.get<any>(this.apiUrl, { params });

@@ -10,6 +10,8 @@ import { ProductDetailComponent } from '../../../shared/components/products/prod
 import { DeleteModalComponent } from '../../../shared/components/delete-modal/delete-modal.component';
 import { FormsModule } from '@angular/forms';
 
+import { SortDirection } from '../../../core/utils/sort.utils';
+
 @Component({
     selector: 'app-product-management',
     standalone: true,
@@ -27,6 +29,7 @@ export class ProductManagement implements OnInit {
     selectedProduct = signal<ProductDetailResponse | null>(null);
     currentPage = signal(0);
     totalPages = signal(1);
+    sortParam = signal<string>('id,desc');
 
     // Modal de Exclusão
     showDeleteModal = signal(false);
@@ -43,6 +46,12 @@ export class ProductManagement implements OnInit {
         this.loadProducts();
     }
 
+    onSortChange(sort: { field: string, direction: SortDirection }) {
+        this.sortParam.set(`${sort.field},${sort.direction}`);
+        this.currentPage.set(0);
+        this.loadProducts();
+    }
+
     loadPartners() {
         this.partnerService.getAll(0, 100).subscribe({
             next: (resp) => this.partners.set(resp.content || resp),
@@ -53,7 +62,7 @@ export class ProductManagement implements OnInit {
     loadProducts() {
         this.loading.set(true);
         const partnerId = this.selectedPartnerId() === 'all' ? undefined : this.selectedPartnerId().toString();
-        this.productService.findAll(partnerId, this.currentPage(), 10).subscribe({
+        this.productService.findAll(partnerId, this.currentPage(), 10, this.sortParam()).subscribe({
             next: (response) => {
                 const content = (response as any).content || response;
                 this.products.set(content);

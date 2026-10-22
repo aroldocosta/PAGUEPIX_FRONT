@@ -7,6 +7,7 @@ import { PartnerService } from '../../../core/services/partner.service';
 import { Partner } from '../../../core/models/partner.model';
 import { Payout, PayoutSummaryResponse, PayoutDetailResponse } from '../../../core/models/payout.model';
 import { PayoutDetailComponent } from '../../../shared/components/payouts/payout-detail/payout-detail.component';
+import { sortByField, SortDirection } from '../../../core/utils/sort.utils';
 
 @Component({
     selector: 'app-payouts-management',
@@ -24,6 +25,24 @@ export class PayoutsManagement implements OnInit {
     currentPage = signal(0);
     totalPages = signal(0);
     hasData = computed(() => this.payouts().length > 0);
+
+    sortField = signal<string>('id');
+    sortDirection = signal<SortDirection>('desc');
+
+    sortedPayouts = computed(() => {
+        return sortByField(this.payouts(), this.sortField(), this.sortDirection());
+    });
+
+    onSort(field: string) {
+        if (this.sortField() === field) {
+            this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
+        } else {
+            this.sortField.set(field);
+            this.sortDirection.set((field === 'amount' || field === 'createdAt' || field === 'id' || field === 'paidAt') ? 'desc' : 'asc');
+        }
+        this.currentPage.set(0);
+        this.loadPayouts();
+    }
 
     payoutToUpload = signal<PayoutSummaryResponse | null>(null);
 
@@ -66,7 +85,8 @@ export class PayoutsManagement implements OnInit {
     loadPayouts() {
         this.loading.set(true);
         const partnerId = this.selectedPartnerId() === 'all' ? undefined : this.selectedPartnerId().toString();
-        this.payoutService.getAll(partnerId, this.currentPage(), 10).subscribe({
+        const sortParam = `${this.sortField()},${this.sortDirection()}`;
+        this.payoutService.getAll(partnerId, this.currentPage(), 10, sortParam).subscribe({
             next: (response) => {
                 this.payouts.set(response.content || response);
                 this.totalPages.set(response.totalPages || 1);

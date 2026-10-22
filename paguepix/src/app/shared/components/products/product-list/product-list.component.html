@@ -2,32 +2,89 @@
     <table class="w-full text-left border-collapse">
         <thead class="bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800">
             <tr>
-                <th class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                    Produto
+                <!-- Produto -->
+                <th (click)="onSort('name')"
+                    class="px-8 py-5 text-[15.6px] font-semibold uppercase tracking-wider cursor-pointer select-none transition-colors group"
+                    [ngClass]="sortField === 'name' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-gray-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
+                    <div class="inline-flex items-center gap-1.5">
+                        <span>Produto</span>
+                        <span *ngIf="sortField === 'name'" class="material-icons-outlined text-base">
+                            {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                        </span>
+                        <span *ngIf="sortField !== 'name'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                            unfold_more
+                        </span>
+                    </div>
                 </th>
+
+                <!-- Parceiro -->
+                <th (click)="onSort('partner.name')"
+                    class="px-8 py-5 text-[15.6px] font-semibold uppercase tracking-wider cursor-pointer select-none transition-colors group"
+                    [ngClass]="sortField === 'partner.name' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-gray-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
+                    <div class="inline-flex items-center gap-1.5">
+                        <span>Parceiro</span>
+                        <span *ngIf="sortField === 'partner.name'" class="material-icons-outlined text-base">
+                            {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                        </span>
+                        <span *ngIf="sortField !== 'partner.name'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                            unfold_more
+                        </span>
+                    </div>
+                </th>
+
+                <!-- Duração -->
+                <th (click)="onSort('duration')"
+                    class="px-8 py-5 text-[15.6px] font-semibold uppercase tracking-wider cursor-pointer select-none transition-colors group"
+                    [ngClass]="sortField === 'duration' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-gray-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
+                    <div class="inline-flex items-center gap-1.5">
+                        <span>Duração</span>
+                        <span *ngIf="sortField === 'duration'" class="material-icons-outlined text-base">
+                            {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                        </span>
+                        <span *ngIf="sortField !== 'duration'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                            unfold_more
+                        </span>
+                    </div>
+                </th>
+
+                <!-- Status -->
+                <th (click)="onSort('active')"
+                    class="px-8 py-5 text-[15.6px] font-semibold uppercase tracking-wider text-center cursor-pointer select-none transition-colors group"
+                    [ngClass]="sortField === 'active' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-gray-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
+                    <div class="inline-flex items-center justify-center gap-1.5">
+                        <span>Status</span>
+                        <span *ngIf="sortField === 'active'" class="material-icons-outlined text-base">
+                            {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                        </span>
+                        <span *ngIf="sortField !== 'active'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                            unfold_more
+                        </span>
+                    </div>
+                </th>
+
+                <!-- Preço -->
+                <th (click)="onSort('price')"
+                    class="px-8 py-5 text-[15.6px] font-semibold uppercase tracking-wider text-right cursor-pointer select-none transition-colors group"
+                    [ngClass]="sortField === 'price' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-gray-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
+                    <div class="inline-flex items-center justify-end gap-1.5">
+                        <span>Preço</span>
+                        <span *ngIf="sortField === 'price'" class="material-icons-outlined text-base">
+                            {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                        </span>
+                        <span *ngIf="sortField !== 'price'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                            unfold_more
+                        </span>
+                    </div>
+                </th>
+
                 <th
-                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                    Parceiro
-                </th>
-                <th class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                    Duração
-                </th>
-                <th
-                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider text-center">
-                    Status
-                </th>
-                <th
-                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider text-right">
-                    Preço
-                </th>
-                <th
-                    class="px-8 py-5 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider text-center">
+                    class="px-8 py-5 text-[15.6px] font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider text-center">
                     AÇÕES
                 </th>
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-100 dark:divide-slate-800">
-            <tr *ngFor="let product of products"
+            <tr *ngFor="let product of sortedProducts"
                 class="hover:bg-gray-50/80 dark:hover:bg-slate-800/50 transition-colors group">
                 <td class="px-8 py-0.5">
                     <div class="flex items-center gap-4">

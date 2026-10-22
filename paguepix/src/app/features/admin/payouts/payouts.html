@@ -40,36 +40,103 @@
         <table class="w-full text-left border-collapse">
             <thead class="bg-slate-50/50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
                 <tr>
-                    <th
-                        class="px-8 py-5 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        ID Saque</th>
-                    <th
-                        class="px-8 py-5 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Parceiro
+                    <!-- ID Saque -->
+                    <th (click)="onSort('id')"
+                        class="px-8 py-5 text-[15.6px] font-semibold uppercase tracking-wider cursor-pointer select-none transition-colors group"
+                        [ngClass]="sortField() === 'id' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
+                        <div class="inline-flex items-center gap-1.5">
+                            <span>ID Saque</span>
+                            <span *ngIf="sortField() === 'id'" class="material-icons-outlined text-base">
+                                {{ sortDirection() === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                            </span>
+                            <span *ngIf="sortField() !== 'id'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                unfold_more
+                            </span>
+                        </div>
                     </th>
-                    <th
-                        class="px-8 py-5 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Chave Pix
+
+                    <!-- Parceiro -->
+                    <th (click)="onSort('partner.name')"
+                        class="px-8 py-5 text-[15.6px] font-semibold uppercase tracking-wider cursor-pointer select-none transition-colors group"
+                        [ngClass]="sortField() === 'partner.name' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
+                        <div class="inline-flex items-center gap-1.5">
+                            <span>Parceiro</span>
+                            <span *ngIf="sortField() === 'partner.name'" class="material-icons-outlined text-base">
+                                {{ sortDirection() === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                            </span>
+                            <span *ngIf="sortField() !== 'partner.name'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                unfold_more
+                            </span>
+                        </div>
                     </th>
-                    <th
-                        class="px-8 py-5 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Valor
+
+                    <!-- Chave Pix -->
+                    <th (click)="onSort('partner.pixKey')"
+                        class="px-8 py-5 text-[15.6px] font-semibold uppercase tracking-wider cursor-pointer select-none transition-colors group"
+                        [ngClass]="sortField() === 'partner.pixKey' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
+                        <div class="inline-flex items-center gap-1.5">
+                            <span>Chave Pix</span>
+                            <span *ngIf="sortField() === 'partner.pixKey'" class="material-icons-outlined text-base">
+                                {{ sortDirection() === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                            </span>
+                            <span *ngIf="sortField() !== 'partner.pixKey'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                unfold_more
+                            </span>
+                        </div>
                     </th>
-                    <th
-                        class="px-8 py-5 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Data
+
+                    <!-- Valor -->
+                    <th (click)="onSort('amount')"
+                        class="px-8 py-5 text-[15.6px] font-semibold uppercase tracking-wider cursor-pointer select-none transition-colors group"
+                        [ngClass]="sortField() === 'amount' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
+                        <div class="inline-flex items-center gap-1.5">
+                            <span>Valor</span>
+                            <span *ngIf="sortField() === 'amount'" class="material-icons-outlined text-base">
+                                {{ sortDirection() === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                            </span>
+                            <span *ngIf="sortField() !== 'amount'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                unfold_more
+                            </span>
+                        </div>
                     </th>
-                    <th
-                        class="px-8 py-5 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Status
+
+                    <!-- Data -->
+                    <th (click)="onSort('createdAt')"
+                        class="px-8 py-5 text-[15.6px] font-semibold uppercase tracking-wider cursor-pointer select-none transition-colors group"
+                        [ngClass]="sortField() === 'createdAt' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
+                        <div class="inline-flex items-center gap-1.5">
+                            <span>Data</span>
+                            <span *ngIf="sortField() === 'createdAt'" class="material-icons-outlined text-base">
+                                {{ sortDirection() === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                            </span>
+                            <span *ngIf="sortField() !== 'createdAt'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                unfold_more
+                            </span>
+                        </div>
                     </th>
-                    <th
-                        class="px-8 py-5 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-center">
-                        Ações</th>
+
+                    <!-- Status -->
+                    <th (click)="onSort('status')"
+                        class="px-8 py-5 text-[15.6px] font-semibold uppercase tracking-wider cursor-pointer select-none transition-colors group"
+                        [ngClass]="sortField() === 'status' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
+                        <div class="inline-flex items-center gap-1.5">
+                            <span>Status</span>
+                            <span *ngIf="sortField() === 'status'" class="material-icons-outlined text-base">
+                                {{ sortDirection() === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                            </span>
+                            <span *ngIf="sortField() !== 'status'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                unfold_more
+                            </span>
+                        </div>
+                    </th>
+
+                    <th class="px-8 py-5 text-[15.6px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-center">
+                        Ações
+                    </th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-                <tr *ngFor="let payout of payouts()"
+                <tr *ngFor="let payout of sortedPayouts()"
                     class="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors group">
                     <td class="px-8 py-0.5">
                         <div class="flex items-center gap-4">

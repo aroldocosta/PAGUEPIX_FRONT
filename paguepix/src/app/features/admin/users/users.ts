@@ -10,6 +10,7 @@ import { Partner } from '../../../core/models/partner.model';
 import { FormsModule } from '@angular/forms';
 
 import { RouterModule } from '@angular/router';
+import { sortByField, SortDirection } from '../../../core/utils/sort.utils';
 
 @Component({
     selector: 'app-user-management',
@@ -32,7 +33,25 @@ export class UserManagement implements OnInit {
     isDeleting = signal(false);
     userToDelete = signal<UserSummaryResponse | null>(null);
 
+    sortField = signal<string>('id');
+    sortDirection = signal<SortDirection>('desc');
+
     filteredUsers = computed(() => this.users());
+
+    sortedUsers = computed(() => {
+        return sortByField(this.filteredUsers(), this.sortField(), this.sortDirection());
+    });
+
+    onSort(field: string) {
+        if (this.sortField() === field) {
+            this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
+        } else {
+            this.sortField.set(field);
+            this.sortDirection.set(field === 'id' ? 'desc' : 'asc');
+        }
+        this.currentPage.set(0);
+        this.loadUsers();
+    }
 
     hasData = computed(() => this.filteredUsers().length > 0);
 
@@ -54,7 +73,8 @@ export class UserManagement implements OnInit {
     loadUsers() {
         this.loading.set(true);
         const partnerId = this.selectedPartnerId() === 'all' ? undefined : this.selectedPartnerId().toString();
-        this.userService.getAll(partnerId, this.currentPage(), 10).subscribe({
+        const sortParam = `${this.sortField()},${this.sortDirection()}`;
+        this.userService.getAll(partnerId, this.currentPage(), 10, sortParam).subscribe({
             next: (response) => {
                 this.users.set(response.content || response);
                 this.totalPages.set(response.totalPages || 1);

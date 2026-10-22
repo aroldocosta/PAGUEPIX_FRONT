@@ -9,6 +9,7 @@ import { PartnerService } from '../../../core/services/partner.service';
 import { PartnerSummary, PartnerDetail } from '../../../core/models/partner.model';
 
 import { RouterModule } from '@angular/router';
+import { sortByField, SortDirection } from '../../../core/utils/sort.utils';
 
 @Component({
     selector: 'app-partner-management',
@@ -26,6 +27,24 @@ export class PartnerManagement implements OnInit {
     loading = signal(true);
     currentPage = signal(0);
     totalPages = signal(1);
+
+    sortField = signal<string>('id');
+    sortDirection = signal<SortDirection>('desc');
+
+    sortedPartners = computed(() => {
+        return sortByField(this.partners(), this.sortField(), this.sortDirection());
+    });
+
+    onSort(field: string) {
+        if (this.sortField() === field) {
+            this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
+        } else {
+            this.sortField.set(field);
+            this.sortDirection.set(field === 'id' ? 'desc' : 'asc');
+        }
+        this.currentPage.set(0);
+        this.loadPartners();
+    }
 
     // Modal Matriz QR Codes
     showQrMatrixModal = signal(false);
@@ -46,7 +65,8 @@ export class PartnerManagement implements OnInit {
 
     loadPartners() {
         this.loading.set(true);
-        this.partnerService.getAll(this.currentPage(), 10).subscribe({
+        const sortParam = `${this.sortField()},${this.sortDirection()}`;
+        this.partnerService.getAll(this.currentPage(), 10, sortParam).subscribe({
             next: (response) => {
                 this.partners.set(response.content || response);
                 this.totalPages.set(response.totalPages || 1);

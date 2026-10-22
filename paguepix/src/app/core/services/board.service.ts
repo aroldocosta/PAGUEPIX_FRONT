@@ -11,13 +11,14 @@ export class BoardService {
 
     constructor(private http: HttpClient) { }
 
-    findAll(partnerId?: string | number, scriptId?: string | number, page: number = 0, size: number = 10) {
+    findAll(partnerId?: string | number, scriptId?: string | number, page: number = 0, size: number = 10, sort?: string) {
         let params = new HttpParams()
             .set('page', page.toString())
             .set('size', size.toString());
 
         if (partnerId) params = params.set('partnerId', partnerId.toString());
         if (scriptId) params = params.set('scriptId', scriptId.toString());
+        if (sort) params = params.set('sort', sort);
 
         return this.http.get<any>(this.apiUrl, { params });
     }

@@ -8,6 +8,7 @@ import { ScriptSummaryResponse, ScriptDetailResponse } from '../../../core/model
 
 import { RouterModule, Router } from '@angular/router';
 import { inject } from '@angular/core';
+import { sortByField, SortDirection } from '../../../core/utils/sort.utils';
 
 @Component({
     selector: 'app-scripts-management',
@@ -26,6 +27,24 @@ export class ScriptsManagement implements OnInit {
     hasData = computed(() => this.scripts().length > 0);
     loading = signal(true);
 
+    sortField = signal<string>('id');
+    sortDirection = signal<SortDirection>('desc');
+
+    sortedScripts = computed(() => {
+        return sortByField(this.scripts(), this.sortField(), this.sortDirection());
+    });
+
+    onSort(field: string) {
+        if (this.sortField() === field) {
+            this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
+        } else {
+            this.sortField.set(field);
+            this.sortDirection.set(field === 'id' ? 'desc' : 'asc');
+        }
+        this.currentPage.set(0);
+        this.loadScripts();
+    }
+
     // Modal de Exclusão
     showDeleteModal = signal(false);
     isDeleting = signal(false);
@@ -39,7 +58,8 @@ export class ScriptsManagement implements OnInit {
 
     loadScripts() {
         this.loading.set(true);
-        this.scriptService.findAll(this.currentPage(), 10).subscribe({
+        const sortParam = `${this.sortField()},${this.sortDirection()}`;
+        this.scriptService.findAll(this.currentPage(), 10, sortParam).subscribe({
             next: (response) => {
                 this.scripts.set(response.content || response);
                 this.totalPages.set(response.totalPages || 1);

@@ -11,6 +11,8 @@ import { ManagementLayoutComponent } from '../../../shared/components/management
 import { DeviceListComponent } from '../../../shared/components/devices/device-list/device-list.component';
 import { Router } from '@angular/router';
 
+import { SortDirection } from '../../../core/utils/sort.utils';
+
 @Component({
     selector: 'app-user-device-management',
     standalone: true,
@@ -28,9 +30,16 @@ export class UserDeviceManagement implements OnInit {
     loading = signal(true);
     currentPage = signal(0);
     totalPages = signal(1);
+    sortParam = signal<string>('id,desc');
     partnerName = computed(() => this.authService.partnerName());
 
     ngOnInit() {
+        this.loadDevices();
+    }
+
+    onSortChange(sort: { field: string, direction: SortDirection }) {
+        this.sortParam.set(`${sort.field},${sort.direction}`);
+        this.currentPage.set(0);
         this.loadDevices();
     }
 
@@ -42,7 +51,7 @@ export class UserDeviceManagement implements OnInit {
         }
 
         this.loading.set(true);
-        this.deviceService.findAll(partnerId.toString(), this.currentPage(), 10).subscribe({
+        this.deviceService.findAll(partnerId.toString(), this.currentPage(), 10, this.sortParam()).subscribe({
             next: (response) => {
                 this.devices.set(response.content || response);
                 this.totalPages.set(response.totalPages || 1);

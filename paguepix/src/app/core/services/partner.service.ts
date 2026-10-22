@@ -16,10 +16,13 @@ export class PartnerService {
         return this.http.get<any[]>(`${environment.apiUrl}/bank/gateways`);
     }
 
-    getAll(page: number = 0, size: number = 10): Observable<any> {
-        const params = new HttpParams()
+    getAll(page: number = 0, size: number = 10, sort?: string): Observable<any> {
+        let params = new HttpParams()
             .set('page', page.toString())
             .set('size', size.toString());
+        if (sort) {
+            params = params.set('sort', sort);
+        }
         return this.http.get<any>(this.apiUrl, { params });
     }
 

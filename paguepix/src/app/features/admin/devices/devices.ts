@@ -12,6 +12,8 @@ import { Partner } from '../../../core/models/partner.model';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { SortDirection } from '../../../core/utils/sort.utils';
+
 @Component({
     selector: 'app-device-management',
     standalone: true,
@@ -27,6 +29,7 @@ export class DeviceManagement implements OnInit {
     selectedDevice = signal<Device | null>(null);
     currentPage = signal(0);
     totalPages = signal(1);
+    sortParam = signal<string>('id,desc');
 
     // Modal de Exclusão
     showDeleteModal = signal(false);
@@ -46,6 +49,12 @@ export class DeviceManagement implements OnInit {
         this.loadDevices();
     }
 
+    onSortChange(sort: { field: string, direction: SortDirection }) {
+        this.sortParam.set(`${sort.field},${sort.direction}`);
+        this.currentPage.set(0);
+        this.loadDevices();
+    }
+
     loadPartners() {
         this.partnerService.getAll(0, 100).subscribe({
             next: (resp) => this.partners.set(resp.content || resp),
@@ -56,7 +65,7 @@ export class DeviceManagement implements OnInit {
     loadDevices() {
         this.loading.set(true);
         const partnerId = this.selectedPartnerId() === 'all' ? undefined : this.selectedPartnerId().toString();
-        this.deviceService.findAll(partnerId, this.currentPage(), 10).subscribe({
+        this.deviceService.findAll(partnerId, this.currentPage(), 10, this.sortParam()).subscribe({
             next: (response) => {
                 this.devices.set(response.content || response);
                 this.totalPages.set(response.totalPages || 1);

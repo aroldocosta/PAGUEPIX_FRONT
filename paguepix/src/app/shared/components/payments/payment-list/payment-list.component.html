@@ -20,14 +20,34 @@
 
                 <!-- ID Transação (Admin Mode) -->
                 <th *ngIf="mode === 'admin'"
-                    class="px-8 py-5 text-[15.6px] font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                    ID Transação
+                    (click)="onSort('id')"
+                    class="px-8 py-5 text-[15.6px] font-semibold uppercase tracking-wider cursor-pointer select-none transition-colors group"
+                    [ngClass]="sortField === 'id' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-gray-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
+                    <div class="inline-flex items-center gap-1.5">
+                        <span>ID Transação</span>
+                        <span *ngIf="sortField === 'id'" class="material-icons-outlined text-base">
+                            {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                        </span>
+                        <span *ngIf="sortField !== 'id'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                            unfold_more
+                        </span>
+                    </div>
                 </th>
 
                 <!-- Parceiro (Admin Mode) -->
                 <th *ngIf="mode === 'admin'"
-                    class="px-8 py-5 text-[15.6px] font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                    Parceiro
+                    (click)="onSort('partner.name')"
+                    class="px-8 py-5 text-[15.6px] font-semibold uppercase tracking-wider cursor-pointer select-none transition-colors group"
+                    [ngClass]="sortField === 'partner.name' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-gray-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
+                    <div class="inline-flex items-center gap-1.5">
+                        <span>Parceiro</span>
+                        <span *ngIf="sortField === 'partner.name'" class="material-icons-outlined text-base">
+                            {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                        </span>
+                        <span *ngIf="sortField !== 'partner.name'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                            unfold_more
+                        </span>
+                    </div>
                 </th>
 
                 <!-- DISPOSITIVO -->
