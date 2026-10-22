@@ -26,6 +26,9 @@ export class PaymentsManagement implements OnInit {
   hasData = signal(true);
   selectedPayment = signal<PaymentDetail | null>(null);
 
+  sortField = signal<string>('time');
+  sortDirection = signal<'asc' | 'desc'>('desc');
+
   constructor(
     private paymentService: PaymentService,
     private partnerService: PartnerService
@@ -48,6 +51,13 @@ export class PaymentsManagement implements OnInit {
     this.loadPayments();
   }
 
+  onSortChange(event: { field: string, direction: 'asc' | 'desc' }) {
+    this.sortField.set(event.field);
+    this.sortDirection.set(event.direction);
+    this.currentPage.set(0);
+    this.loadPayments();
+  }
+
   onViewPayment(payment: PaymentSummary) {
     this.paymentService.getById(payment.id).subscribe({
       next: (detailed) => this.selectedPayment.set(detailed),
@@ -58,8 +68,9 @@ export class PaymentsManagement implements OnInit {
   loadPayments() {
     this.loading.set(true);
     const partnerId = this.selectedPartnerId() === 'all' ? undefined : this.selectedPartnerId().toString();
+    const sortParam = `${this.sortField()},${this.sortDirection()}`;
 
-    this.paymentService.getAll(partnerId, this.currentPage(), 10).subscribe({
+    this.paymentService.getAll(partnerId, this.currentPage(), 10, sortParam).subscribe({
       next: (response) => {
         this.payments.set(response.content || response);
         this.totalPages.set(response.totalPages || 1);

@@ -11,13 +11,17 @@ export class PaymentService {
 
     constructor(private http: HttpClient) { }
 
-    getAll(partnerId?: string | number, page: number = 0, size: number = 10) {
+    getAll(partnerId?: string | number, page: number = 0, size: number = 10, sort?: string) {
         let params = new HttpParams()
             .set('page', page.toString())
             .set('size', size.toString());
 
         if (partnerId) {
             params = params.set('partnerId', partnerId.toString());
+        }
+
+        if (sort) {
+            params = params.set('sort', sort);
         }
 
         return this.http.get<any>(this.apiUrl, { params });

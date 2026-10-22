@@ -37,6 +37,8 @@ export class SalesComponent implements OnInit {
     loading = signal(false);
     currentPage = signal(0);
     totalPages = signal(1);
+    sortField = signal<string>('time');
+    sortDirection = signal<'asc' | 'desc'>('desc');
 
     ngOnInit() {
         this.loadSales();
@@ -49,10 +51,17 @@ export class SalesComponent implements OnInit {
         });
     }
 
+    onSortChange(event: { field: string, direction: 'asc' | 'desc' }) {
+        this.sortField.set(event.field);
+        this.sortDirection.set(event.direction);
+        this.currentPage.set(0);
+        this.loadSales();
+    }
+
     loadSales() {
         this.loading.set(true);
-        // Assuming partnerId is handled by the auth interceptor or service context
-        this.paymentService.getAll(undefined, this.currentPage(), 10).subscribe({
+        const sortParam = `${this.sortField()},${this.sortDirection()}`;
+        this.paymentService.getAll(undefined, this.currentPage(), 10, sortParam).subscribe({
             next: (response) => {
                 this.sales.set(response.content || response);
                 this.totalPages.set(response.totalPages || 1);
