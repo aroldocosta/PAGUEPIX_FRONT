@@ -33,15 +33,15 @@
                 </th>
 
                 <!-- Placa -->
-                <th (click)="onSort('board.name')"
+                <th (click)="onSort('board.mqttId')"
                     class="px-8 py-5 text-[15.6px] font-semibold uppercase tracking-wider cursor-pointer select-none transition-colors group"
-                    [ngClass]="sortField === 'board.name' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-gray-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
+                    [ngClass]="sortField === 'board.mqttId' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-gray-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
                     <div class="inline-flex items-center gap-1.5">
                         <span>Placa</span>
-                        <span *ngIf="sortField === 'board.name'" class="material-icons-outlined text-base">
+                        <span *ngIf="sortField === 'board.mqttId'" class="material-icons-outlined text-base">
                             {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
                         </span>
-                        <span *ngIf="sortField !== 'board.name'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span *ngIf="sortField !== 'board.mqttId'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
                             unfold_more
                         </span>
                     </div>
@@ -70,7 +70,7 @@
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-100 dark:divide-slate-800">
-            <tr *ngFor="let device of sortedDevices"
+            <tr *ngFor="let device of devices"
                 class="hover:bg-gray-50/80 dark:hover:bg-slate-800/50 transition-colors group">
                 <td class="px-8 py-0.5">
                     <div class="flex items-center gap-4">

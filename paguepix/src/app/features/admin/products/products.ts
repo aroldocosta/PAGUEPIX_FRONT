@@ -29,7 +29,8 @@ export class ProductManagement implements OnInit {
     selectedProduct = signal<ProductDetailResponse | null>(null);
     currentPage = signal(0);
     totalPages = signal(1);
-    sortParam = signal<string>('id,desc');
+    sortField = signal<string>('id');
+    sortDirection = signal<SortDirection>('desc');
 
     // Modal de Exclusão
     showDeleteModal = signal(false);
@@ -47,7 +48,8 @@ export class ProductManagement implements OnInit {
     }
 
     onSortChange(sort: { field: string, direction: SortDirection }) {
-        this.sortParam.set(`${sort.field},${sort.direction}`);
+        this.sortField.set(sort.field);
+        this.sortDirection.set(sort.direction);
         this.currentPage.set(0);
         this.loadProducts();
     }
@@ -62,7 +64,8 @@ export class ProductManagement implements OnInit {
     loadProducts() {
         this.loading.set(true);
         const partnerId = this.selectedPartnerId() === 'all' ? undefined : this.selectedPartnerId().toString();
-        this.productService.findAll(partnerId, this.currentPage(), 10, this.sortParam()).subscribe({
+        const sortParam = `${this.sortField()},${this.sortDirection()}`;
+        this.productService.findAll(partnerId, this.currentPage(), 10, sortParam).subscribe({
             next: (response) => {
                 const content = (response as any).content || response;
                 this.products.set(content);

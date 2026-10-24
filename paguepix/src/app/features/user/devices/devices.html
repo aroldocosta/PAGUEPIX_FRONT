@@ -25,7 +25,9 @@
             </div>
         </div>
 
-        <app-device-list [devices]="devices()" mode="user" [loading]="loading()" (sortChange)="onSortChange($event)" (view)="onView($event)">
+        <app-device-list [devices]="devices()" mode="user" [loading]="loading()"
+            [sortField]="sortField()" [sortDirection]="sortDirection()"
+            (sortChange)="onSortChange($event)" (view)="onView($event)">
         </app-device-list>
     </ng-template>
 

@@ -2,7 +2,11 @@ export type SortDirection = 'asc' | 'desc';
 
 export function getNestedValue(obj: any, path: string): any {
     if (!obj || !path) return undefined;
-    return path.split('.').reduce((acc, part) => (acc != null ? acc[part] : undefined), obj);
+    const val = path.split('.').reduce((acc, part) => (acc != null ? acc[part] : undefined), obj);
+    if (val != null && typeof val === 'object' && !Array.isArray(val)) {
+        return val.name || val.code || val.title || val.description || val.id || JSON.stringify(val);
+    }
+    return val;
 }
 
 export function sortByField<T>(list: T[], field: string, direction: SortDirection): T[] {

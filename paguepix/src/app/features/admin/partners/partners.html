@@ -44,30 +44,30 @@
                     </th>
 
                     <!-- Código do Parceiro -->
-                    <th (click)="onSort('code')"
+                    <th (click)="onSort('partnerCode')"
                         class="px-8 py-5 text-[15.6px] font-semibold uppercase tracking-wider cursor-pointer select-none transition-colors group"
-                        [ngClass]="sortField() === 'code' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-gray-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
+                        [ngClass]="sortField() === 'partnerCode' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-gray-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
                         <div class="inline-flex items-center gap-1.5">
                             <span>Código do Parceiro</span>
-                            <span *ngIf="sortField() === 'code'" class="material-icons-outlined text-base">
+                            <span *ngIf="sortField() === 'partnerCode'" class="material-icons-outlined text-base">
                                 {{ sortDirection() === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
                             </span>
-                            <span *ngIf="sortField() !== 'code'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span *ngIf="sortField() !== 'partnerCode'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
                                 unfold_more
                             </span>
                         </div>
                     </th>
 
                     <!-- Banco / Provedor -->
-                    <th (click)="onSort('bankProvider')"
+                    <th (click)="onSort('gateway')"
                         class="px-8 py-5 text-[15.6px] font-semibold uppercase tracking-wider cursor-pointer select-none transition-colors group"
-                        [ngClass]="sortField() === 'bankProvider' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-gray-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
+                        [ngClass]="sortField() === 'gateway' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-gray-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'">
                         <div class="inline-flex items-center gap-1.5">
                             <span>Banco / Provedor</span>
-                            <span *ngIf="sortField() === 'bankProvider'" class="material-icons-outlined text-base">
+                            <span *ngIf="sortField() === 'gateway'" class="material-icons-outlined text-base">
                                 {{ sortDirection() === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
                             </span>
-                            <span *ngIf="sortField() !== 'bankProvider'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span *ngIf="sortField() !== 'gateway'" class="material-icons-outlined text-base text-gray-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
                                 unfold_more
                             </span>
                         </div>

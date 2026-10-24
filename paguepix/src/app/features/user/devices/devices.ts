@@ -30,7 +30,8 @@ export class UserDeviceManagement implements OnInit {
     loading = signal(true);
     currentPage = signal(0);
     totalPages = signal(1);
-    sortParam = signal<string>('id,desc');
+    sortField = signal<string>('id');
+    sortDirection = signal<SortDirection>('desc');
     partnerName = computed(() => this.authService.partnerName());
 
     ngOnInit() {
@@ -38,7 +39,8 @@ export class UserDeviceManagement implements OnInit {
     }
 
     onSortChange(sort: { field: string, direction: SortDirection }) {
-        this.sortParam.set(`${sort.field},${sort.direction}`);
+        this.sortField.set(sort.field);
+        this.sortDirection.set(sort.direction);
         this.currentPage.set(0);
         this.loadDevices();
     }
@@ -51,7 +53,8 @@ export class UserDeviceManagement implements OnInit {
         }
 
         this.loading.set(true);
-        this.deviceService.findAll(partnerId.toString(), this.currentPage(), 10, this.sortParam()).subscribe({
+        const sortParam = `${this.sortField()},${this.sortDirection()}`;
+        this.deviceService.findAll(partnerId.toString(), this.currentPage(), 10, sortParam).subscribe({
             next: (response) => {
                 this.devices.set(response.content || response);
                 this.totalPages.set(response.totalPages || 1);

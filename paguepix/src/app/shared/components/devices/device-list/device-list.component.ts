@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
-import { sortByField, SortDirection } from '../../../../core/utils/sort.utils';
+import { SortDirection } from '../../../../core/utils/sort.utils';
 
 @Component({
     selector: 'app-device-list',
@@ -17,27 +17,22 @@ export class DeviceListComponent {
     @Input({ required: true }) devices: any[] = [];
     @Input() mode: 'admin' | 'user' = 'user';
     @Input() loading: boolean = false;
-
-    sortField: string = 'id';
-    sortDirection: SortDirection = 'desc';
+    @Input() sortField: string = 'id';
+    @Input() sortDirection: SortDirection = 'desc';
 
     @Output() view = new EventEmitter<string>();
     @Output() edit = new EventEmitter<string>();
     @Output() delete = new EventEmitter<string>();
     @Output() sortChange = new EventEmitter<{ field: string, direction: SortDirection }>();
 
-    get sortedDevices(): any[] {
-        return sortByField(this.devices, this.sortField, this.sortDirection);
-    }
-
     onSort(field: string) {
+        let direction: SortDirection;
         if (this.sortField === field) {
-            this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+            direction = this.sortDirection === 'asc' ? 'desc' : 'asc';
         } else {
-            this.sortField = field;
-            this.sortDirection = (field === 'id') ? 'desc' : 'asc';
+            direction = (field === 'id') ? 'desc' : 'asc';
         }
-        this.sortChange.emit({ field: this.sortField, direction: this.sortDirection });
+        this.sortChange.emit({ field, direction });
     }
 
     onView(id: string) {

@@ -36,7 +36,9 @@
             </div>
         </div>
 
-        <app-product-list [products]="filteredProducts()" mode="admin" [loading]="loading()" (sortChange)="onSortChange($event)" (view)="onView($event)"
+        <app-product-list [products]="filteredProducts()" mode="admin" [loading]="loading()"
+            [sortField]="sortField()" [sortDirection]="sortDirection()"
+            (sortChange)="onSortChange($event)" (view)="onView($event)"
             (edit)="onEdit($event)" (delete)="onDelete($event)">
         </app-product-list>
     </ng-template>
